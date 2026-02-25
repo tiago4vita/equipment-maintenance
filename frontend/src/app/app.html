@@ -1,0 +1,51 @@
+<main class="min-h-screen bg-slate-950 text-slate-100">
+  <section class="mx-auto flex max-w-4xl flex-col gap-6 px-6 py-12">
+    <header class="rounded-xl border border-slate-800 bg-slate-900 p-6 shadow-lg">
+      <p class="text-sm uppercase tracking-wider text-cyan-400">Angular + Tailwind + Spring Boot</p>
+      <h1 class="mt-2 text-3xl font-semibold">{{ title() }}</h1>
+      <p class="mt-3 text-slate-300">
+        Projeto inicial standalone com frontend em Angular e backend em Spring Boot com API REST.
+      </p>
+    </header>
+
+    <article class="rounded-xl border border-slate-800 bg-slate-900 p-6 shadow-lg">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 class="text-xl font-medium">Status da API</h2>
+        <button
+          type="button"
+          class="rounded-lg bg-cyan-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-400"
+          (click)="loadStatus()"
+        >
+          Atualizar
+        </button>
+      </div>
+
+      @if (loading()) {
+        <p class="mt-4 text-slate-300">Consultando endpoint <code>/api/status</code>...</p>
+      } @else if (errorMessage()) {
+        <p class="mt-4 rounded-lg border border-red-800 bg-red-950/40 p-3 text-red-300">
+          {{ errorMessage() }}
+        </p>
+      } @else if (apiStatus(); as status) {
+        <dl class="mt-5 grid gap-3 sm:grid-cols-2">
+          <div class="rounded-lg border border-slate-800 bg-slate-950/60 p-3">
+            <dt class="text-xs uppercase text-slate-400">Servico</dt>
+            <dd class="text-sm">{{ status.service }}</dd>
+          </div>
+          <div class="rounded-lg border border-slate-800 bg-slate-950/60 p-3">
+            <dt class="text-xs uppercase text-slate-400">Status</dt>
+            <dd class="text-sm">{{ status.status }}</dd>
+          </div>
+          <div class="rounded-lg border border-slate-800 bg-slate-950/60 p-3 sm:col-span-2">
+            <dt class="text-xs uppercase text-slate-400">Mensagem</dt>
+            <dd class="text-sm">{{ status.message }}</dd>
+          </div>
+          <div class="rounded-lg border border-slate-800 bg-slate-950/60 p-3 sm:col-span-2">
+            <dt class="text-xs uppercase text-slate-400">Timestamp</dt>
+            <dd class="text-sm">{{ status.timestamp }}</dd>
+          </div>
+        </dl>
+      }
+    </article>
+  </section>
+</main>
