@@ -1,59 +1,112 @@
-# Frontend
+# Equipment Maintenance - Guia de Primeira Execucao
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.5.
+Aplicacao full stack com:
+- Frontend em Angular standalone v21
+- Estilizacao com Tailwind CSS
+- Backend Spring Boot com API REST
 
-## Development server
+## 1. Visao geral
 
-To start a local development server, run:
+Este guia mostra como rodar o sistema pela primeira vez em ambiente local, incluindo frontend e backend, com verificacoes rapidas para confirmar que tudo esta funcionando.
 
-```bash
-ng serve
-```
+## 2. Pre-requisitos e versoes
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Use estas versoes recomendadas:
+- Node.js: `20.x` ou `22.x`
+- npm: `10.x`
+- Java JDK: `17`
+- Maven: `3.9+`
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Verifique no terminal:
 
 ```bash
-ng generate --help
+node -v
+npm -v
+java -version
+mvn -v
+npx ng version
 ```
 
-## Building
+## 3. Estrutura do projeto
 
-To build the project run:
+No diretorio raiz `equipment-maintenance`, a estrutura principal e:
+- `frontend/`: Angular + Tailwind
+- `backend/`: Spring Boot API REST
+
+## 4. Primeiro start (ordem recomendada)
+
+### 4.1 Inicie o backend
+
+No primeiro terminal:
 
 ```bash
-ng build
+cd backend
+mvn spring-boot:run
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Quando subir corretamente, a API deve responder em:
+- `http://localhost:8080/api/status`
 
-## Running unit tests
+### 4.2 Inicie o frontend
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+No segundo terminal:
 
 ```bash
-ng test
+cd frontend
+npm install
+npm start
 ```
 
-## Running end-to-end tests
+Abra no navegador:
+- `http://localhost:4200`
 
-For end-to-end (e2e) testing, run:
+## 5. Como a integracao funciona
+
+- O frontend chama `GET /api/status`
+- O arquivo `frontend/proxy.conf.json` redireciona `/api/*` para `http://localhost:8080`
+- O backend possui CORS liberado para `http://localhost:4200`
+
+## 6. Comandos uteis
+
+### 6.1 Frontend
 
 ```bash
-ng e2e
+npm start
+npm run build
+npm test
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### 6.2 Backend
 
-## Additional Resources
+```bash
+mvn spring-boot:run
+mvn test
+mvn package
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 7. Arquivos principais
+
+- `frontend/src/app/app.ts`: componente raiz standalone
+- `frontend/src/app/status-api.service.ts`: chamada HTTP da API
+- `frontend/proxy.conf.json`: proxy local para backend
+- `backend/src/main/java/br/ufpr/equipmentmaintenance/api/status/StatusController.java`: endpoint REST
+- `backend/src/main/java/br/ufpr/equipmentmaintenance/api/config/CorsConfig.java`: configuracao CORS
+
+## 8. Solucao de problemas
+
+- `mvn` nao reconhecido:
+  - Instale Maven e adicione ao `PATH`
+  - Reabra o terminal e execute `mvn -v`
+- Porta `8080` ocupada:
+  - Encerre o processo atual da porta, ou altere `server.port` em `backend/src/main/resources/application.properties`
+- Porta `4200` ocupada:
+  - Encerre outro processo Angular em execucao
+- Frontend sem conectar na API:
+  - Confirme backend ativo em `http://localhost:8080`
+  - Teste `http://localhost:8080/api/status`
+
+## 9. Referencias
+
+- Angular CLI: https://angular.dev/tools/cli
+- Tailwind CSS: https://tailwindcss.com/docs
+- Spring Boot: https://spring.io/projects/spring-boot
