@@ -2,7 +2,7 @@
 
 ## Equipe
 Larissa Ribeiro Borges GRR20204495
-Luiz Michel Soares de Souza GRR21939077
+Luiz Michel Soares de Souza GRR20193907
 Marcos Eduardo de Mello Lopes GRR20231009 
 Murilo Santana Cardoso GRR20234187
 Tiago Pareja Vita GRR20234975
