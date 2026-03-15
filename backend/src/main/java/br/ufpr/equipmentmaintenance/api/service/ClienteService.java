@@ -1,10 +1,10 @@
 package br.ufpr.equipmentmaintenance.api.service;
 
+import br.ufpr.equipmentmaintenance.api.dto.ClienteRequest;
+import br.ufpr.equipmentmaintenance.api.dto.ClienteResponse;
 import br.ufpr.equipmentmaintenance.api.model.Cliente;
 import br.ufpr.equipmentmaintenance.api.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ClienteService {
@@ -15,49 +15,23 @@ public class ClienteService {
         this.repository = repository;
     }
 
-    public List<Cliente> listar() {
-        return repository.findAll();
-    }
+    public ClienteResponse criar(ClienteRequest request){
 
-    public Cliente salvar(Cliente cliente) {
+        Cliente cliente = new Cliente();
 
-        if (repository.findByEmail(cliente.getEmail()).isPresent()) {
-            throw new RuntimeException("Email já cadastrado");
-        }
+        cliente.setCpf(request.getCpf());
+        cliente.setNome(request.getNome());
+        cliente.setEmail(request.getEmail());
+        cliente.setTelefone(request.getTelefone());
 
-        if (repository.findByCpf(cliente.getCpf()).isPresent()) {
-            throw new RuntimeException("CPF já cadastrado");
-        }
+        cliente = repository.save(cliente);
 
-        return repository.save(cliente);
-    }
+        ClienteResponse response = new ClienteResponse();
 
-    public Cliente buscarPorId(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
-    }
+        response.setId(cliente.getId());
+        response.setNome(cliente.getNome());
+        response.setEmail(cliente.getEmail());
 
-    public Cliente atualizar(Long id, Cliente clienteAtualizado) {
-
-        Cliente cliente = buscarPorId(id);
-
-        cliente.setNome(clienteAtualizado.getNome());
-        cliente.setTelefone(clienteAtualizado.getTelefone());
-        cliente.setCep(clienteAtualizado.getCep());
-        cliente.setRua(clienteAtualizado.getRua());
-        cliente.setNumero(clienteAtualizado.getNumero());
-        cliente.setCidade(clienteAtualizado.getCidade());
-        cliente.setEstado(clienteAtualizado.getEstado());
-
-        return repository.save(cliente);
-    }
-
-    public void desativar(Long id) {
-
-        Cliente cliente = buscarPorId(id);
-
-        cliente.setAtivo(false);
-
-        repository.save(cliente);
+        return response;
     }
 }

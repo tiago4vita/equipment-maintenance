@@ -1,10 +1,10 @@
 package br.ufpr.equipmentmaintenance.api.service;
 
+import br.ufpr.equipmentmaintenance.api.dto.CategoriaRequest;
+import br.ufpr.equipmentmaintenance.api.dto.CategoriaResponse;
 import br.ufpr.equipmentmaintenance.api.model.CategoriaEquipamento;
 import br.ufpr.equipmentmaintenance.api.repository.CategoriaRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class CategoriaService {
@@ -15,31 +15,21 @@ public class CategoriaService {
         this.repository = repository;
     }
 
-    public List<CategoriaEquipamento> listar() {
-        return repository.findByAtivoTrue();
-    }
+    public CategoriaResponse criar(CategoriaRequest request) {
 
-    public CategoriaEquipamento salvar(CategoriaEquipamento categoria) {
-        return repository.save(categoria);
-    }
+        CategoriaEquipamento categoria = new CategoriaEquipamento();
 
-    public CategoriaEquipamento atualizar(Long id, CategoriaEquipamento categoria) {
+        categoria.setNome(request.getNome());
+        categoria.setDescricao(request.getDescricao());
 
-        CategoriaEquipamento existente = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+        categoria = repository.save(categoria);
 
-        existente.setNome(categoria.getNome());
+        CategoriaResponse response = new CategoriaResponse();
 
-        return repository.save(existente);
-    }
+        response.setId(categoria.getId());
+        response.setNome(categoria.getNome());
+        response.setDescricao(categoria.getDescricao());
 
-    public void remover(Long id) {
-
-        CategoriaEquipamento categoria = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
-
-        categoria.setAtivo(false);
-
-        repository.save(categoria);
+        return response;
     }
 }

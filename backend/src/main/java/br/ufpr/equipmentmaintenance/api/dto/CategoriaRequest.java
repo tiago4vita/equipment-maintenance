@@ -1,21 +1,9 @@
-package br.ufpr.equipmentmaintenance.api.model;
+package br.ufpr.equipmentmaintenance.api.dto;
 
-import jakarta.persistence.*;
-
-@Entity
-public class CategoriaEquipamento {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class CategoriaRequest {
 
     private String nome;
-
     private String descricao;
-
-    public Long getId() {
-        return id;
-    }
 
     public String getNome() {
         return nome;
