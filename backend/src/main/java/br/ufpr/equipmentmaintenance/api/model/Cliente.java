@@ -3,18 +3,20 @@ package br.ufpr.equipmentmaintenance.api.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "cliente")
 public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String cpf;
 
+    @Column(nullable = false)
     private String nome;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     private String telefone;
