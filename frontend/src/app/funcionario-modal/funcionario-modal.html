@@ -1,1 +1,77 @@
-<p>funcionario-modal works!</p>
+<div *ngIf="isVisible" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity">
+  
+  <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+    
+    <div class="mb-4 flex items-center justify-between border-b pb-3">
+      <h2 class="text-xl font-semibold text-gray-800">{{ titulo }}</h2>
+      <button 
+        (click)="aoFechar()" 
+        class="text-gray-500 transition-colors hover:text-gray-800 focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <form [formGroup]="form" class="space-y-4">
+      
+      <div class="flex flex-col">
+        <label class="mb-1 text-sm font-medium text-gray-700">Nome:</label>
+        <input 
+          type="text" 
+          formControlName="nome" 
+          placeholder="Digite o nome completo"
+          class="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          [ngClass]="{'border-red-500 focus:border-red-500 focus:ring-red-500': form.get('nome')?.invalid && form.get('nome')?.touched}">
+        <span *ngIf="form.get('nome')?.invalid && form.get('nome')?.touched" class="mt-1 text-xs text-red-500">
+          O nome é obrigatório.
+        </span>
+      </div>
+
+      <div class="flex flex-col">
+        <label class="mb-1 text-sm font-medium text-gray-700">E-mail único para login:</label>
+        <input 
+          type="email" 
+          formControlName="email" 
+          placeholder="exemplo@empresa.com"
+          class="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          [ngClass]="{'border-red-500 focus:border-red-500 focus:ring-red-500': form.get('email')?.invalid && form.get('email')?.touched}">
+      </div>
+
+      <div class="flex flex-col">
+        <label class="mb-1 text-sm font-medium text-gray-700">Data de Nascimento:</label>
+        <input 
+          type="date" 
+          formControlName="dataNascimento"
+          class="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          [ngClass]="{'border-red-500 focus:border-red-500 focus:ring-red-500': form.get('dataNascimento')?.invalid && form.get('dataNascimento')?.touched}">
+      </div>
+
+      <div class="flex flex-col">
+        <label class="mb-1 text-sm font-medium text-gray-700">Senha:</label>
+        <input 
+          type="password" 
+          formControlName="senha" 
+          placeholder="••••••••"
+          class="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          [ngClass]="{'border-red-500 focus:border-red-500 focus:ring-red-500': form.get('senha')?.invalid && form.get('senha')?.touched}">
+      </div>
+
+    </form>
+
+    <div class="mt-6 flex justify-end gap-3">
+      <button 
+        (click)="aoFechar()" 
+        class="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200">
+        Cancelar
+      </button>
+      <button 
+        (click)="aoSalvar()" 
+        [disabled]="form.invalid"
+        class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300">
+        Salvar
+      </button>
+    </div>
+
+  </div>
+</div>
