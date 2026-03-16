@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Minhas Solicitações</title>
+
+<style>
+
+body{
+  margin:0;
+  background:#efefef;
+  font-family:Inter, Arial;
+}
+
+.container{
+  width:1440px;
+  margin-left:320px;
+  margin-top:274px;
+  background:white;
+  border:1px solid #d6d6d6;
+}
+
+.header{
+  height:46px;
+  display:flex;
+  align-items:center;
+  padding-left:55px;
+  border-bottom:1px solid #7a7a7a;
+  color:#7a7a7a;
+  font-size:18px;
+}
+
+.table{
+  max-height:531px;
+  overflow-y:auto;
+}
+
+.row{
+  display:flex;
+  height:46px;
+  align-items:center;
+  padding:0 60px;
+}
+
+.device{
+  width:300px;
+}
+
+.date{
+  width:240px;
+  color:#7a7a7a;
+}
+
+.category{
+  background:#2c2c2c;
+  color:white;
+  padding:4px 30px;
+  border-radius:15px;
+}
+
+.status{
+  margin-left:40px;
+}
+
+.btn{
+  padding:4px 30px;
+  border-radius:15px;
+  margin-left:20px;
+  cursor:pointer;
+}
+
+.btn-blue{
+  background:#2e5bab;
+  color:#cce4ff;
+}
+
+.btn-red{
+  background:#9d3634;
+  color:#ffc3bc;
+}
+
+.title{
+  position:absolute;
+  top:220px;
+  left:318px;
+  font-size:36px;
+  font-weight:bold;
+}
+
+.new-btn{
+  position:absolute;
+  top:226px;
+  left:1551px;
+  background:#2c2c2c;
+  color:white;
+  padding:6px 30px;
+  border-radius:160px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="title">Minhas Solicitações</div>
+
+<div class="new-btn">
+Nova Solicitação
+</div>
+
+<div class="container">
+
+<div class="header">
+Desc. Equip. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Data/Hora &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Categoria &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Status
+</div>
+
+<div class="table">
+
+<!-- LINHA -->
+<div class="row" style="background:#e4e4e4">
+<div class="device">Macbook M1 Pro</div>
+<div class="date">19 de Fevereiro 19h47</div>
+<div class="category">Notebook</div>
+<div class="status" style="color:#2c2c2c">Aberta</div>
+</div>
+
+<div class="row" style="background:#fcfbb0">
+<div class="device">Macbook M1 Pro</div>
+<div class="date">19 de Fevereiro 19h47</div>
+<div class="category">Notebook</div>
+<div class="status" style="color:#676200">Aprovada</div>
+</div>
+
+<div class="row" style="background:#c6e8c4">
+<div class="device">Macbook M1 Pro</div>
+<div class="date">19 de Fevereiro 19h47</div>
+<div class="category">Notebook</div>
+<div class="status" style="color:#1f7122">Finalizada</div>
+</div>
+
+<div class="row" style="background:#cce4ff">
+<div class="device">Macbook M1 Pro</div>
+<div class="date">19 de Fevereiro 19h47</div>
+<div class="category">Notebook</div>
+<div class="status" style="color:#2e5bab">Arrumada</div>
+<div class="btn btn-blue">Pagar Serviço</div>
+</div>
+
+<div class="row" style="background:#ffc3bc">
+<div class="device">Macbook M1 Pro</div>
+<div class="date">19 de Fevereiro 19h47</div>
+<div class="category">Notebook</div>
+<div class="status" style="color:#9d3634">Rejeitada</div>
+<div class="btn btn-red">Resgatar Serviço</div>
+</div>
+
+</div>
+</div>
+
+</body>
+</html>
