@@ -4,48 +4,17 @@
   <div class="new-btn">Nova Solicitação</div>
 
   <div class="container">
-    <div class="header">
-      Desc. Equip. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Data/Hora &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Categoria
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Status
-    </div>
+    <app-solicitation-fields-header />
 
     <div class="table">
-      <div class="row" style="background: var(--color-surface-card)">
-        <div class="device">Macbook M1 Pro</div>
-        <div class="date">19 de Fevereiro 19h47</div>
-        <div class="category">Notebook</div>
-        <div class="status" style="color: var(--color-text-primary)">Aberta</div>
-      </div>
-
-      <div class="row" style="background:#fcfbb0">
-        <div class="device">Macbook M1 Pro</div>
-        <div class="date">19 de Fevereiro 19h47</div>
-        <div class="category">Notebook</div>
-        <div class="status" style="color:#676200">Aprovada</div>
-      </div>
-
-      <div class="row" style="background:#c6e8c4">
-        <div class="device">Macbook M1 Pro</div>
-        <div class="date">19 de Fevereiro 19h47</div>
-        <div class="category">Notebook</div>
-        <div class="status" style="color:#1f7122">Finalizada</div>
-      </div>
-
-      <div class="row" style="background:#cce4ff">
-        <div class="device">Macbook M1 Pro</div>
-        <div class="date">19 de Fevereiro 19h47</div>
-        <div class="category">Notebook</div>
-        <div class="status" style="color:#2e5bab">Arrumada</div>
-        <div class="btn btn-blue">Pagar Serviço</div>
-      </div>
-
-      <div class="row" style="background:#ffc3bc">
-        <div class="device">Macbook M1 Pro</div>
-        <div class="date">19 de Fevereiro 19h47</div>
-        <div class="category">Notebook</div>
-        <div class="status" style="color:#9d3634">Rejeitada</div>
-        <div class="btn btn-red">Resgatar Serviço</div>
-      </div>
+      <app-solicitation-row status="aberta" />
+      <app-solicitation-row status="aprovada" />
+      <app-solicitation-row status="arrumada" />
+      <app-solicitation-row status="finalizada" />
+      <app-solicitation-row status="orcada" quotedPrice="R$1250,00" />
+      <app-solicitation-row status="paga" />
+      <app-solicitation-row status="redirecionada" />
+      <app-solicitation-row status="rejeitada" />
     </div>
   </div>
 </main>
