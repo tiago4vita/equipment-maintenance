@@ -6,6 +6,7 @@ import br.ufpr.equipmentmaintenance.api.service.FuncionarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -30,12 +31,12 @@ public class FuncionarioController {
     }
 
     @PostMapping
-    public ResponseEntity<FuncionarioResponse> criar(@RequestBody FuncionarioRequest request) {
+    public ResponseEntity<FuncionarioResponse> criar(@Valid @RequestBody FuncionarioRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FuncionarioResponse> atualizar(@PathVariable Long id, @RequestBody FuncionarioRequest request) {
+    public ResponseEntity<FuncionarioResponse> atualizar(@PathVariable Long id, @Valid @RequestBody FuncionarioRequest request) {
         return ResponseEntity.ok(service.atualizar(id, request));
     }
 

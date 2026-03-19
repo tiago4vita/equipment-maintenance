@@ -4,6 +4,8 @@ import br.ufpr.equipmentmaintenance.api.dto.FuncionarioRequest;
 import br.ufpr.equipmentmaintenance.api.dto.FuncionarioResponse;
 import br.ufpr.equipmentmaintenance.api.model.Funcionario;
 import br.ufpr.equipmentmaintenance.api.repository.FuncionarioRepository;
+import br.ufpr.equipmentmaintenance.api.util.SenhaUtil;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,9 +17,11 @@ import java.util.stream.Collectors;
 public class FuncionarioService {
 
     private final FuncionarioRepository repository;
+    private final SenhaUtil senhaUtil;
 
-    public FuncionarioService(FuncionarioRepository repository) {
+    public FuncionarioService(FuncionarioRepository repository, SenhaUtil senhaUtil) {
         this.repository = repository;
+        this.senhaUtil = senhaUtil;
     }
 
     public List<FuncionarioResponse> listarTodos() {
@@ -38,7 +42,7 @@ public class FuncionarioService {
         funcionario.setNome(request.nome());
         funcionario.setEmail(request.email());
         funcionario.setDataNascimento(request.dataNascimento());
-        funcionario.setSenha(request.senha()); 
+        funcionario.setSenha(senhaUtil.criptografar(request.senha()));
         
         funcionario = repository.save(funcionario);
         return FuncionarioResponse.fromEntity(funcionario);
@@ -54,7 +58,7 @@ public class FuncionarioService {
         funcionario.setDataNascimento(request.dataNascimento());
         
         if (request.senha() != null && !request.senha().isBlank()) {
-            funcionario.setSenha(request.senha());
+            funcionario.setSenha(senhaUtil.criptografar(request.senha()));
         }
 
         funcionario = repository.save(funcionario);
