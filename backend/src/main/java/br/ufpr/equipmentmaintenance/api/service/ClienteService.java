@@ -4,7 +4,12 @@ import br.ufpr.equipmentmaintenance.api.dto.ClienteRequest;
 import br.ufpr.equipmentmaintenance.api.dto.ClienteResponse;
 import br.ufpr.equipmentmaintenance.api.model.Cliente;
 import br.ufpr.equipmentmaintenance.api.repository.ClienteRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ClienteService {
@@ -15,23 +20,56 @@ public class ClienteService {
         this.repository = repository;
     }
 
-    public ClienteResponse criar(ClienteRequest request){
+    public List<ClienteResponse> listarTodos() {
+        return repository.findAll().stream()
+                .filter(c -> Boolean.TRUE.equals(c.getAtivo()))
+                .map(ClienteResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
 
+    public ClienteResponse buscarPorId(Long id) {
+        Cliente cliente = repository.findById(id)
+                .filter(c -> Boolean.TRUE.equals(c.getAtivo()))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado."));
+        return ClienteResponse.fromEntity(cliente);
+    }
+
+    public ClienteResponse criar(ClienteRequest request) {
         Cliente cliente = new Cliente();
+        preencherDados(cliente, request);
+        cliente = repository.save(cliente);
+        return ClienteResponse.fromEntity(cliente);
+    }
 
-        cliente.setCpf(request.getCpf());
+    public ClienteResponse atualizar(Long id, ClienteRequest request) {
+        Cliente cliente = repository.findById(id)
+                .filter(c -> Boolean.TRUE.equals(c.getAtivo()))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado."));
+        preencherDados(cliente, request);
+        cliente = repository.save(cliente);
+        return ClienteResponse.fromEntity(cliente);
+    }
+
+    public void deletar(Long id) {
+        Cliente cliente = repository.findById(id)
+                .filter(c -> Boolean.TRUE.equals(c.getAtivo()))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado."));
+        cliente.setAtivo(false);
+        repository.save(cliente);
+    }
+
+    private void preencherDados(Cliente cliente, ClienteRequest request) {
         cliente.setNome(request.getNome());
+        cliente.setCpf(request.getCpf());
         cliente.setEmail(request.getEmail());
         cliente.setTelefone(request.getTelefone());
-
-        cliente = repository.save(cliente);
-
-        ClienteResponse response = new ClienteResponse();
-
-        response.setId(cliente.getId());
-        response.setNome(cliente.getNome());
-        response.setEmail(cliente.getEmail());
-
-        return response;
+        cliente.setCep(request.getCep());
+        cliente.setRua(request.getRua());
+        cliente.setNumero(request.getNumero());
+        cliente.setCidade(request.getCidade());
+        cliente.setEstado(request.getEstado());
+        if (request.getSenha() != null && !request.getSenha().isBlank()) {
+            cliente.setSenha(request.getSenha());
+        }
     }
 }
