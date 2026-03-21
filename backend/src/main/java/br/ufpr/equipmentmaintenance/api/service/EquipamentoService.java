@@ -8,7 +8,12 @@ import br.ufpr.equipmentmaintenance.api.model.Equipamento;
 import br.ufpr.equipmentmaintenance.api.repository.CategoriaRepository;
 import br.ufpr.equipmentmaintenance.api.repository.ClienteRepository;
 import br.ufpr.equipmentmaintenance.api.repository.EquipamentoRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EquipamentoService {
@@ -17,22 +22,52 @@ public class EquipamentoService {
     private final ClienteRepository clienteRepository;
     private final CategoriaRepository categoriaRepository;
 
-    public EquipamentoService(
-            EquipamentoRepository repository,
-            ClienteRepository clienteRepository,
-            CategoriaRepository categoriaRepository) {
-
+    public EquipamentoService(EquipamentoRepository repository,
+                               ClienteRepository clienteRepository,
+                               CategoriaRepository categoriaRepository) {
         this.repository = repository;
         this.clienteRepository = clienteRepository;
         this.categoriaRepository = categoriaRepository;
     }
 
-    public EquipamentoResponse criar(EquipamentoRequest request){
+    public List<EquipamentoResponse> listarTodos() {
+        return repository.findAll().stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
 
-        Cliente cliente = clienteRepository.findById(request.getClienteId()).orElseThrow();
-        CategoriaEquipamento categoria = categoriaRepository.findById(request.getCategoriaId()).orElseThrow();
+    public EquipamentoResponse buscarPorId(Long id) {
+        Equipamento equipamento = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Equipamento não encontrado."));
+        return toResponse(equipamento);
+    }
 
+    public EquipamentoResponse criar(EquipamentoRequest request) {
         Equipamento equipamento = new Equipamento();
+        preencherDados(equipamento, request);
+        equipamento = repository.save(equipamento);
+        return toResponse(equipamento);
+    }
+
+    public EquipamentoResponse atualizar(Long id, EquipamentoRequest request) {
+        Equipamento equipamento = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Equipamento não encontrado."));
+        preencherDados(equipamento, request);
+        equipamento = repository.save(equipamento);
+        return toResponse(equipamento);
+    }
+
+    public void deletar(Long id) {
+        Equipamento equipamento = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Equipamento não encontrado."));
+        repository.delete(equipamento);
+    }
+
+    private void preencherDados(Equipamento equipamento, EquipamentoRequest request) {
+        Cliente cliente = clienteRepository.findById(request.getClienteId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado."));
+        CategoriaEquipamento categoria = categoriaRepository.findById(request.getCategoriaId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada."));
 
         equipamento.setNome(request.getNome());
         equipamento.setMarca(request.getMarca());
@@ -40,19 +75,17 @@ public class EquipamentoService {
         equipamento.setNumeroSerie(request.getNumeroSerie());
         equipamento.setCliente(cliente);
         equipamento.setCategoria(categoria);
+    }
 
-        equipamento = repository.save(equipamento);
-
-        EquipamentoResponse response = new EquipamentoResponse();
-
-        response.setId(equipamento.getId());
-        response.setNome(equipamento.getNome());
-        response.setMarca(equipamento.getMarca());
-        response.setModelo(equipamento.getModelo());
-        response.setNumeroSerie(equipamento.getNumeroSerie());
-        response.setClienteNome(cliente.getNome());
-        response.setCategoriaNome(categoria.getNome());
-
-        return response;
+    private EquipamentoResponse toResponse(Equipamento e) {
+        EquipamentoResponse r = new EquipamentoResponse();
+        r.setId(e.getId());
+        r.setNome(e.getNome());
+        r.setMarca(e.getMarca());
+        r.setModelo(e.getModelo());
+        r.setNumeroSerie(e.getNumeroSerie());
+        r.setClienteNome(e.getCliente() != null ? e.getCliente().getNome() : null);
+        r.setCategoriaNome(e.getCategoria() != null ? e.getCategoria().getNome() : null);
+        return r;
     }
 }
