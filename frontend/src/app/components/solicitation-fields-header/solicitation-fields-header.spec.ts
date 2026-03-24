@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FuncionarioModal } from './funcionario-modal';
+import { SolicitationFieldsHeader } from './solicitation-fields-header';
 
-describe('FuncionarioModal', () => {
-  let component: FuncionarioModal;
-  let fixture: ComponentFixture<FuncionarioModal>;
+describe('SolicitationFieldsHeader', () => {
+  let component: SolicitationFieldsHeader;
+  let fixture: ComponentFixture<SolicitationFieldsHeader>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FuncionarioModal]
+      imports: [SolicitationFieldsHeader]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(FuncionarioModal);
+    fixture = TestBed.createComponent(SolicitationFieldsHeader);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
