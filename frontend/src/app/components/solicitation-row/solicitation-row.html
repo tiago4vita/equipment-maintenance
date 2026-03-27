@@ -5,14 +5,14 @@
   <div class="mr-[-63px] flex w-[800px] shrink-0 items-center gap-[100px]">
     <div class="flex shrink-0 items-center">
       <p
-        class="mr-[-57px] w-[300px] [font-family:'Inter-Regular',Helvetica] text-[18px] font-normal leading-[1.2] tracking-[-0.54px] text-[var(--color-text-primary)]"
+        class="mr-[-57px] w-[300px] [font-family:'Inter',sans-serif] text-[18px] font-normal leading-[1.2] tracking-[-0.54px] text-[var(--color-text-primary)]"
       >
         {{ device }}
       </p>
 
       <button type="button" class="group flex items-center">
         <p
-          class="w-[77px] [font-family:'Inter-Regular',Helvetica] text-left text-[18px] font-normal leading-[1.2] tracking-[-0.54px] underline transition-colors duration-200 text-[var(--color-placeholder)] group-hover:text-[var(--color-link-disabled)]"
+          class="w-[77px] [font-family:'Inter',sans-serif] text-left text-[18px] font-normal leading-[1.2] tracking-[-0.54px] underline transition-colors duration-200 text-[var(--color-placeholder)] group-hover:text-[var(--color-link-disabled)]"
         >
           Visualizar
         </p>
@@ -28,7 +28,7 @@
     </div>
 
     <p
-      class="w-[240px] [font-family:'Inter-Regular',Helvetica] text-[18px] font-normal leading-[1.2] tracking-[-0.54px] text-[var(--color-placeholder)]"
+      class="w-[240px] [font-family:'Inter',sans-serif] text-[18px] font-normal leading-[1.2] tracking-[-0.54px] text-[var(--color-placeholder)]"
     >
       {{ dateTime }}
     </p>
@@ -39,7 +39,7 @@
       class="flex h-[30px] w-[170px] items-center justify-center rounded-[15px] bg-[var(--color-text-primary)] px-[30px] py-1"
     >
       <p
-        class="[font-family:'Inter-Regular',Helvetica] text-[18px] font-normal leading-[1.2] tracking-[-0.54px] text-white"
+        class="[font-family:'Inter',sans-serif] text-[18px] font-normal leading-[1.2] tracking-[-0.54px] text-white"
       >
         {{ category }}
       </p>
@@ -48,10 +48,10 @@
     @if (variant.hasOrcadaActions) {
       <div class="flex shrink-0 items-center gap-5">
         <div class="flex w-[153px] shrink-0 items-center justify-center gap-2.5 text-[var(--color-row-quoted-text)]">
-          <p class="[font-family:'Inter-Regular',Helvetica] text-[18px] font-normal leading-[1.2] tracking-[-0.54px]">
+          <p class="[font-family:'Inter',sans-serif] text-[18px] font-normal leading-[1.2] tracking-[-0.54px]">
             {{ variant.statusLabel }}
           </p>
-          <p class="[font-family:'Inter-Regular',Helvetica] text-[18px] font-normal leading-[1.2] tracking-[-0.54px]">
+          <p class="[font-family:'Inter',sans-serif] text-[18px] font-normal leading-[1.2] tracking-[-0.54px]">
             {{ quotedPrice }}
           </p>
         </div>
@@ -73,7 +73,7 @@
       </div>
     } @else {
       <p
-        class="w-[115px] [font-family:'Inter-Regular',Helvetica] text-[18px] font-normal leading-[1.2] tracking-[-0.54px]"
+        class="w-[115px] [font-family:'Inter',sans-serif] text-[18px] font-normal leading-[1.2] tracking-[-0.54px]"
         [style.color]="variant.statusTextColor"
       >
         {{ variant.statusLabel }}

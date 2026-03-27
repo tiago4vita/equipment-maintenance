@@ -1,12 +1,19 @@
-<main class="maintenance-page">
-  <div class="title">Minhas Solicitações</div>
+<main class="min-h-screen bg-[var(--color-surface-page)] [font-family:'Inter'">
+  <div class="ml-[320px] mt-[220px] w-[1440px]">
+    <section class="mb-4 flex items-center justify-between">
+      <h1 class="text-[36px] font-bold text-[var(--color-text-primary)]">Minhas Solicitações</h1>
+      <button
+        type="button"
+        class="rounded-[160px] bg-[var(--color-text-primary)] px-[30px] py-[6px] text-white transition-all duration-200 hover:scale-[1.02]"
+      >
+        Nova Solicitação
+      </button>
+    </section>
 
-  <div class="new-btn">Nova Solicitação</div>
-
-  <div class="container">
+    <div class="w-[1440px] border border-solid border-[var(--color-border-subtle)] bg-white">
     <app-solicitation-fields-header />
 
-    <div class="table">
+    <div class="max-h-[531px] overflow-hidden">
       <app-solicitation-row status="aberta" />
       <app-solicitation-row status="aprovada" />
       <app-solicitation-row status="arrumada" />
@@ -16,5 +23,6 @@
       <app-solicitation-row status="redirecionada" />
       <app-solicitation-row status="rejeitada" />
     </div>
+  </div>
   </div>
 </main>

@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 @source "./**/*.{html,ts}";
 
@@ -15,7 +16,7 @@
   }
 
   body {
-    font-family: Inter, Arial, Helvetica, sans-serif;
+    font-family: Inter, sans-serif;
     background-color: var(--color-surface-page);
     color: var(--color-text-primary);
   }
@@ -46,7 +47,7 @@
 :root {
   --color-text-primary: #2c2c2c;
   --color-text-muted: #898989;
-  --color-border-subtle: #d7d7d7;
+  --color-border-subtle: #6a6a6a;
   --color-surface-card: #e4e4e4;
   --color-surface-page: #efefef;
   --color-placeholder: #7b7b7b;

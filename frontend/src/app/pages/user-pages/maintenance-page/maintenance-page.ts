@@ -5,7 +5,6 @@ import { SolicitationRowComponent } from '../../../components/solicitation-row/s
 @Component({
   selector: 'app-maintenance-page',
   imports: [SolicitationFieldsHeaderComponent, SolicitationRowComponent],
-  templateUrl: './maintenance-page.html',
-  styleUrl: './maintenance-page.scss'
+  templateUrl: './maintenance-page.html'
 })
 export class MaintenancePageComponent {}
