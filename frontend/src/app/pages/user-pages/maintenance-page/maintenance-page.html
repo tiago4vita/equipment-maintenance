@@ -1,4 +1,6 @@
-<main class="min-h-screen bg-[var(--color-surface-page)] [font-family:'Inter',sans-serif]">
+<main class="relative min-h-screen bg-[var(--color-surface-page)] [font-family:'Inter',sans-serif]">
+  <app-cliente-navbar />
+
   <div class="ml-[320px] mt-[220px] w-[1440px]">
     <section class="mb-4 flex items-center justify-between">
       <h1 class="text-[36px] font-bold text-[var(--color-text-primary)]">Minhas Solicitações</h1>
@@ -14,7 +16,15 @@
     <div class="w-[1440px] border border-solid border-[var(--color-border-subtle)] bg-white">
     <app-solicitation-fields-header />
 
-    <div class="max-h-[531px] overflow-hidden">
+    <div class="max-h-[531px] overflow-y-auto overflow-x-hidden">
+      <app-solicitation-row status="aberta" />
+      <app-solicitation-row status="aprovada" />
+      <app-solicitation-row status="arrumada" />
+      <app-solicitation-row status="finalizada" />
+      <app-solicitation-row status="orcada" quotedPrice="R$1250,00" />
+      <app-solicitation-row status="paga" />
+      <app-solicitation-row status="redirecionada" />
+      <app-solicitation-row status="rejeitada" />
       <app-solicitation-row status="aberta" />
       <app-solicitation-row status="aprovada" />
       <app-solicitation-row status="arrumada" />
