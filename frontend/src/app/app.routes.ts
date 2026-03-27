@@ -4,14 +4,12 @@ import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page';
 import { MaintenancePageComponent } from './pages/user-pages/maintenance-page/maintenance-page';
 
 export const routes: Routes = [
-  // Public routes
-  { path: '', component: LoginPageComponent },
-  { path: 'login', component: LoginPageComponent },
-  { path: 'sign-up', component: SignUpPageComponent },
+  // Public routes (profile badge: use data.profileKind — 'funcionario' for staff views)
+  { path: '', component: LoginPageComponent, data: { profileKind: 'cliente' } },
+  { path: 'login', component: LoginPageComponent, data: { profileKind: 'cliente' } },
+  { path: 'sign-up', component: SignUpPageComponent, data: { profileKind: 'cliente' } },
 
-  // User maintenance routes
-  { path: 'user/maintenance', component: MaintenancePageComponent },
+  { path: 'user/maintenance', component: MaintenancePageComponent, data: { profileKind: 'cliente' } },
 
-  // Fallback route
   { path: '**', redirectTo: '' }
 ];
