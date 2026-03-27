@@ -53,6 +53,24 @@
   --color-button-primary: #2c2c2c;
   --color-button-primary-hover: #3c3c3c;
   --color-button-primary-disabled: #6a6a6a;
+  --color-link-disabled: rgba(123, 123, 123, 0.5);
+
+  --color-row-open-bg: #e4e4e4;
+  --color-row-open-text: #2c2c2c;
+  --color-row-approved-bg: #fcfbb0;
+  --color-row-approved-text: #676200;
+  --color-row-fixed-bg: #cce4ff;
+  --color-row-fixed-text: #2e5bab;
+  --color-row-rejected-bg: #ffc3bc;
+  --color-row-rejected-text: #9d3634;
+  --color-row-quoted-bg: #f2d0b2;
+  --color-row-quoted-text: #885000;
+  --color-row-redirected-bg: #e5d6ff;
+  --color-row-redirected-text: #6849a1;
+  --color-row-paid-bg: #ffcdb3;
+  --color-row-paid-text: #924e31;
+  --color-row-finished-bg: #c6e8c4;
+  --color-row-finished-text: #1f7122;
 
   --variable-collection-accent-color: rgba(208, 157, 62, 1);
   --variable-collection-field-title: 18px;

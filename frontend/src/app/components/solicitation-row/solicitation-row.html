@@ -1,1 +1,94 @@
-<p>solicitation-row works!</p>
+<article
+  class="flex h-[46px] w-[1440px] items-center py-[30px] pl-[60px] pr-[123px]"
+  [style.background-color]="variant.rowBackground"
+>
+  <div class="mr-[-63px] flex w-[800px] shrink-0 items-center gap-[100px]">
+    <div class="flex shrink-0 items-center">
+      <p
+        class="mr-[-57px] w-[300px] [font-family:'Inter-Regular',Helvetica] text-[18px] font-normal leading-[1.2] tracking-[-0.54px] text-[var(--color-text-primary)]"
+      >
+        {{ device }}
+      </p>
+
+      <button type="button" class="group flex items-center">
+        <p
+          class="w-[77px] [font-family:'Inter-Regular',Helvetica] text-left text-[18px] font-normal leading-[1.2] tracking-[-0.54px] underline transition-colors duration-200 text-[var(--color-placeholder)] group-hover:text-[var(--color-link-disabled)]"
+        >
+          Visualizar
+        </p>
+        <span class="flex size-[33.941px] items-center justify-center">
+          <img
+            src="/svg/ArrowRight.svg"
+            alt=""
+            aria-hidden="true"
+            class="size-6 transition-all duration-300 ease-out group-hover:-translate-y-[2px] group-hover:translate-x-[3px]"
+          />
+        </span>
+      </button>
+    </div>
+
+    <p
+      class="w-[240px] [font-family:'Inter-Regular',Helvetica] text-[18px] font-normal leading-[1.2] tracking-[-0.54px] text-[var(--color-placeholder)]"
+    >
+      {{ dateTime }}
+    </p>
+  </div>
+
+  <div class="mr-[-63px] flex shrink-0 items-center gap-[58px]">
+    <div
+      class="flex h-[30px] w-[170px] items-center justify-center rounded-[15px] bg-[var(--color-text-primary)] px-[30px] py-1"
+    >
+      <p
+        class="[font-family:'Inter-Regular',Helvetica] text-[18px] font-normal leading-[1.2] tracking-[-0.54px] text-white"
+      >
+        {{ category }}
+      </p>
+    </div>
+
+    @if (variant.hasOrcadaActions) {
+      <div class="flex shrink-0 items-center gap-5">
+        <div class="flex w-[153px] shrink-0 items-center justify-center gap-2.5 text-[var(--color-row-quoted-text)]">
+          <p class="[font-family:'Inter-Regular',Helvetica] text-[18px] font-normal leading-[1.2] tracking-[-0.54px]">
+            {{ variant.statusLabel }}
+          </p>
+          <p class="[font-family:'Inter-Regular',Helvetica] text-[18px] font-normal leading-[1.2] tracking-[-0.54px]">
+            {{ quotedPrice }}
+          </p>
+        </div>
+
+        <div class="flex shrink-0 items-center gap-2.5">
+          <button
+            type="button"
+            class="h-[30px] w-[85px] rounded-[15px] border border-[var(--color-row-quoted-text)] bg-[var(--color-row-quoted-bg)] py-1 text-[18px] leading-[1.2] tracking-[-0.54px] text-[var(--color-row-quoted-text)] whitespace-nowrap transition-all duration-200 ease-out hover:w-[92px] hover:scale-[1.02]"
+          >
+            Rejeitar
+          </button>
+          <button
+            type="button"
+            class="h-[30px] w-[85px] rounded-[15px] bg-[var(--color-row-quoted-text)] py-1 text-[18px] leading-[1.2] tracking-[-0.54px] text-[var(--color-row-quoted-bg)] whitespace-nowrap transition-all duration-200 ease-out hover:w-[92px] hover:scale-[1.02]"
+          >
+            Aprovar
+          </button>
+        </div>
+      </div>
+    } @else {
+      <p
+        class="w-[115px] [font-family:'Inter-Regular',Helvetica] text-[18px] font-normal leading-[1.2] tracking-[-0.54px]"
+        [style.color]="variant.statusTextColor"
+      >
+        {{ variant.statusLabel }}
+      </p>
+
+      @if (variant.hasPrimaryAction) {
+        <button
+          type="button"
+          class="h-[30px] w-[180px] rounded-[15px] px-[30px] py-1 text-[18px] leading-[1.2] tracking-[-0.54px] whitespace-nowrap transition-all duration-200 ease-out hover:w-[188px] hover:scale-[1.02]"
+          [style.background-color]="status === 'arrumada' ? 'var(--color-row-fixed-text)' : 'var(--color-row-rejected-text)'"
+          [style.color]="status === 'arrumada' ? 'var(--color-row-fixed-bg)' : 'var(--color-row-rejected-bg)'"
+        >
+          {{ primaryActionLabel }}
+        </button>
+      }
+    }
+  </div>
+</article>
