@@ -19,6 +19,8 @@
     font-family: Inter, sans-serif;
     background-color: var(--color-surface-page);
     color: var(--color-text-primary);
+    font-size: 18px;
+    letter-spacing: -0.54px;
   }
 
   button,
