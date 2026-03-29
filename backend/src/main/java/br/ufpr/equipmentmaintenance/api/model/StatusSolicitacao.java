@@ -5,9 +5,8 @@ public enum StatusSolicitacao {
     APROVADA,
     ORCADA,
     PAGA,
-    REDIRECIONADA,
-    EM_ANDAMENTO,
     ARRUMADA,
     FINALIZADA,
+    REDIRECIONADA,
     REJEITADA
 }
