@@ -1,6 +1,7 @@
-<div class="relative min-h-screen min-w-[1920px] bg-[var(--color-surface-page)]">
+<div class="relative min-h-screen flex items-center justify-center gap-80 bg-gray-100 px-24">
 
-  <div class="absolute left-[119px] top-[494px] flex h-[95px] w-[640px] items-center">
+  <div class="flex items-center">
+    
     <img
       src="/svg/TadsSystems.svg"
       alt="TADS Systems"
@@ -11,22 +12,19 @@
   </div>
 
   <section
-    class="absolute left-[1120px] top-[417px] flex h-[272px] w-[432px] flex-col items-center gap-2.5 overflow-hidden rounded-2xl border border-solid border-[var(--color-text-muted)] bg-[var(--color-surface-card)] px-10 py-[15px]"
+    class="flex w-[432px] flex-col gap-4 rounded-2xl border border-[rgba(0,0,0,0.05)] bg-white px-10 py-8 shadow-[0_10px_30px_rgba(0,0,0,0.08)] backdrop-blur-sm"
   >
-    <h1
-      class="h-[42px] self-stretch text-center [font-family:'Inter',sans-serif] text-[32px] font-medium leading-[38.4px] tracking-[-0.96px] text-[var(--color-text-primary)]"
-    >
-      Log In
-    </h1>
+    <h1 class="text-2xl font-semibold text-gray-900"> Log in </h1>
+  
 
     <form
       [formGroup]="loginForm"
       (ngSubmit)="submit()"
-      class="mb-[-15px] ml-[-8px] mr-[-8px] flex h-[205px] w-[368px] flex-col items-center justify-center gap-2.5"
+      class="flex w-full flex-col gap-4"
     >
       <div class="flex w-full flex-col items-start gap-2.5">
         <div
-          class="flex w-full items-center gap-2.5 rounded-lg border border-solid border-[var(--color-border-subtle)] bg-[var(--color-surface-page)] px-4 py-3"
+          class="flex w-full items-center rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 transition-all focus-within:border-black focus-within:bg-white focus-within:ring-2 focus-within:ring-black/10"
         >
           <label for="email" class="sr-only">E-mail</label>
           <input
@@ -34,13 +32,12 @@
             formControlName="email"
             type="email"
             placeholder="Digite seu e-mail..."
-            aria-label="Digite seu e-mail"
-            class="w-full [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px]"
+            class="w-full bg-transparent text-base outline-none placeholder:text-gray-400"
           />
         </div>
 
         <div
-          class="flex w-full items-center gap-2.5 rounded-lg border border-solid border-[var(--color-border-subtle)] bg-[var(--color-surface-page)] px-4 py-3"
+          class="flex w-full items-center rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 transition-all focus-within:border-black focus-within:bg-white focus-within:ring-2 focus-within:ring-black/10"
         >
           <label for="password" class="sr-only">Senha</label>
           <input
@@ -48,16 +45,17 @@
             formControlName="password"
             type="password"
             placeholder="Digite sua senha..."
-            aria-label="Digite sua senha"
-            class="w-full [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px]"
+            class="w-full bg-transparent text-base outline-none placeholder:text-gray-400"
           />
         </div>
       </div>
 
-      <div class="flex h-[93px] w-full flex-col items-center justify-center gap-1.5 rounded-2xl bg-[var(--color-surface-card)]">
+      <div class="flex h-[93px] w-full flex-col items-center justify-center gap-1.5 rounded-2xl bg-transparent">
+        
+        <!-- Botão -->
         <button
           type="submit"
-          class="flex w-[368px] cursor-pointer items-center justify-center gap-2.5 rounded-lg bg-[var(--color-button-primary)] px-5 py-2.5 transition-colors hover:bg-[var(--color-button-primary-hover)] disabled:cursor-not-allowed disabled:bg-[var(--color-button-primary-disabled)]"
+          class="w-full rounded-lg bg-black py-3 text-white font-semibold transition hover:bg-black/90 disabled:bg-gray-300"
           [disabled]="loginForm.invalid"
           aria-label="Entrar"
         >
@@ -67,6 +65,7 @@
             Entrar
           </span>
         </button>
+
 
         <p
           class="[font-family:'Inter',sans-serif] text-sm font-normal leading-[16.8px] tracking-[-0.42px] text-[var(--color-text-primary)]"
