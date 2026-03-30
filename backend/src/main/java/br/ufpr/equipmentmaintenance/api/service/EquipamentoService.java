@@ -58,9 +58,10 @@ public class EquipamentoService {
     }
 
     public void deletar(Long id) {
-        Equipamento equipamento = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Equipamento não encontrado."));
-        repository.delete(equipamento);
+        if (!repository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Equipamento não encontrado.");
+        }
+        repository.deleteById(id);
     }
 
     private void preencherDados(Equipamento equipamento, EquipamentoRequest request) {

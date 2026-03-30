@@ -1,10 +1,14 @@
 package br.ufpr.equipmentmaintenance.api.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "funcionarios")
+@SQLDelete(sql = "UPDATE funcionarios SET ativo = false WHERE id = ?")
+@SQLRestriction("ativo = true")
 public class Funcionario {
 
     @Id

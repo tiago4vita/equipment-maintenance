@@ -50,9 +50,10 @@ public class CategoriaService {
     }
 
     public void deletar(Long id) {
-        CategoriaEquipamento categoria = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada."));
-        repository.delete(categoria);
+        if (!repository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada.");
+        }
+        repository.deleteById(id);
     }
 
     private CategoriaResponse toResponse(CategoriaEquipamento c) {

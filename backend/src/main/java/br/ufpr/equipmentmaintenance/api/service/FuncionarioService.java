@@ -5,7 +5,6 @@ import br.ufpr.equipmentmaintenance.api.dto.FuncionarioResponse;
 import br.ufpr.equipmentmaintenance.api.model.Funcionario;
 import br.ufpr.equipmentmaintenance.api.repository.FuncionarioRepository;
 import br.ufpr.equipmentmaintenance.api.util.SenhaUtil;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,14 +24,13 @@ public class FuncionarioService {
     }
 
     public List<FuncionarioResponse> listarTodos() {
-        return repository.findByAtivoTrue().stream()
+        return repository.findAll().stream()
                 .map(FuncionarioResponse::fromEntity)
                 .collect(Collectors.toList());
     }
 
     public FuncionarioResponse buscarPorId(Long id) {
         Funcionario funcionario = repository.findById(id)
-                .filter(Funcionario::isAtivo)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return FuncionarioResponse.fromEntity(funcionario);
     }
@@ -50,7 +48,6 @@ public class FuncionarioService {
 
     public FuncionarioResponse atualizar(Long id, FuncionarioRequest request) {
         Funcionario funcionario = repository.findById(id)
-                .filter(Funcionario::isAtivo)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         funcionario.setNome(request.nome());
@@ -70,15 +67,14 @@ public class FuncionarioService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
-        if (repository.countByAtivoTrue() <= 1) {
+        if (repository.count() <= 1) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
-        Funcionario funcionario = repository.findById(id)
-                .filter(Funcionario::isAtivo)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        if (!repository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
 
-        funcionario.setAtivo(false);
-        repository.save(funcionario);
+        repository.deleteById(id);
     }
 }
