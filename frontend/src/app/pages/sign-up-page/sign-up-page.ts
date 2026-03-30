@@ -25,8 +25,10 @@ interface ViaCepResponse {
 @Component({
   selector: 'app-sign-up-page',
   imports: [ReactiveFormsModule],
-  templateUrl: './sign-up-page.html'
+  templateUrl: './sign-up-page.html',
+  styleUrl: './sign-up-page.css'
 })
+
 export class SignUpPageComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly httpClient = inject(HttpClient);
@@ -35,29 +37,29 @@ export class SignUpPageComponent {
   protected readonly formFields: SignUpField[] = [
     {
       id: 'fullName',
-      label: 'Nome Completo*',
-      placeholder: 'Digite seu nome completo...',
+      label: 'Nome Completo',
+      placeholder: 'Digite seu nome completo',
       type: 'text',
       required: true
     },
     {
       id: 'email',
-      label: 'E-mail*',
-      placeholder: 'Digite seu e-mail...',
+      label: 'E-mail',
+      placeholder: 'Digite seu e-mail',
       type: 'email',
       required: true
     },
     {
       id: 'cpf',
-      label: 'CPF* (apenas números)',
-      placeholder: 'Digite seu CPF...',
+      label: 'CPF (apenas números)',
+      placeholder: 'Digite seu CPF',
       type: 'text',
       required: true
     },
     {
       id: 'cep',
-      label: 'CEP*',
-      placeholder: 'Digite seu CEP...',
+      label: 'CEP',
+      placeholder: 'Digite seu CEP',
       type: 'text',
       required: true
     }
