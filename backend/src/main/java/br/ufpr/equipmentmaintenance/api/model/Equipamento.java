@@ -1,8 +1,13 @@
 package br.ufpr.equipmentmaintenance.api.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
+@Table(name = "equipamento")
+@SQLDelete(sql = "UPDATE equipamento SET ativo = false WHERE id = ?")
+@SQLRestriction("ativo = true")
 public class Equipamento {
 
     @Id
@@ -23,8 +28,15 @@ public class Equipamento {
     @ManyToOne
     private CategoriaEquipamento categoria;
 
+    @Column(nullable = false)
+    private Boolean ativo = true;
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -73,5 +85,13 @@ public class Equipamento {
 
     public void setCategoria(CategoriaEquipamento categoria) {
         this.categoria = categoria;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 }
