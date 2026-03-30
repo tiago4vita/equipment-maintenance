@@ -1,0 +1,42 @@
+<main class="relative min-h-screen bg-[var(--color-surface-page)] [font-family:'Inter',sans-serif]">
+  <app-cliente-navbar />
+
+  <div class="ml-[320px] mt-[220px] w-[1440px]">
+    <section class="mb-4 flex items-center justify-between">
+      <h1 class="text-[36px] font-bold text-[var(--color-text-primary)]">Solicitações Abertas</h1>
+    </section>
+
+    <div class="w-[1440px] rounded-2xl border border-gray-200 bg-white shadow-lg overflow-hidden">
+      <div class="grid grid-cols-4 bg-gray-50 p-6 border-b border-gray-200 font-bold text-[var(--color-text-primary)]">
+        <div>Data/Hora</div>
+        <div>Cliente</div>
+        <div>Descrição do Produto</div>
+        <div class="text-center">Ações</div>
+      </div>
+
+      <div class="max-h-[531px] overflow-y-auto">
+        <div *ngFor="let item of solicitacoesAbertas" 
+             class="grid grid-cols-4 items-center p-6 border-b border-gray-100 bg-[var(--color-row-open-bg)] hover:brightness-95 transition-all">
+          
+          <div class="text-[16px]">{{ item.data }}</div>
+          <div class="font-semibold">{{ item.cliente }}</div>
+          
+          <div class="text-[16px]">{{ truncate(item.produto, 30) }}</div>
+
+          <div class="flex justify-center">
+            <button
+              (click)="efetuarOrcamento(item)"
+              class="rounded-[160px] bg-[var(--color-button-primary)] px-6 py-2 text-white transition-all hover:scale-105 active:scale-95"
+            >
+              Efetuar Orçamento
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="solicitacoesAbertas.length === 0" class="p-10 text-center text-gray-400">
+          Nenhuma solicitação aguardando atenção no momento.
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
