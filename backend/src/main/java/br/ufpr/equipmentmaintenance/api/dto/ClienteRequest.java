@@ -22,8 +22,6 @@ public class ClienteRequest {
     private String cidade;
     private String estado;
 
-    @NotBlank(message = "A senha é obrigatória.")
-    private String senha;
 
     public String getCpf()    { return cpf; }
     public void setCpf(String cpf) { this.cpf = cpf; }
@@ -52,6 +50,4 @@ public class ClienteRequest {
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
 
-    public String getSenha()  { return senha; }
-    public void setSenha(String senha) { this.senha = senha; }
 }
