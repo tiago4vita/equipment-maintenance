@@ -22,14 +22,12 @@ public class ClienteService {
 
     public List<ClienteResponse> listarTodos() {
         return repository.findAll().stream()
-                .filter(c -> Boolean.TRUE.equals(c.getAtivo()))
                 .map(ClienteResponse::fromEntity)
                 .collect(Collectors.toList());
     }
 
     public ClienteResponse buscarPorId(Long id) {
         Cliente cliente = repository.findById(id)
-                .filter(c -> Boolean.TRUE.equals(c.getAtivo()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado."));
         return ClienteResponse.fromEntity(cliente);
     }
@@ -43,7 +41,6 @@ public class ClienteService {
 
     public ClienteResponse atualizar(Long id, ClienteRequest request) {
         Cliente cliente = repository.findById(id)
-                .filter(c -> Boolean.TRUE.equals(c.getAtivo()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado."));
         preencherDados(cliente, request);
         cliente = repository.save(cliente);
@@ -51,11 +48,11 @@ public class ClienteService {
     }
 
     public void deletar(Long id) {
-        Cliente cliente = repository.findById(id)
-                .filter(c -> Boolean.TRUE.equals(c.getAtivo()))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado."));
-        cliente.setAtivo(false);
-        repository.save(cliente);
+        if (!repository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado.");
+        }
+        // O Hibernate vai transformar isso em um UPDATE ativo = false automaticamente
+        repository.deleteById(id);
     }
 
     private void preencherDados(Cliente cliente, ClienteRequest request) {

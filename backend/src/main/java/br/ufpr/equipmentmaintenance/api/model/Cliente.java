@@ -1,9 +1,13 @@
 package br.ufpr.equipmentmaintenance.api.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(name = "cliente")
+@SQLDelete(sql = "UPDATE cliente SET ativo = false WHERE id = ?")
+@SQLRestriction("ativo = true")
 public class Cliente {
 
     @Id
