@@ -22,8 +22,9 @@ export class UserProfileBadgeComponent {
   
   }
 
-  get isLoginPage(): boolean {
-    const publicRoutes = ['', '/login', '/sign-up'];
-    return publicRoutes.includes(this.router.url);
-  }
+  get isPublicPage(): boolean {
+  const publicRoutes = ['', '/', '/login', '/sign-up'];
+  const path = this.router.url.split('?')[0].split('#')[0];
+  return publicRoutes.includes(path);
+}
 }

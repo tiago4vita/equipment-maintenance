@@ -1,6 +1,6 @@
-<div class="relative min-h-screen min-w-[1920px] bg-[var(--color-surface-page)]">
+<div class="min-h-screen flex items-center justify-center gap-32 bg-gray-100 px-6">
 
-  <div class="absolute left-[119px] top-[494px] flex h-[95px] w-[640px] items-center">
+  <div class="left-24 flex items-center">
     <img
       src="/svg/TadsSystems.svg"
       alt="TADS Systems"
@@ -10,14 +10,13 @@
     />
   </div>
 
-  <section class="absolute left-[764px] top-[186px]">
+  <section class="w-full max-w-3xl">
     <form
       [formGroup]="signUpForm"
       (ngSubmit)="submit()"
-      class="relative flex h-[600px] w-[864px] flex-col items-center gap-3 overflow-hidden rounded-2xl border border-solid border-[var(--color-text-muted)] bg-[var(--color-surface-card)] px-10 py-[30px]"
-    >
+      class="flex w-full flex-col gap-6 rounded-2xl border border-gray-200 bg-white px-8 py-8 shadow-lg">
       <h1
-        class="relative self-stretch [font-family:'Inter',sans-serif] text-center text-[32px] font-medium leading-[38.4px] tracking-[-0.96px] text-[var(--color-text-primary)]"
+        class="relative self-stretch [font-family:'Inter',sans-serif] text-2xl font-semibold text-center leading-[38.4px] tracking-[-0.96px] text-[var(--color-text-primary)]"
       >
         Crie sua conta
       </h1>
@@ -31,11 +30,14 @@
                 class="relative h-[18px] self-stretch [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px] whitespace-nowrap text-[var(--color-text-primary)]"
               >
                 {{ field.label }}
+                @if (field.required) {
+                  <span class="badge-required">obrigatório</span>
+                }
               </label>
 
               <div class="relative flex w-full flex-[0_0_auto] flex-col items-start gap-2 self-stretch">
                 <div
-                  class="relative flex w-full flex-[0_0_auto] items-center gap-2.5 rounded-lg border border-solid border-[var(--color-border-subtle)] bg-[var(--color-surface-page)] px-4 py-3"
+                  class="flex w-full items-center rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 transition-all focus-within:border-black focus-within:bg-white focus-within:ring-2 focus-within:ring-black/10"
                 >
                   <input
                     [id]="field.id"
@@ -57,21 +59,22 @@
                 <div class="relative flex w-full flex-[0_0_auto] flex-col items-start gap-3 self-stretch">
                   <label
                     for="address"
-                    class="relative h-[18px] self-stretch [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px] whitespace-nowrap text-[var(--color-text-primary)]"
+                    class="relative h-[18px] self-stretch [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px] flex items-center gap-2 text-[var(--color-text-primary)]"
                   >
-                    Endereço*
+                    Endereço
+                    <span class="badge-required">obrigatório</span>
                   </label>
                 </div>
 
                 <div class="relative flex w-full flex-[0_0_auto] flex-col items-start gap-2 self-stretch">
                   <div
-                    class="relative flex w-full flex-[0_0_auto] items-center gap-2.5 rounded-lg border border-solid border-[var(--color-border-subtle)] bg-[var(--color-surface-page)] px-4 py-3"
+                    class="relative flex w-full flex-[0_0_auto] items-center gap-2.5 rounded-lg border border-solid border-[var(--color-border-subtle)] bg-gray-50 px-4 py-3"
                   >
                     <input
                       id="address"
                       type="text"
                       formControlName="address"
-                      placeholder="Digite seu endereço..."
+                      placeholder="Digite seu endereço"
                       required
                       aria-required="true"
                       class="relative w-full [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px]"
@@ -84,9 +87,10 @@
                 <div class="relative flex w-full grow flex-1 flex-col items-start gap-3 self-stretch">
                   <label
                     for="number"
-                    class="relative h-[19px] w-[25px] [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px] whitespace-nowrap text-[var(--color-text-primary)]"
+                    class="relative h-[19px] w-[25px] [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px] flex items-center gap-2 text-[var(--color-text-primary)]"
                   >
                     N&deg;
+                    <span class="badge-required">obrigatório</span>
                   </label>
                 </div>
 
@@ -98,10 +102,10 @@
                       id="number"
                       type="text"
                       formControlName="number"
-                      placeholder="Digite o número..."
+                      placeholder="Digite o número"
                       required
                       aria-required="true"
-                      class="relative w-full [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px]"
+                      class="w-full bg-transparent text-base outline-none placeholder:text-gray-400"
                     />
                   </div>
                 </div>
@@ -112,7 +116,7 @@
 
         <button
           type="submit"
-          class="relative flex w-full flex-[0_0_auto] cursor-pointer items-center justify-center gap-2.5 rounded-lg bg-[var(--color-button-primary)] px-5 py-2.5 transition-colors hover:bg-[var(--color-button-primary-hover)] disabled:cursor-not-allowed disabled:bg-[var(--color-button-primary-disabled)]"
+          class="relative flex w-full flex-[0_0_auto] cursor-pointer items-center justify-center gap-2.5 rounded-lg bg-black hover:bg-black/90 disabled:bg-gray-300 text-white font-semibold py-3 rounded-lg w-full"
           [disabled]="signUpForm.invalid"
           aria-label="Criar conta"
         >
