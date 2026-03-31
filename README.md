@@ -1,4 +1,4 @@
-# Equipment Maintenance - Guia de Primeira Execucao
+# Equipment Maintenance - Guia de Primeira Execução
 
 ## Equipe
 Larissa Ribeiro Borges GRR20204495
@@ -7,16 +7,16 @@ Marcos Eduardo de Mello Lopes GRR20231009
 Murilo Santana Cardoso GRR20234187
 Tiago Pareja Vita GRR20234975
 
-Aplicacao full stack com:
+Aplicação full stack com:
 - Frontend em Angular standalone v21
 - Estilizacao com Tailwind CSS
 - Backend Spring Boot com API REST
 
-## 1. Visao geral
+## 1. Visão geral
 
 Este guia mostra como rodar o sistema pela primeira vez em ambiente local, incluindo frontend e backend, com verificacoes rapidas para confirmar que tudo esta funcionando.
 
-## 2. Pre-requisitos e versoes
+## 2. Pré-requisitos e versões
 
 Use estas versoes recomendadas:
 - Node.js: `20.x` ou `22.x`
@@ -36,7 +36,7 @@ npx ng version
 
 ## 3. Estrutura do projeto
 
-No diretorio raiz `equipment-maintenance`, a estrutura principal e:
+No diretório raiz `equipment-maintenance`, a estrutura principal é:
 - `frontend/`: Angular + Tailwind
 - `backend/`: Spring Boot API REST
 
@@ -67,7 +67,7 @@ npm start
 Abra no navegador:
 - `http://localhost:4200`
 
-## 5. Como a integracao funciona
+## 5. Como a integração funciona
 
 - O frontend chama `GET /api/status`
 - O arquivo `frontend/proxy.conf.json` redireciona `/api/*` para `http://localhost:8080`
@@ -99,7 +99,7 @@ mvn package
 - `backend/src/main/java/br/ufpr/equipmentmaintenance/api/status/StatusController.java`: endpoint REST
 - `backend/src/main/java/br/ufpr/equipmentmaintenance/api/config/CorsConfig.java`: configuracao CORS
 
-## 8. Solucao de problemas
+## 8. Solução de problemas
 
 - `mvn` nao reconhecido:
   - Instale Maven e adicione ao `PATH`
@@ -112,7 +112,7 @@ mvn package
   - Confirme backend ativo em `http://localhost:8080`
   - Teste `http://localhost:8080/api/status`
 
-## 9. Referencias
+## 9. Referências
 
 - Angular CLI: https://angular.dev/tools/cli
 - Tailwind CSS: https://tailwindcss.com/docs
