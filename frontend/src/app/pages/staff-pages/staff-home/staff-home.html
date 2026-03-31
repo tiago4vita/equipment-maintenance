@@ -1,32 +1,34 @@
 <main class="relative min-h-screen bg-[var(--color-surface-page)] [font-family:'Inter',sans-serif]">
-  <app-cliente-navbar />
 
-  <div class="ml-[320px] mt-[220px] w-[1440px]">
-    <section class="mb-4 flex items-center justify-between">
-      <h1 class="text-[36px] font-bold text-[var(--color-text-primary)]">Solicitações Abertas</h1>
+  <app-staff-navbar></app-staff-navbar>
+
+  <div class="ml-[320px] mt-[120px] w-[calc(100%-360px)] max-w-[1440px]">
+    <section class="mb-6 flex items-center justify-between">
+      <h1 class="text-[32px] font-bold text-[var(--color-text-primary)]">Solicitações Abertas</h1>
     </section>
 
-    <div class="w-[1440px] rounded-2xl border border-gray-200 bg-white shadow-lg overflow-hidden">
-      <div class="grid grid-cols-4 bg-gray-50 p-6 border-b border-gray-200 font-bold text-[var(--color-text-primary)]">
+    <div class="rounded-2xl border border-gray-200 bg-white shadow-lg overflow-hidden">
+      
+      <div class="grid grid-cols-4 bg-gray-50 px-6 py-4 border-b border-gray-200 font-bold text-[14px] uppercase tracking-wider text-[var(--color-text-primary)]">
         <div>Data/Hora</div>
         <div>Cliente</div>
         <div>Descrição do Produto</div>
         <div class="text-center">Ações</div>
       </div>
 
-      <div class="max-h-[531px] overflow-y-auto">
+      <div class="max-h-[500px] overflow-y-auto custom-scrollbar">
+        
         <div *ngFor="let item of solicitacoesAbertas" 
-             class="grid grid-cols-4 items-center p-6 border-b border-gray-100 bg-[var(--color-row-open-bg)] hover:brightness-95 transition-all">
+             class="grid grid-cols-4 items-center px-6 py-3 border-b border-gray-100 bg-white hover:bg-gray-50 transition-all">
           
-          <div class="text-[16px]">{{ item.data }}</div>
-          <div class="font-semibold">{{ item.cliente }}</div>
-          
-          <div class="text-[16px]">{{ truncate(item.produto, 30) }}</div>
+          <div class="text-[14px] text-gray-600">{{ item.data }}</div>
+          <div class="text-[15px] font-semibold text-[var(--color-text-primary)]">{{ item.cliente }}</div>
+          <div class="text-[14px] text-gray-600">{{ truncate(item.produto, 40) }}</div>
 
           <div class="flex justify-center">
             <button
               (click)="efetuarOrcamento(item)"
-              class="rounded-[160px] bg-[var(--color-button-primary)] px-6 py-2 text-white transition-all hover:scale-105 active:scale-95"
+              class="rounded-full bg-[var(--color-button-primary)] px-5 py-1.5 text-[14px] font-medium text-white transition-all hover:brightness-110 active:scale-95"
             >
               Efetuar Orçamento
             </button>

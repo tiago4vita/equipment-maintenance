@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router'; // 1. Adicionamos o import do Router
-import { ClienteNavbarComponent } from '../../../components/cliente-navbar/cliente-navbar';
+import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-navbar';
 
 @Component({
   selector: 'app-staff-home',
   standalone: true,
-  imports: [CommonModule, ClienteNavbarComponent],
-  templateUrl: './staff-home.html' 
+  imports: [CommonModule, StaffNavbarComponent],
+  templateUrl: './staff-home.html', 
+  styleUrl: './staff-home.css'
 })
 export class StaffHomeComponent {
   // 2. Adicionamos um 'id' fictício para cada item poder ser acessado na rota
@@ -29,5 +30,7 @@ export class StaffHomeComponent {
     console.log('Iniciando orçamento para:', item.cliente);
     // 4. Aqui fazemos a navegação real para o RF012 usando o ID do item
     this.router.navigate(['/staff/budget', item.id]);
+
+    
   }
 }

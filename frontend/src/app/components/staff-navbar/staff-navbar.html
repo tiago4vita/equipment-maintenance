@@ -1,21 +1,22 @@
 <nav
-  aria-label="Navegação principal"
+  aria-label="Navegação Staff"
   class="group/nav fixed left-4 top-0 z-40 flex w-[72px] h-screen shrink-0 flex-col justify-between py-4 overflow-y-auto overflow-x-hidden bg-[rgba(255,255,255,0)] transition-[width] duration-300 ease-out hover:w-[248px] focus-within:w-[248px]"
 >
   <a
-    [routerLink]="linkInicio"
+    routerLink="/staff/home"
     class="flex w-full min-w-0 shrink-0 flex-row items-center gap-3 overflow-hidden rounded-lg pl-0.5 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-text-primary)]"
     aria-label="Início"
   >
     <span class="inline-flex size-10 shrink-0 items-center justify-center">
-      <img src="/svg/Aperture.svg" alt="" class="size-[38px] shrink-0" width="38" height="38" />
+      <img src="/svg/Aperture.svg" alt="Logo" class="size-[38px] shrink-0" width="38" height="38" />
     </span>
   </a>
 
   <div class="flex shrink-0 flex-col gap-8">
     <a
-      [routerLink]="linkInicio"
+      routerLink="/staff/home"
       routerLinkActive="font-semibold"
+      [routerLinkActiveOptions]="{exact: true}"
       class="flex min-h-11 w-full min-w-0 shrink-0 flex-row items-center gap-3 overflow-hidden rounded-lg pl-0.5 text-[18px] font-medium leading-none text-[var(--color-text-primary)] outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[var(--color-text-primary)]"
     >
       <span class="inline-flex size-10 shrink-0 items-center justify-center">
@@ -42,7 +43,7 @@
     </a>
 
     <a
-      [routerLink]="linkSolicitacoes"
+      routerLink="/staff/all-requests"
       routerLinkActive="font-semibold"
       class="flex min-h-11 w-full min-w-0 shrink-0 flex-row items-center gap-3 overflow-hidden rounded-lg pl-0.5 text-[18px] font-medium leading-none text-[var(--color-text-primary)] outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[var(--color-text-primary)]"
     >

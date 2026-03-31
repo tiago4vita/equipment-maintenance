@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router'; 
-import { ClienteNavbarComponent } from '../../../components/cliente-navbar/cliente-navbar';
+import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-navbar';
 
 @Component({
   selector: 'app-staff-budget',
   standalone: true,
-  imports: [CommonModule, FormsModule, ClienteNavbarComponent],
+  imports: [CommonModule, FormsModule, StaffNavbarComponent],
   templateUrl: './staff-budget.html'
 })
 export class StaffBudgetComponent implements OnInit {
