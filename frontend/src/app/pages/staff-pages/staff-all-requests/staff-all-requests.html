@@ -1,0 +1,99 @@
+<main class="relative min-h-screen bg-[var(--color-surface-page)] [font-family:'Inter',sans-serif]">
+    <app-staff-navbar></app-staff-navbar>
+
+    <div class="ml-[320px] pt-[150px] w-[calc(100%-360px)] max-w-[1440px] flex flex-col items-start px-[60px]">
+
+        <h1 class="text-[36px] font-bold text-[var(--color-text-primary)] mb-6">Gestão de Solicitações</h1>
+
+        <div class="flex items-center gap-3 mb-10">
+            <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-full px-4 py-2 shadow-sm">
+                <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">Filtrar por</span>
+                <span class="w-px h-3 bg-gray-200"></span>
+                <select [(ngModel)]="filtroAtual"
+                    class="text-[14px] font-semibold outline-none cursor-pointer bg-transparent appearance-none pr-5">
+                    <option value="TODAS">Todas as solicitações</option>
+                    <option value="HOJE">Hoje</option>
+                    <option value="PERIODO">Por Período</option>
+                </select>
+                <svg class="w-3.5 h-3.5 text-gray-400 pointer-events-none -ml-4 shrink-0" fill="none"
+                    stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+            <div *ngIf="filtroAtual === 'PERIODO'" class="flex gap-3 items-center animate-in fade-in">
+                <input type="date" [(ngModel)]="dataInicio"
+                    class="text-[13px] bg-white border border-gray-200 rounded-full px-4 py-2 outline-none shadow-sm">
+                <span class="text-gray-300 text-[13px]">até</span>
+                <input type="date" [(ngModel)]="dataFim"
+                    class="text-[13px] bg-white border border-gray-200 rounded-full px-4 py-2 outline-none shadow-sm">
+            </div>
+        </div>
+        
+        <div class="w-full rounded-2xl border border-gray-200 bg-white shadow-lg overflow-hidden">
+            <header class="flex h-[46px] w-full items-center border-b border-[var(--color-placeholder)] bg-white px-[60px]">
+                <div class="w-[350px] flex items-center gap-2.5">
+                    <img src="/svg/Aa.svg" alt="" class="h-[14.29px] w-[21.75px]" />
+                    <span class="text-[18px] text-[var(--color-placeholder)]">Cliente / Equipamento</span>
+                </div>
+                <div class="w-[300px] flex items-center gap-2.5">
+                    <img src="/svg/Clock.svg" alt="" class="size-[19.5px]" />
+                    <span class="text-[18px] text-[var(--color-placeholder)]">Data/Hora</span>
+                </div>
+                <div class="w-[200px] flex items-center gap-2.5">
+                    <img src="/svg/Loading.svg" alt="" class="size-[19.5px]" />
+                    <span class="text-[18px] text-[var(--color-placeholder)]">Status</span>
+                </div>
+                <div class="flex-1 flex items-center justify-center gap-2.5">
+                    <img src="/svg/Cursor.svg" alt="" class="h-[21px] w-[18.01px]" />
+                    <span class="text-[18px] text-[var(--color-placeholder)]">Ações</span>
+                </div>
+            </header>
+
+            <div class="max-h-[500px] overflow-y-auto overflow-x-hidden">
+                <article *ngFor="let s of solicitacoes"
+                    class="flex h-[60px] w-full items-center px-[60px] transition-all"
+                    [style.background-color]="getVariant(s.estado).bg">
+
+                    <div class="w-[350px] shrink-0">
+                        <p class="text-[18px] font-normal leading-[1.2] text-[var(--color-text-primary)]">{{ s.cliente }}</p>
+                        <p class="text-[14px] text-[var(--color-placeholder)]">{{ s.produto }}</p>
+                    </div>
+
+                   <div class="w-[300px] shrink-0 text-[18px] text-[var(--color-placeholder)]">
+                        {{ s.data | date:'dd/MM/yyyy HH:mm' }}
+                    </div>
+
+                    <div class="w-[200px] shrink-0">
+                        <p class="text-[18px] font-normal" [style.color]="getVariant(s.estado).text">
+                            {{ getVariant(s.estado).label }}
+                        </p>
+                    </div>
+
+                    <div class="flex-1 flex justify-center items-center">
+                        <button *ngIf="s.estado === 'aberta'" 
+                            (click)="irParaOrcamento(s.id)"
+                            class="h-[30px] w-[180px] rounded-[15px] text-[18px] transition-all hover:scale-[1.02] bg-[var(--color-text-primary)] text-white">
+                            Efetuar Orçamento
+                        </button>
+
+                        <button *ngIf="s.estado === 'aprovada' || s.estado === 'redirecionada'"
+                            (click)="irParaManutencao(s.id)"
+                            class="h-[30px] w-[180px] rounded-[15px] text-[18px] transition-all hover:scale-[1.02]"
+                            [style.background-color]="getVariant(s.estado).text"
+                            [style.color]="getVariant(s.estado).bg">
+                            Efetuar Manutenção
+                        </button>
+
+                        <button *ngIf="s.estado === 'paga'" 
+                            (click)="finalizarSolicitacao(s.id)"
+                            class="h-[30px] w-[180px] rounded-[15px] text-[18px] transition-all hover:scale-[1.02]"
+                            [style.background-color]="getVariant(s.estado).text"
+                            [style.color]="getVariant(s.estado).bg">
+                            Finalizar Solicitação
+                        </button>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</main>

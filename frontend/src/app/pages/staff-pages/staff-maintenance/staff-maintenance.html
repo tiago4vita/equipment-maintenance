@@ -1,0 +1,106 @@
+<main class="relative min-h-screen bg-[var(--color-surface-page)] [font-family:'Inter',sans-serif]">
+  <app-staff-navbar></app-staff-navbar>
+
+  <div class="ml-[250px] mt-[130px] px-[60px] pb-16 w-[calc(100%-320px)] max-w-[1200px]">
+
+    <div class="mb-8 flex items-start justify-between">
+      <div>
+        <p class="text-[12px] font-semibold uppercase tracking-[0.12em] text-gray-400 mb-1">Solicitação #{{ idSolicitacao }}</p>
+        <h1 class="text-[34px] font-bold leading-tight text-[var(--color-text-primary)]">Efetuar Manutenção</h1>
+      </div>
+      <span class="mt-2 inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-4 py-1.5 text-[14px] font-semibold uppercase tracking-wide text-amber-600">
+        {{ solicitacao.status }}
+      </span>
+    </div>
+
+    <div class="flex items-start gap-6">
+      
+      <section class="w-[450px] shrink-0 rounded-2xl border border-gray-100 bg-white shadow-sm">
+        <div class="border-b border-gray-100 px-8 py-5">
+          <p class="text-[11px] font-bold uppercase tracking-[0.1em] text-gray-400">Dados da Solicitação</p>
+        </div>
+
+        <div class="flex flex-col px-8 py-2">
+          <div class="border-b border-gray-100 py-5">
+            <p class="mb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-400">Cliente</p>
+            <p class="text-[17px] font-semibold text-[var(--color-text-primary)]">{{ solicitacao.cliente }}</p>
+          </div>
+          <div class="border-b border-gray-100 py-5">
+            <p class="mb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-400">Equipamento</p>
+            <p class="text-[17px] font-semibold text-[var(--color-text-primary)]">{{ solicitacao.equipamento }}</p>
+          </div>
+          <div class="border-b border-gray-100 py-5">
+            <p class="mb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-400">Data de Abertura</p>
+            <p class="text-[15px] font-medium text-[var(--color-text-primary)]">{{ solicitacao.dataAbertura }}</p>
+          </div>
+          <div class="py-5">
+            <p class="mb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-400">Problema Relatado</p>
+            <p class="text-[15px] italic text-gray-600 leading-relaxed">"{{ solicitacao.descricaoProblema }}"</p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        *ngIf="exibirCamposManutencao"
+        class="flex-1 rounded-2xl border border-gray-100 bg-white shadow-sm animate-in fade-in slide-in-from-left-2 duration-300">
+
+        <div class="flex items-center justify-between border-b border-gray-100 px-8 py-5">
+          <p class="text-[11px] font-bold uppercase tracking-[0.1em] text-gray-400">Registro Técnico</p>
+          <button
+            (click)="exibirCamposManutencao = false"
+            class="text-[12px] font-medium text-gray-400 hover:text-gray-600 transition-colors">
+            Cancelar
+          </button>
+        </div>
+
+        <div class="px-8 py-6 flex flex-col gap-5">
+          <div>
+            <label class="mb-2 block text-[13px] font-semibold text-[var(--color-text-primary)]">
+              Descrição da Manutenção
+              <span class="ml-2 inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-medium tracking-wide text-gray-400">obrigatório</span>
+            </label>
+            <textarea
+              [(ngModel)]="dadosManutencao.descricao"
+              placeholder="O que foi feito no equipamento?"
+              class="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 p-4 text-[14px] text-[var(--color-text-primary)] placeholder:text-gray-400 transition-all focus:border-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/5"
+              rows="3"></textarea>
+          </div>
+
+          <div>
+            <label class="mb-2 block text-[13px] font-semibold text-[var(--color-text-primary)]">
+              Orientações para o Cliente
+              <span class="ml-2 inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-medium tracking-wide text-gray-400">obrigatório</span>
+            </label>
+            <textarea
+              [(ngModel)]="dadosManutencao.orientacoes"
+              placeholder="Dicas de uso ou avisos importantes..."
+              class="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 p-4 text-[14px] text-[var(--color-text-primary)] placeholder:text-gray-400 transition-all focus:border-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black/5"
+              rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 border-t border-gray-100 px-8 py-5">
+          <button
+            (click)="finalizarManutencao()"
+            [disabled]="!dadosManutencao.descricao || !dadosManutencao.orientacoes"
+            class="rounded-full bg-[var(--color-text-primary)] px-7 py-2.5 text-[14px] font-semibold text-white transition-all hover:opacity-80 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-30">
+            Marcar como Arrumada
+          </button>
+        </div>
+      </section>
+
+      <div *ngIf="!exibirCamposManutencao" class="flex flex-col gap-3">
+        <button
+          (click)="prepararManutencao()"
+          class="rounded-xl bg-[var(--color-text-primary)] px-8 py-4 text-[15px] font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98] shadow-md">
+          Efetuar Manutenção
+        </button>
+        <button
+          (click)="redirecionar()"
+          class="rounded-xl border border-amber-400 bg-white px-8 py-4 text-[15px] font-semibold text-amber-600 transition-all hover:bg-amber-50 active:scale-[0.98]">
+          Redirecionar Pedido
+        </button>
+      </div>
+
+    </div> </div>
+</main>
