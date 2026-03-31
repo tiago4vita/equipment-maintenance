@@ -1,39 +1,43 @@
 <main class="relative min-h-screen bg-[var(--color-surface-page)] [font-family:'Inter',sans-serif]">
   <app-cliente-navbar />
 
-  <div class="ml-[320px] mt-[220px] w-[1440px]">
-    <section class="mb-4 flex items-center justify-between">
-      <h1 class="text-[36px] font-bold text-[var(--color-text-primary)]">Minhas Solicitações</h1>
-      <button
-        type="button"
-        class="inline-flex items-center gap-2 rounded-[160px] bg-[var(--color-button-primary)] px-[30px] py-[6px] text-white transition-all duration-200 hover:scale-[1.02]"
-      >
-        <img src="/svg/Plus.svg" alt="" class="size-6 shrink-0" aria-hidden="true" />
-        Nova Solicitação
-      </button>
+  <div class="flex-1 ml-[100px] mt-[150px] p-8 overflow-x-hidden">
+    
+    <section class="mx-auto w-full max-w-[1440px]">
+      
+      <div class="mb-6 flex items-center justify-between">
+        <h1 class="text-[36px] font-bold text-[var(--color-text-primary)]">Minhas Solicitações</h1>
+        <button
+          type="button"
+          class="inline-flex items-center gap-2 rounded-[160px] bg-[var(--color-button-primary)] px-[30px] py-[6px] text-white transition-all duration-200 hover:scale-[1.02]"
+        >
+          <img src="/svg/Plus.svg" alt="" class="size-6 shrink-0" aria-hidden="true" />
+          Nova Solicitação
+        </button>
+      </div>
+
+      <div class="w-full rounded-2xl border border-gray-200 bg-white shadow-lg overflow-hidden">
+        <app-solicitation-fields-header />
+
+        <div class="max-h-[531px] overflow-y-auto overflow-x-hidden">
+          <app-solicitation-row status="aberta" />
+          <app-solicitation-row status="aprovada" />
+          <app-solicitation-row status="arrumada" />
+          <app-solicitation-row status="finalizada" />
+          <app-solicitation-row status="orcada" quotedPrice="R$1250,00" />
+          <app-solicitation-row status="paga" />
+          <app-solicitation-row status="redirecionada" />
+          <app-solicitation-row status="rejeitada" />
+          <app-solicitation-row status="aberta" />
+          <app-solicitation-row status="aprovada" />
+          <app-solicitation-row status="arrumada" />
+          <app-solicitation-row status="finalizada" />
+          <app-solicitation-row status="orcada" quotedPrice="R$1250,00" />
+          <app-solicitation-row status="paga" />
+          <app-solicitation-row status="redirecionada" />
+          <app-solicitation-row status="rejeitada" />
+        </div>
+      </div>
+
     </section>
-
-    <div class="w-[1440px] rounded-2xl border border-gray-200 bg-white shadow-lg overflow-hidden">
-    <app-solicitation-fields-header />
-
-    <div class="max-h-[531px] overflow-y-auto overflow-x-hidden">
-      <app-solicitation-row status="aberta" />
-      <app-solicitation-row status="aprovada" />
-      <app-solicitation-row status="arrumada" />
-      <app-solicitation-row status="finalizada" />
-      <app-solicitation-row status="orcada" quotedPrice="R$1250,00" />
-      <app-solicitation-row status="paga" />
-      <app-solicitation-row status="redirecionada" />
-      <app-solicitation-row status="rejeitada" />
-      <app-solicitation-row status="aberta" />
-      <app-solicitation-row status="aprovada" />
-      <app-solicitation-row status="arrumada" />
-      <app-solicitation-row status="finalizada" />
-      <app-solicitation-row status="orcada" quotedPrice="R$1250,00" />
-      <app-solicitation-row status="paga" />
-      <app-solicitation-row status="redirecionada" />
-      <app-solicitation-row status="rejeitada" />
-    </div>
   </div>
-  </div>
-</main>
