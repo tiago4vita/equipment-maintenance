@@ -75,6 +75,8 @@
   --color-row-paid-text: #924e31;
   --color-row-finished-bg: #c6e8c4;
   --color-row-finished-text: #1f7122;
+  --color-row-rescued-bg: #ef89c6;
+  --color-row-rescued-text: #bc237f;
 
   --variable-collection-accent-color: rgba(208, 157, 62, 1);
   --variable-collection-field-title: 18px;

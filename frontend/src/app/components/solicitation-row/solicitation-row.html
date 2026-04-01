@@ -7,7 +7,7 @@
       <p
         class="mr-[-57px] w-[300px] [font-family:'Inter',sans-serif] text-[18px] font-normal leading-[1.2] tracking-[-0.54px] text-[var(--color-text-primary)]"
       >
-        {{ device }}
+        {{ truncatedDevice }}
       </p>
 
       <button type="button" class="group flex items-center" (click)="onVisualizeClick()">
@@ -45,9 +45,9 @@
       </p>
     </div>
 
-    @if (variant.hasOrcadaActions) {
-      <div class="flex shrink-0 items-center gap-5">
-        <div class="flex w-[153px] shrink-0 items-center justify-center gap-2.5 text-[var(--color-row-quoted-text)]">
+    @if (variant.hasQuotedActions) {
+      <div class="flex shrink-0 items-center gap-[20px]">
+        <div class="flex w-[153px] shrink-0 items-center justify-center gap-[10px] text-[var(--color-row-quoted-text)]">
           <p class="[font-family:'Inter',sans-serif] text-[18px] font-normal leading-[1.2] tracking-[-0.54px]">
             {{ variant.statusLabel }}
           </p>
@@ -56,16 +56,18 @@
           </p>
         </div>
 
-        <div class="flex shrink-0 items-center gap-2.5">
+        <div class="flex shrink-0 items-center gap-[10px]">
           <button
             type="button"
-            class="h-[30px] w-[85px] rounded-[15px] border border-[var(--color-row-quoted-text)] bg-[var(--color-row-quoted-bg)] py-1 text-[18px] leading-[1.2] tracking-[-0.54px] text-[var(--color-row-quoted-text)] whitespace-nowrap transition-all duration-200 ease-out hover:w-[92px] hover:scale-[1.02]"
+            class="h-[30px] w-[85px] rounded-[15px] border border-[var(--color-row-quoted-text)] bg-[var(--color-row-quoted-bg)] py-[4px] text-[18px] leading-[1.2] tracking-[-0.54px] text-[var(--color-row-quoted-text)] whitespace-nowrap"
+            (click)="onRejectClick()"
           >
             Rejeitar
           </button>
           <button
             type="button"
-            class="h-[30px] w-[85px] rounded-[15px] bg-[var(--color-row-quoted-text)] py-1 text-[18px] leading-[1.2] tracking-[-0.54px] text-[var(--color-row-quoted-bg)] whitespace-nowrap transition-all duration-200 ease-out hover:w-[92px] hover:scale-[1.02]"
+            class="h-[30px] w-[85px] rounded-[15px] bg-[var(--color-row-quoted-text)] py-[4px] text-[18px] leading-[1.2] tracking-[-0.54px] text-[var(--color-row-quoted-bg)] whitespace-nowrap"
+            (click)="onApproveClick()"
           >
             Aprovar
           </button>
@@ -79,14 +81,15 @@
         {{ variant.statusLabel }}
       </p>
 
-      @if (variant.hasPrimaryAction) {
+      @if (shouldShowActionButton) {
         <button
           type="button"
-          class="h-[30px] w-[180px] rounded-[15px] px-[30px] py-1 text-[18px] leading-[1.2] tracking-[-0.54px] whitespace-nowrap transition-all duration-200 ease-out hover:w-[188px] hover:scale-[1.02]"
-          [style.background-color]="status === 'arrumada' ? 'var(--color-row-fixed-text)' : 'var(--color-row-rejected-text)'"
-          [style.color]="status === 'arrumada' ? 'var(--color-row-fixed-bg)' : 'var(--color-row-rejected-bg)'"
+          class="h-[30px] rounded-[15px] px-[20px] py-1 text-[18px] leading-[1.2] tracking-[-0.54px] whitespace-nowrap transition-all duration-200 ease-out hover:scale-[1.02]"
+          [style.background-color]="variant.statusTextColor"
+          [style.color]="variant.rowBackground"
+          (click)="onActionClick()"
         >
-          {{ primaryActionLabel }}
+          {{ variant.actionLabel }}
         </button>
       }
     }
