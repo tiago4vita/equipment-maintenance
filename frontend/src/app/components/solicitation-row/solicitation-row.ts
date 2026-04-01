@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 export type SolicitationStatus =
   | 'aberta'
@@ -8,14 +8,17 @@ export type SolicitationStatus =
   | 'orcada'
   | 'paga'
   | 'redirecionada'
+  | 'resgatada'
   | 'rejeitada';
+
+export type SolicitationRowActionType = 'default' | 'approve' | 'reject';
 
 interface SolicitationVariant {
   rowBackground: string;
   statusTextColor: string;
   statusLabel: string;
-  hasPrimaryAction: boolean;
-  hasOrcadaActions: boolean;
+  actionLabel: string | null;
+  hasQuotedActions: boolean;
 }
 
 const SOLICITATION_VARIANTS: Record<SolicitationStatus, SolicitationVariant> = {
@@ -23,57 +26,64 @@ const SOLICITATION_VARIANTS: Record<SolicitationStatus, SolicitationVariant> = {
     rowBackground: 'var(--color-row-open-bg)',
     statusTextColor: 'var(--color-row-open-text)',
     statusLabel: 'Aberta',
-    hasPrimaryAction: false,
-    hasOrcadaActions: false
+    actionLabel: null,
+    hasQuotedActions: false
   },
   aprovada: {
     rowBackground: 'var(--color-row-approved-bg)',
     statusTextColor: 'var(--color-row-approved-text)',
     statusLabel: 'Aprovada',
-    hasPrimaryAction: false,
-    hasOrcadaActions: false
+    actionLabel: null,
+    hasQuotedActions: false
   },
   arrumada: {
     rowBackground: 'var(--color-row-fixed-bg)',
     statusTextColor: 'var(--color-row-fixed-text)',
     statusLabel: 'Arrumada',
-    hasPrimaryAction: true,
-    hasOrcadaActions: false
+    actionLabel: 'Pagar Serviço',
+    hasQuotedActions: false
   },
   finalizada: {
     rowBackground: 'var(--color-row-finished-bg)',
     statusTextColor: 'var(--color-row-finished-text)',
     statusLabel: 'Finalizada',
-    hasPrimaryAction: false,
-    hasOrcadaActions: false
+    actionLabel: null,
+    hasQuotedActions: false
   },
   orcada: {
     rowBackground: 'var(--color-row-quoted-bg)',
     statusTextColor: 'var(--color-row-quoted-text)',
     statusLabel: 'Orçada',
-    hasPrimaryAction: false,
-    hasOrcadaActions: true
+    actionLabel: null,
+    hasQuotedActions: true
   },
   paga: {
     rowBackground: 'var(--color-row-paid-bg)',
     statusTextColor: 'var(--color-row-paid-text)',
     statusLabel: 'Paga',
-    hasPrimaryAction: false,
-    hasOrcadaActions: false
+    actionLabel: null,
+    hasQuotedActions: false
   },
   redirecionada: {
     rowBackground: 'var(--color-row-redirected-bg)',
     statusTextColor: 'var(--color-row-redirected-text)',
     statusLabel: 'Redirecionada',
-    hasPrimaryAction: false,
-    hasOrcadaActions: false
+    actionLabel: null,
+    hasQuotedActions: false
+  },
+  resgatada: {
+    rowBackground: 'var(--color-row-rescued-bg)',
+    statusTextColor: 'var(--color-row-rescued-text)',
+    statusLabel: 'Resgatada',
+    actionLabel: null,
+    hasQuotedActions: false
   },
   rejeitada: {
     rowBackground: 'var(--color-row-rejected-bg)',
     statusTextColor: 'var(--color-row-rejected-text)',
     statusLabel: 'Rejeitada',
-    hasPrimaryAction: true,
-    hasOrcadaActions: false
+    actionLabel: 'Resgatar Serviço',
+    hasQuotedActions: false
   }
 };
 
@@ -87,16 +97,40 @@ export class SolicitationRowComponent {
   @Input() dateTime = '19 de Fevereiro 19h47';
   @Input() category = 'Notebook';
   @Input() quotedPrice = 'R$1250,00';
+  @Output() readonly visualize = new EventEmitter<SolicitationStatus>();
+  @Output() readonly action = new EventEmitter<{
+    status: SolicitationStatus;
+    type: SolicitationRowActionType;
+  }>();
 
   protected get variant(): SolicitationVariant {
     return SOLICITATION_VARIANTS[this.status];
   }
 
-  protected get primaryActionLabel(): string {
-    if (this.status === 'arrumada') {
-      return 'Pagar Serviço';
+  protected get truncatedDevice(): string {
+    if (this.device.length <= 30) {
+      return this.device;
     }
+    return `${this.device.slice(0, 30)}...`;
+  }
 
-    return 'Resgatar Serviço';
+  protected get shouldShowActionButton(): boolean {
+    return this.variant.actionLabel !== null;
+  }
+
+  protected onVisualizeClick(): void {
+    this.visualize.emit(this.status);
+  }
+
+  protected onActionClick(): void {
+    this.action.emit({ status: this.status, type: 'default' });
+  }
+
+  protected onApproveClick(): void {
+    this.action.emit({ status: this.status, type: 'approve' });
+  }
+
+  protected onRejectClick(): void {
+    this.action.emit({ status: this.status, type: 'reject' });
   }
 }

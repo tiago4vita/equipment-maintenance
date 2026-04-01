@@ -10,6 +10,7 @@
         <button
           type="button"
           class="inline-flex items-center gap-2 rounded-[160px] bg-[var(--color-button-primary)] px-[30px] py-[6px] text-white transition-all duration-200 hover:scale-[1.02]"
+          (click)="openCreationModal()"
         >
           <img src="/svg/Plus.svg" alt="" class="size-6 shrink-0" aria-hidden="true" />
           Nova Solicitação
@@ -20,24 +21,35 @@
         <app-solicitation-fields-header />
 
         <div class="max-h-[531px] overflow-y-auto overflow-x-hidden">
-          <app-solicitation-row status="aberta" />
-          <app-solicitation-row status="aprovada" />
-          <app-solicitation-row status="arrumada" />
-          <app-solicitation-row status="finalizada" />
-          <app-solicitation-row status="orcada" quotedPrice="R$1250,00" />
-          <app-solicitation-row status="paga" />
-          <app-solicitation-row status="redirecionada" />
-          <app-solicitation-row status="rejeitada" />
-          <app-solicitation-row status="aberta" />
-          <app-solicitation-row status="aprovada" />
-          <app-solicitation-row status="arrumada" />
-          <app-solicitation-row status="finalizada" />
-          <app-solicitation-row status="orcada" quotedPrice="R$1250,00" />
-          <app-solicitation-row status="paga" />
-          <app-solicitation-row status="redirecionada" />
-          <app-solicitation-row status="rejeitada" />
+          @for (solicitation of sortedSolicitations; track solicitation.id) {
+            <app-solicitation-row
+              [status]="solicitation.status"
+              [device]="solicitation.device"
+              [dateTime]="solicitation.dateTime"
+              [category]="solicitation.category"
+              [quotedPrice]="solicitation.quotedPrice"
+              (visualize)="openModalFor(solicitation)"
+              (action)="handleRowAction(solicitation, $event)"
+            />
+          }
         </div>
       </div>
 
     </section>
   </div>
+
+  <app-solicitation-visualization-modal
+    [isOpen]="isVisualizationModalOpen"
+    [mode]="currentModalMode"
+    [device]="selectedSolicitation?.device ?? ''"
+    [dateTime]="selectedSolicitation?.dateTime ?? ''"
+    [category]="selectedSolicitation?.category ?? ''"
+    [description]="selectedSolicitation?.description ?? ''"
+    [price]="selectedSolicitation?.quotedPrice ?? 'R$1250,00'"
+    [timelineItems]="selectedSolicitation?.history ?? []"
+    [startWithRejectFlow]="startWithRejectFlow"
+    (statusChangeRequested)="handleStatusChange($event)"
+    (createRequested)="handleCreation($event)"
+    (closed)="closeVisualizationModal()"
+  />
+</main>

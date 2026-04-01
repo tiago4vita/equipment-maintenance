@@ -1,0 +1,225 @@
+@if (isOpen) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-6"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Visualizar solicitação"
+    (click)="closeModal()"
+  >
+    <div
+      class="relative flex w-[1283px] flex-col items-start gap-[30px] rounded-[16px] bg-white px-[80px] py-[60px]"
+      [style.height]="isCreationMode ? null : '714px'"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="relative flex w-full items-start justify-between">
+        <div class="inline-flex flex-col items-start gap-[10px]">
+          <div class="inline-flex items-center justify-center gap-[10px]">
+            @if (isCreationMode) {
+              <input
+                type="text"
+                [(ngModel)]="creationDevice"
+                placeholder="Nome do equipamento"
+                class="w-[420px] border-b border-[var(--color-border-subtle)] pb-1 text-[32px] leading-[38.4px] tracking-[-0.96px] text-[var(--color-placeholder)]"
+              />
+            } @else {
+              <div class="text-[32px] leading-[38.4px] tracking-[-0.96px] text-black">
+                {{ device }}
+              </div>
+            }
+          </div>
+
+          <div class="w-[240px] text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#7a7a7a]">
+            {{ dateTime }}
+          </div>
+        </div>
+
+        @if (mode === 'creation') {
+          <button
+            type="button"
+            class="rounded-[160px] bg-[#2c2c2c] px-[30px] py-1 text-[20px] leading-[24px] tracking-[-0.60px] text-white"
+            (click)="confirmCreation()"
+          >
+            Confirmar
+          </button>
+        } @else if (mode === 'orcada' && !isWritingRejectionReason) {
+          <div class="flex flex-col items-end gap-[15px]">
+            <div class="text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#885000]">
+              Orçada em {{ price }}
+            </div>
+            <div class="flex items-center gap-[10px]">
+              <button
+                type="button"
+                class="rounded-[15px] border border-[#885000] px-[30px] py-1 text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#885000]"
+                (click)="beginRejectFlow()"
+              >
+                Rejeitar
+              </button>
+              <button
+                type="button"
+                class="rounded-[15px] bg-[#885000] px-[30px] py-1 text-[18px] leading-[21.6px] tracking-[-0.54px] text-white"
+                (click)="requestApprove()"
+              >
+                Aprovar
+              </button>
+            </div>
+          </div>
+        } @else if (mode === 'orcada' && isWritingRejectionReason) {
+          <div class="flex w-[420px] flex-col items-end gap-2">
+            <textarea
+              [(ngModel)]="rejectionReason"
+              placeholder="Descreva o motivo da rejeição"
+              class="h-[80px] w-full resize-none rounded-lg border border-[#9d3634] bg-[#fff5f4] p-2 text-[16px] text-[#9d3634]"
+            ></textarea>
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                class="rounded-[15px] border border-[#9d3634] px-4 py-1 text-[16px] text-[#9d3634]"
+                (click)="cancelRejectFlow()"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                class="rounded-[15px] bg-[#9d3634] px-4 py-1 text-[16px] text-white"
+                (click)="confirmRejectFlow()"
+              >
+                Confirmar Rejeição
+              </button>
+            </div>
+          </div>
+        } @else if (mode === 'aprovada') {
+          <div class="flex flex-col items-end gap-[15px]">
+            <div class="text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#676200]">
+              Serviço aprovado no valor de {{ price }}.
+            </div>
+            <button
+              type="button"
+              class="rounded-[160px] bg-[#676200] px-[30px] py-1 text-[20px] leading-[24px] tracking-[-0.60px] text-white"
+              (click)="closeModal()"
+            >
+              Ok
+            </button>
+          </div>
+        } @else if (mode === 'rejeitada') {
+          <div class="flex flex-col items-end gap-[17px]">
+            <div class="flex items-start gap-[20px]">
+              <div class="text-[18px] leading-[21.6px] tracking-[-0.54px] text-[rgba(157,54,52,0.6)] line-through">
+                {{ price }}
+              </div>
+              <div class="text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#9d3634]">Serviço rejeitado.</div>
+            </div>
+            <button
+              type="button"
+              class="rounded-[160px] bg-[#9d3634] px-[30px] py-1 text-[20px] leading-[24px] tracking-[-0.60px] text-white"
+              (click)="requestRescue()"
+            >
+              Resgatar
+            </button>
+          </div>
+        } @else if (mode === 'arrumada') {
+          <div class="flex flex-col items-end gap-[15px]">
+            <div class="text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#2e5bab]">
+              Serviço arrumado no valor de {{ price }}.
+            </div>
+            <button
+              type="button"
+              class="rounded-[160px] bg-[#2e5bab] px-[30px] py-1 text-[20px] leading-[24px] tracking-[-0.60px] text-white"
+              (click)="requestPay()"
+            >
+              Pagar Serviço
+            </button>
+          </div>
+        } @else if (mode === 'paga') {
+          <div class="flex flex-col items-end gap-[15px]">
+            <div class="text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#924e31]">
+              Serviço pago no valor de {{ price }}.
+            </div>
+            <button
+              type="button"
+              class="rounded-[160px] bg-[#924e31] px-[30px] py-1 text-[20px] leading-[24px] tracking-[-0.60px] text-white"
+              (click)="closeModal()"
+            >
+              Ok
+            </button>
+          </div>
+        } @else if (mode === 'resgatada') {
+          <div class="flex flex-col items-end gap-[15px]">
+            <div class="text-[18px] leading-[21.6px] tracking-[-0.54px] text-[var(--color-row-rescued-text)]">
+              Serviço resgatado e aprovado no valor de {{ price }}.
+            </div>
+            <button
+              type="button"
+              class="rounded-[160px] bg-[var(--color-row-rescued-text)] px-[30px] py-1 text-[20px] leading-[24px] tracking-[-0.60px] text-white"
+              (click)="closeModal()"
+            >
+              Ok
+            </button>
+          </div>
+        } @else {
+          <div class="w-fit text-[20px] leading-[24px] tracking-[-0.60px] text-[#2c2c2c]">{{ statusLabel }}</div>
+        }
+      </div>
+
+      @if (isCreationMode) {
+        <input
+          type="text"
+          [(ngModel)]="creationCategory"
+          placeholder="Escolher Categoria"
+          class="w-[320px] rounded-[15px] bg-[var(--color-placeholder)] px-[30px] py-1 text-[18px] leading-[21.6px] tracking-[-0.54px] text-white"
+        />
+      } @else {
+        <div class="flex items-center justify-center rounded-[15px] bg-[#2c2c2c] px-[30px] py-1 text-[18px] leading-[21.6px] tracking-[-0.54px] text-white">
+          {{ category }}
+        </div>
+      }
+
+      <div class="h-px w-full bg-[#d9d9d9]"></div>
+
+      @if (isCreationMode) {
+        <textarea
+          [(ngModel)]="creationDescription"
+          placeholder="Descrição..."
+          class="h-20 w-full resize-none rounded-lg bg-[var(--color-surface-page)] p-[10px] text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#2c2c2c]"
+        ></textarea>
+      } @else {
+        <div class="flex h-20 w-full items-start gap-[10px] rounded-lg bg-[var(--color-surface-page)] p-[10px]">
+          <div class="text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#2c2c2c]">
+            {{ description }}
+          </div>
+        </div>
+      }
+
+      @if (showsHistory) {
+        <div
+          class="flex w-full grow flex-col items-start justify-center gap-[10px] overflow-hidden rounded-lg bg-[#2c2c2c] px-[41px] py-[94px]"
+        >
+          <div class="h-[106px] w-full overflow-x-auto overflow-y-hidden">
+            <div class="flex min-w-max items-center gap-[30px]">
+              @for (item of timelineItems; track item.label + item.date) {
+                <div
+                  class="inline-flex flex-col items-start justify-center gap-[5px] rounded-lg px-5 py-[15px]"
+                  [style.background-color]="item.bg"
+                >
+                  <div class="text-[18px] leading-[21.6px] tracking-[-0.54px]" [style.color]="item.textColor">
+                    {{ item.label }}
+                  </div>
+
+                  <div class="inline-flex items-center gap-[5px]">
+                    <img class="h-[19.5px] w-[19.5px]" alt="" aria-hidden="true" [src]="item.iconPath" />
+                    <div class="w-[149px] text-[18px] leading-[21.6px] tracking-[-0.54px]" [style.color]="item.subTextColor">
+                      {{ item.date }}
+                    </div>
+                  </div>
+
+                  <div class="w-[149px] text-[18px] leading-[21.6px] tracking-[-0.54px]" [style.color]="item.subTextColor">
+                    {{ item.author }}
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
