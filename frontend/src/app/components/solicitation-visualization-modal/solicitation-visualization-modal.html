@@ -1,0 +1,94 @@
+@if (isOpen) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-6"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Visualizar solicitação"
+    (click)="closeModal()"
+  >
+    <div
+      class="relative flex h-[714px] w-[1283px] flex-col items-start gap-[30px] rounded-[16px] bg-white px-[80px] py-[60px]"
+      (click)="$event.stopPropagation()"
+    >
+      <button
+        type="button"
+        class="absolute right-6 top-6 rounded-full border border-[var(--color-border-subtle)] px-4 py-1 text-[16px] text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-page)]"
+        (click)="closeModal()"
+      >
+        Fechar
+      </button>
+
+      <div class="relative flex w-full items-start justify-between">
+        <div class="inline-flex flex-col items-start gap-[10px]">
+          <div class="inline-flex items-center justify-center gap-[10px]">
+            <div class="text-[32px] leading-[38.4px] tracking-[-0.96px] text-black">
+              {{ device }}
+            </div>
+          </div>
+
+          <div class="w-[240px] text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#7a7a7a]">
+            {{ dateTime }}
+          </div>
+        </div>
+
+        <div class="flex w-[224px] items-center gap-[30px]">
+          <button
+            type="button"
+            class="inline-flex items-center justify-center gap-[10px] rounded-[160px] border border-solid border-[#2c2c2c] px-[30px] py-1 text-[20px] leading-[24px] tracking-[-0.60px] text-[#2c2c2c]"
+          >
+            Editar
+          </button>
+
+          <div class="w-16 text-[20px] leading-[24px] tracking-[-0.60px] text-[#2c2c2c]">
+            {{ statusLabel }}
+          </div>
+        </div>
+      </div>
+
+      <div class="flex h-20 w-full items-start gap-[10px] rounded-lg bg-[var(--color-surface-page)] p-[10px]">
+        <div class="text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#2c2c2c]">
+          {{ description }}
+        </div>
+      </div>
+
+      <div
+        class="flex w-full grow flex-col items-start justify-center gap-[10px] overflow-hidden rounded-lg bg-[#2c2c2c] px-[41px] py-[94px]"
+      >
+        <div class="h-[106px] w-full overflow-x-auto overflow-y-hidden">
+          <div class="flex min-w-max items-center gap-[30px]">
+            @for (item of timelineItems; track item.label + item.date) {
+              <div
+                class="inline-flex flex-col items-start justify-center gap-[5px] rounded-lg px-5 py-[15px]"
+                [style.background-color]="item.bg"
+              >
+                <div
+                  class="text-[18px] leading-[21.6px] tracking-[-0.54px]"
+                  [style.color]="item.textColor"
+                >
+                  {{ item.label }}
+                </div>
+
+                <div class="inline-flex items-center gap-[5px]">
+                  <img class="h-[19.5px] w-[19.5px]" alt="" aria-hidden="true" [src]="item.iconPath" />
+                  <div
+                    class="w-[149px] text-[18px] leading-[21.6px] tracking-[-0.54px]"
+                    [style.color]="item.subTextColor"
+                  >
+                    {{ item.date }}
+                  </div>
+                </div>
+
+                <div
+                  class="w-[149px] text-[18px] leading-[21.6px] tracking-[-0.54px]"
+                  [style.color]="item.subTextColor"
+                >
+                  {{ item.author }}
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

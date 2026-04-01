@@ -20,24 +20,30 @@
         <app-solicitation-fields-header />
 
         <div class="max-h-[531px] overflow-y-auto overflow-x-hidden">
-          <app-solicitation-row status="aberta" />
-          <app-solicitation-row status="aprovada" />
-          <app-solicitation-row status="arrumada" />
-          <app-solicitation-row status="finalizada" />
-          <app-solicitation-row status="orcada" quotedPrice="R$1250,00" />
-          <app-solicitation-row status="paga" />
-          <app-solicitation-row status="redirecionada" />
-          <app-solicitation-row status="rejeitada" />
-          <app-solicitation-row status="aberta" />
-          <app-solicitation-row status="aprovada" />
-          <app-solicitation-row status="arrumada" />
-          <app-solicitation-row status="finalizada" />
-          <app-solicitation-row status="orcada" quotedPrice="R$1250,00" />
-          <app-solicitation-row status="paga" />
-          <app-solicitation-row status="redirecionada" />
-          <app-solicitation-row status="rejeitada" />
+          <app-solicitation-row status="aberta" (visualize)="openVisualizationModal()" />
+          <app-solicitation-row status="aprovada" (visualize)="openVisualizationModal()" />
+          <app-solicitation-row status="arrumada" (visualize)="openVisualizationModal()" />
+          <app-solicitation-row status="finalizada" (visualize)="openVisualizationModal()" />
+          <app-solicitation-row status="orcada" quotedPrice="R$1250,00" (visualize)="openVisualizationModal()" />
+          <app-solicitation-row status="paga" (visualize)="openVisualizationModal()" />
+          <app-solicitation-row status="redirecionada" (visualize)="openVisualizationModal()" />
+          <app-solicitation-row status="rejeitada" (visualize)="openVisualizationModal()" />
+          <app-solicitation-row status="aberta" (visualize)="openVisualizationModal()" />
+          <app-solicitation-row status="aprovada" (visualize)="openVisualizationModal()" />
+          <app-solicitation-row status="arrumada" (visualize)="openVisualizationModal()" />
+          <app-solicitation-row status="finalizada" (visualize)="openVisualizationModal()" />
+          <app-solicitation-row status="orcada" quotedPrice="R$1250,00" (visualize)="openVisualizationModal()" />
+          <app-solicitation-row status="paga" (visualize)="openVisualizationModal()" />
+          <app-solicitation-row status="redirecionada" (visualize)="openVisualizationModal()" />
+          <app-solicitation-row status="rejeitada" (visualize)="openVisualizationModal()" />
         </div>
       </div>
 
     </section>
   </div>
+
+  <app-solicitation-visualization-modal
+    [isOpen]="isVisualizationModalOpen"
+    (closed)="closeVisualizationModal()"
+  />
+</main>

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 export type SolicitationStatus =
   | 'aberta'
@@ -87,6 +87,7 @@ export class SolicitationRowComponent {
   @Input() dateTime = '19 de Fevereiro 19h47';
   @Input() category = 'Notebook';
   @Input() quotedPrice = 'R$1250,00';
+  @Output() readonly visualize = new EventEmitter<void>();
 
   protected get variant(): SolicitationVariant {
     return SOLICITATION_VARIANTS[this.status];
@@ -98,5 +99,9 @@ export class SolicitationRowComponent {
     }
 
     return 'Resgatar Serviço';
+  }
+
+  protected onVisualizeClick(): void {
+    this.visualize.emit();
   }
 }
