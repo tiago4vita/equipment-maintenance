@@ -29,6 +29,7 @@ public class SolicitacaoController {
     /**
      * RF011/RF013 — listagem para funcionário.
      * periodo: todas | hoje | intervalo (com dataInicio e dataFim).
+     * status: omitido = ABERTA (RF011); “todos” = sem filtro de status (RF013).
      */
     @GetMapping
     public ResponseEntity<List<SolicitacaoResponse>> listar(

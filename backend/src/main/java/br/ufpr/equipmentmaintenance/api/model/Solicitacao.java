@@ -29,7 +29,7 @@ public class Solicitacao {
     @Column(nullable = false)
     private StatusSolicitacao status = StatusSolicitacao.ABERTA;
 
-    // Preenchido pelo funcionário ao orçar (RF005)
+    // Preenchido pelo funcionário ao orçar (RF012)
     @Column(precision = 10, scale = 2)
     private BigDecimal valorOrcamento;
 

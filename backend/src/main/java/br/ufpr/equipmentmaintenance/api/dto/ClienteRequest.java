@@ -2,24 +2,39 @@ package br.ufpr.equipmentmaintenance.api.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public class ClienteRequest {
 
     @NotBlank(message = "O CPF é obrigatório.")
+    @Size(max = 14, message = "O CPF deve ter no máximo 14 caracteres.")
     private String cpf;
 
     @NotBlank(message = "O nome é obrigatório.")
+    @Size(max = 200, message = "O nome deve ter no máximo 200 caracteres.")
     private String nome;
 
     @NotBlank(message = "O e-mail é obrigatório.")
     @Email(message = "E-mail inválido.")
+    @Size(max = 255, message = "O e-mail deve ter no máximo 255 caracteres.")
     private String email;
 
+    @Size(max = 25, message = "O telefone deve ter no máximo 25 caracteres.")
     private String telefone;
+
+    @Size(max = 10, message = "O CEP deve ter no máximo 10 caracteres.")
     private String cep;
+
+    @Size(max = 200, message = "A rua deve ter no máximo 200 caracteres.")
     private String rua;
+
+    @Size(max = 20, message = "O número deve ter no máximo 20 caracteres.")
     private String numero;
+
+    @Size(max = 100, message = "A cidade deve ter no máximo 100 caracteres.")
     private String cidade;
+
+    @Size(max = 50, message = "O estado deve ter no máximo 50 caracteres.")
     private String estado;
 
 

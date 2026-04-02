@@ -56,6 +56,11 @@ public class SolicitacaoService {
         Cliente cliente = clienteRepository.findById(request.clienteId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado."));
 
+        if (!equipamento.getCliente().getId().equals(cliente.getId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "O equipamento informado não pertence ao cliente indicado.");
+        }
+
         Solicitacao solicitacao = new Solicitacao();
         solicitacao.setEquipamento(equipamento);
         solicitacao.setCliente(cliente);
@@ -66,7 +71,14 @@ public class SolicitacaoService {
         historicoCriacao.setSolicitacao(solicitacao);
         historicoCriacao.setStatusAnterior(StatusSolicitacao.ABERTA);
         historicoCriacao.setStatusNovo(StatusSolicitacao.ABERTA);
-        historicoCriacao.setObservacao("Solicitação criada pelo cliente.");
+        if ("FUNCIONARIO".equals(principal.perfil())) {
+            Funcionario quemRegistrou = funcionarioRepository.findById(principal.userId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Funcionário inválido."));
+            historicoCriacao.setFuncionarioResponsavel(quemRegistrou);
+            historicoCriacao.setObservacao("Abertura da solicitação registrada pelo funcionário.");
+        } else {
+            historicoCriacao.setObservacao("Abertura da solicitação registrada pelo cliente.");
+        }
         solicitacao.getHistorico().add(historicoCriacao);
 
         return SolicitacaoResponse.fromEntity(solicitacaoRepository.save(solicitacao));
@@ -76,6 +88,12 @@ public class SolicitacaoService {
     public SolicitacaoResponse alterarStatus(Long id, AlterarStatusRequest request, JwtPrincipal principal) {
         Solicitacao solicitacao = solicitacaoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Solicitação não encontrada."));
+
+        if ("CLIENTE".equals(principal.perfil())) {
+            if (!solicitacao.getCliente().getId().equals(principal.userId())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso negado a esta solicitação.");
+            }
+        }
 
         StatusSolicitacao novoStatus;
         try {
@@ -92,6 +110,14 @@ public class SolicitacaoService {
         }
 
         SolicitacaoTransicao.validar(principal, atual, novoStatus);
+
+        if (atual == StatusSolicitacao.REDIRECIONADA && "FUNCIONARIO".equals(principal.perfil())) {
+            Funcionario destinoAtual = solicitacao.getFuncionarioDestinoAtual();
+            if (destinoAtual == null || !destinoAtual.getId().equals(principal.userId())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                        "Apenas o funcionário destino pode agir nesta solicitação redirecionada.");
+            }
+        }
 
         if (novoStatus == StatusSolicitacao.ORCADA) {
             if (request.valorOrcamento() == null || request.valorOrcamento().compareTo(java.math.BigDecimal.ZERO) <= 0) {
@@ -119,11 +145,8 @@ public class SolicitacaoService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "O funcionário destino é obrigatório ao redirecionar.");
             }
-            if (request.funcionarioId() == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "O funcionário de origem é obrigatório ao redirecionar.");
-            }
-            if (request.funcionarioId().equals(request.funcionarioDestinoId())) {
+            if ("FUNCIONARIO".equals(principal.perfil())
+                    && principal.userId().equals(request.funcionarioDestinoId())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "Não é possível redirecionar para si mesmo.");
             }
@@ -150,10 +173,10 @@ public class SolicitacaoService {
         historico.setStatusNovo(novoStatus);
         historico.setObservacao(request.observacao());
 
-        if (request.funcionarioId() != null) {
-            Funcionario funcionario = funcionarioRepository.findById(request.funcionarioId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Funcionário não encontrado."));
-            historico.setFuncionarioResponsavel(funcionario);
+        if ("FUNCIONARIO".equals(principal.perfil())) {
+            Funcionario responsavel = funcionarioRepository.findById(principal.userId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Funcionário inválido."));
+            historico.setFuncionarioResponsavel(responsavel);
         }
 
         if (novoStatus == StatusSolicitacao.REDIRECIONADA) {
@@ -169,7 +192,8 @@ public class SolicitacaoService {
     }
 
     /**
-     * RF013: listagem para funcionário — filtros periodo (todas|hoje|intervalo), status opcional.
+     * RF011/RF013: listagem para funcionário — filtros periodo (todas|hoje|intervalo).
+     * Sem {@code status} ou vazio: filtra ABERTA (RF011). Use {@code status=todos} para listar todos os status.
      */
     public List<SolicitacaoResponse> listarParaFuncionario(
             String statusParam,
@@ -178,8 +202,12 @@ public class SolicitacaoService {
             LocalDate dataFim,
             Long funcionarioLogadoId) {
 
-        StatusSolicitacao statusEnum = null;
-        if (statusParam != null && !statusParam.isBlank()) {
+        StatusSolicitacao statusEnum;
+        if (statusParam == null || statusParam.isBlank()) {
+            statusEnum = StatusSolicitacao.ABERTA;
+        } else if ("todos".equalsIgnoreCase(statusParam.trim())) {
+            statusEnum = null;
+        } else {
             try {
                 statusEnum = StatusSolicitacao.valueOf(statusParam.toUpperCase());
             } catch (IllegalArgumentException e) {
