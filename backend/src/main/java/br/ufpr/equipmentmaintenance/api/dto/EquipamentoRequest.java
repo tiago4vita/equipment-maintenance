@@ -1,13 +1,21 @@
 package br.ufpr.equipmentmaintenance.api.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class EquipamentoRequest {
 
+    @NotBlank(message = "O nome do equipamento é obrigatório.")
     private String nome;
+
     private String marca;
     private String modelo;
     private String numeroSerie;
 
+    @NotNull(message = "O cliente é obrigatório.")
     private Long clienteId;
+
+    @NotNull(message = "A categoria é obrigatória.")
     private Long categoriaId;
 
     public String getNome() {

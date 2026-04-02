@@ -36,6 +36,9 @@ public class FuncionarioService {
     }
 
     public FuncionarioResponse salvar(FuncionarioRequest request) {
+        if (request.senha() == null || request.senha().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A senha é obrigatória no cadastro.");
+        }
         if (repository.findByEmail(request.email()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "E-mail já cadastrado.");
         }

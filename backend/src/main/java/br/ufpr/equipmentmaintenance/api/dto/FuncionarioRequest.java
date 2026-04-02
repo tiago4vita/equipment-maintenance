@@ -16,6 +16,6 @@ public record FuncionarioRequest(
     @NotNull(message = "A data de nascimento é obrigatória.")
     LocalDate dataNascimento,
 
-    @NotBlank(message = "A senha é obrigatória.")
+    /** Obrigatória na criação; opcional na atualização (mantém a senha atual se omitida). */
     String senha
 ) {}
