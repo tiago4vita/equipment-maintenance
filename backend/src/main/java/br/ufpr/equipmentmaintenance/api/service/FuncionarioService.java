@@ -36,24 +36,32 @@ public class FuncionarioService {
     }
 
     public FuncionarioResponse salvar(FuncionarioRequest request) {
+        if (repository.findByEmail(request.email()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "E-mail já cadastrado.");
+        }
+
         Funcionario funcionario = new Funcionario();
         funcionario.setNome(request.nome());
         funcionario.setEmail(request.email());
         funcionario.setDataNascimento(request.dataNascimento());
         funcionario.setSenha(senhaUtil.criptografar(request.senha()));
-        
+
         funcionario = repository.save(funcionario);
         return FuncionarioResponse.fromEntity(funcionario);
     }
 
     public FuncionarioResponse atualizar(Long id, FuncionarioRequest request) {
         Funcionario funcionario = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Funcionário não encontrado."));
+
+        repository.findByEmail(request.email())
+                .filter(f -> !f.getId().equals(id))
+                .ifPresent(f -> { throw new ResponseStatusException(HttpStatus.CONFLICT, "E-mail já em uso por outro funcionário."); });
 
         funcionario.setNome(request.nome());
         funcionario.setEmail(request.email());
         funcionario.setDataNascimento(request.dataNascimento());
-        
+
         if (request.senha() != null && !request.senha().isBlank()) {
             funcionario.setSenha(senhaUtil.criptografar(request.senha()));
         }
@@ -63,18 +71,17 @@ public class FuncionarioService {
     }
 
     public void deletar(Long id, Long idUsuarioLogado) {
+        Funcionario funcionario = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Funcionário não encontrado."));
+
         if (id.equals(idUsuarioLogado)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Você não pode remover a si mesmo.");
         }
 
-        if (repository.count() <= 1) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        if (repository.countByAtivoTrue() <= 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não é possível remover o único funcionário ativo.");
         }
 
-        if (!repository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        repository.deleteById(id);
+        repository.deleteById(funcionario.getId());
     }
 }
