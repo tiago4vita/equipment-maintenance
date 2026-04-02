@@ -29,3 +29,4 @@ yarn-error.log*
 
 # Spring Boot / Maven
 /backend/target/
+.cursor/
