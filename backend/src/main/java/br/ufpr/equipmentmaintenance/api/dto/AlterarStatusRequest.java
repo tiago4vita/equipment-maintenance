@@ -4,11 +4,16 @@ import jakarta.validation.constraints.NotBlank;
 
 public record AlterarStatusRequest(
     @NotBlank(message = "O novo status é obrigatório.")
-    String novoStatus,              
+    String novoStatus,
 
-    Long funcionarioId,             
+    Long funcionarioId,
 
-    String observacao,               
+    String observacao,
 
-    java.math.BigDecimal valorOrcamento 
+    java.math.BigDecimal valorOrcamento,
+
+    // RF014 — Efetuar Manutenção: obrigatórios quando novoStatus = ARRUMADA
+    String descricaoManutencao,
+
+    String orientacoesCliente
 ) {}

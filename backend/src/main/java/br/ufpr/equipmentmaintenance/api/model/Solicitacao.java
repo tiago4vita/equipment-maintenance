@@ -36,6 +36,13 @@ public class Solicitacao {
     @Column(nullable = false, updatable = false)
     private LocalDateTime dataCriacao = LocalDateTime.now();
 
+    // Preenchido pelo funcionário ao efetuar manutenção (RF014)
+    @Column(length = 1000)
+    private String descricaoManutencao;
+
+    @Column(length = 1000)
+    private String orientacoesCliente;
+
     @OneToMany(mappedBy = "solicitacao", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("dataAlteracao ASC")
     private List<HistoricoSolicitacao> historico = new ArrayList<>();
@@ -60,6 +67,12 @@ public class Solicitacao {
     public void setValorOrcamento(BigDecimal valorOrcamento) { this.valorOrcamento = valorOrcamento; }
 
     public LocalDateTime getDataCriacao() { return dataCriacao; }
+
+    public String getDescricaoManutencao() { return descricaoManutencao; }
+    public void setDescricaoManutencao(String descricaoManutencao) { this.descricaoManutencao = descricaoManutencao; }
+
+    public String getOrientacoesCliente() { return orientacoesCliente; }
+    public void setOrientacoesCliente(String orientacoesCliente) { this.orientacoesCliente = orientacoesCliente; }
 
     public List<HistoricoSolicitacao> getHistorico() { return historico; }
 }

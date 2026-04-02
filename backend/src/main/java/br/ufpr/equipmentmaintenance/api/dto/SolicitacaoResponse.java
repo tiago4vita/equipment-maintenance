@@ -14,6 +14,9 @@ public record SolicitacaoResponse(
     String status,
     BigDecimal valorOrcamento,
     LocalDateTime dataCriacao,
+    // Preenchidos pelo funcionário ao efetuar manutenção (RF014)
+    String descricaoManutencao,
+    String orientacoesCliente,
     List<HistoricoSolicitacaoResponse> historico
 ) {
     public static SolicitacaoResponse fromEntity(Solicitacao s) {
@@ -29,6 +32,8 @@ public record SolicitacaoResponse(
             s.getStatus().name(),
             s.getValorOrcamento(),
             s.getDataCriacao(),
+            s.getDescricaoManutencao(),
+            s.getOrientacoesCliente(),
             historico
         );
     }

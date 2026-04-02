@@ -5,6 +5,7 @@ import br.ufpr.equipmentmaintenance.api.dto.SolicitacaoRequest;
 import br.ufpr.equipmentmaintenance.api.dto.SolicitacaoResponse;
 import br.ufpr.equipmentmaintenance.api.model.*;
 import br.ufpr.equipmentmaintenance.api.repository.*;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,13 +72,27 @@ public class SolicitacaoService {
                 java.util.Arrays.toString(StatusSolicitacao.values()));
         }
 
-        // Ao orçar, o valor é obrigatório
+        // Ao orçar, o valor é obrigatório (RF012)
         if (novoStatus == StatusSolicitacao.ORCADA) {
             if (request.valorOrcamento() == null || request.valorOrcamento().compareTo(java.math.BigDecimal.ZERO) <= 0) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "O valor do orçamento é obrigatório e deve ser maior que zero ao mudar para ORCADA.");
             }
             solicitacao.setValorOrcamento(request.valorOrcamento());
+        }
+
+        // Ao efetuar manutenção, descrição e orientações são obrigatórias (RF014)
+        if (novoStatus == StatusSolicitacao.ARRUMADA) {
+            if (request.descricaoManutencao() == null || request.descricaoManutencao().isBlank()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "A descrição da manutenção é obrigatória ao mudar para ARRUMADA.");
+            }
+            if (request.orientacoesCliente() == null || request.orientacoesCliente().isBlank()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "As orientações para o cliente são obrigatórias ao mudar para ARRUMADA.");
+            }
+            solicitacao.setDescricaoManutencao(request.descricaoManutencao());
+            solicitacao.setOrientacoesCliente(request.orientacoesCliente());
         }
 
         // Registra o histórico ANTES de mudar o status
@@ -101,14 +116,30 @@ public class SolicitacaoService {
     }
 
     // ── Consultas ──────────────────────────────────────────────────────────────
-    public List<SolicitacaoResponse> listarTodas() {
-        return solicitacaoRepository.findAll().stream()
+
+    // RF011/RF013: lista todas as solicitações, com filtro opcional por status
+    public List<SolicitacaoResponse> listar(String statusParam) {
+        if (statusParam != null && !statusParam.isBlank()) {
+            StatusSolicitacao statusEnum;
+            try {
+                statusEnum = StatusSolicitacao.valueOf(statusParam.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Status inválido: " + statusParam + ". Valores: " +
+                    java.util.Arrays.toString(StatusSolicitacao.values()));
+            }
+            return solicitacaoRepository.findByStatusOrderByDataCriacaoAsc(statusEnum).stream()
+                .map(SolicitacaoResponse::fromEntity)
+                .toList();
+        }
+        return solicitacaoRepository.findAll(Sort.by("dataCriacao").ascending()).stream()
             .map(SolicitacaoResponse::fromEntity)
             .toList();
     }
 
+    // RF003: lista solicitações do cliente logado, ordenadas por data/hora crescente
     public List<SolicitacaoResponse> listarPorCliente(Long clienteId) {
-        return solicitacaoRepository.findByClienteId(clienteId).stream()
+        return solicitacaoRepository.findByClienteIdOrderByDataCriacaoAsc(clienteId).stream()
             .map(SolicitacaoResponse::fromEntity)
             .toList();
     }

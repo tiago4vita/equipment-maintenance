@@ -21,10 +21,15 @@ public class SolicitacaoController {
         this.service = service;
     }
 
-    /** Listar todas (uso do funcionário) */
+    /**
+     * Listar solicitações (uso do funcionário — RF011/RF013).
+     * Parâmetro opcional: ?status=ABERTA  (ou ORCADA, APROVADA, etc.)
+     * Sem parâmetro: retorna todas as solicitações.
+     */
     @GetMapping
-    public ResponseEntity<List<SolicitacaoResponse>> listar() {
-        return ResponseEntity.ok(service.listarTodas());
+    public ResponseEntity<List<SolicitacaoResponse>> listar(
+            @RequestParam(required = false) String status) {
+        return ResponseEntity.ok(service.listar(status));
     }
 
     /** Listar por cliente (uso do cliente logado) */

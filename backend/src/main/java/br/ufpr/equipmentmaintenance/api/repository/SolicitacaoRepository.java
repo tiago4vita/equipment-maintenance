@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface SolicitacaoRepository extends JpaRepository<Solicitacao, Long> {
-    List<Solicitacao> findByClienteId(Long clienteId);
-    List<Solicitacao> findByStatus(StatusSolicitacao status);
+    List<Solicitacao> findByClienteIdOrderByDataCriacaoAsc(Long clienteId);
+    List<Solicitacao> findByStatusOrderByDataCriacaoAsc(StatusSolicitacao status);
 }
