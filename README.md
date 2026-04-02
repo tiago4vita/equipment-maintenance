@@ -71,7 +71,7 @@ Abra no navegador:
 
 - O frontend chama `GET /api/status`
 - O arquivo `frontend/proxy.conf.json` redireciona `/api/*` para `http://localhost:8080`
-- O backend possui CORS liberado para `http://localhost:4200`
+- O backend permite CORS a partir de `http://localhost:4200` via Spring Security (`SecurityConfig`)
 
 ## 6. Comandos uteis
 
@@ -97,7 +97,7 @@ mvn package
 - `frontend/src/app/status-api.service.ts`: chamada HTTP da API
 - `frontend/proxy.conf.json`: proxy local para backend
 - `backend/src/main/java/br/ufpr/equipmentmaintenance/api/status/StatusController.java`: endpoint REST
-- `backend/src/main/java/br/ufpr/equipmentmaintenance/api/config/CorsConfig.java`: configuracao CORS
+- `backend/src/main/java/br/ufpr/equipmentmaintenance/api/config/SecurityConfig.java`: segurança da API (JWT) e configuração CORS
 
 ## 8. Solução de problemas
 
