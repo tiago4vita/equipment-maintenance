@@ -43,6 +43,14 @@ public class Solicitacao {
     @Column(length = 1000)
     private String orientacoesCliente;
 
+    /** Preenchido quando status = REDIRECIONADA (RF013/RF015): destino atual da solicitação */
+    @ManyToOne
+    @JoinColumn(name = "funcionario_destino_atual_id")
+    private Funcionario funcionarioDestinoAtual;
+
+    private LocalDateTime dataHoraPagamento;
+    private LocalDateTime dataHoraFinalizacao;
+
     @OneToMany(mappedBy = "solicitacao", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("dataAlteracao ASC")
     private List<HistoricoSolicitacao> historico = new ArrayList<>();
@@ -73,6 +81,17 @@ public class Solicitacao {
 
     public String getOrientacoesCliente() { return orientacoesCliente; }
     public void setOrientacoesCliente(String orientacoesCliente) { this.orientacoesCliente = orientacoesCliente; }
+
+    public Funcionario getFuncionarioDestinoAtual() { return funcionarioDestinoAtual; }
+    public void setFuncionarioDestinoAtual(Funcionario funcionarioDestinoAtual) {
+        this.funcionarioDestinoAtual = funcionarioDestinoAtual;
+    }
+
+    public LocalDateTime getDataHoraPagamento() { return dataHoraPagamento; }
+    public void setDataHoraPagamento(LocalDateTime dataHoraPagamento) { this.dataHoraPagamento = dataHoraPagamento; }
+
+    public LocalDateTime getDataHoraFinalizacao() { return dataHoraFinalizacao; }
+    public void setDataHoraFinalizacao(LocalDateTime dataHoraFinalizacao) { this.dataHoraFinalizacao = dataHoraFinalizacao; }
 
     public List<HistoricoSolicitacao> getHistorico() { return historico; }
 }

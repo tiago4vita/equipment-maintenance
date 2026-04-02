@@ -3,12 +3,15 @@ package br.ufpr.equipmentmaintenance.api.controller;
 import br.ufpr.equipmentmaintenance.api.dto.AlterarStatusRequest;
 import br.ufpr.equipmentmaintenance.api.dto.SolicitacaoRequest;
 import br.ufpr.equipmentmaintenance.api.dto.SolicitacaoResponse;
+import br.ufpr.equipmentmaintenance.api.security.AuthorizationService;
 import br.ufpr.equipmentmaintenance.api.service.SolicitacaoService;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -16,45 +19,50 @@ import java.util.List;
 public class SolicitacaoController {
 
     private final SolicitacaoService service;
+    private final AuthorizationService authorizationService;
 
-    public SolicitacaoController(SolicitacaoService service) {
+    public SolicitacaoController(SolicitacaoService service, AuthorizationService authorizationService) {
         this.service = service;
+        this.authorizationService = authorizationService;
     }
 
     /**
-     * Listar solicitações (uso do funcionário — RF011/RF013).
-     * Parâmetro opcional: ?status=ABERTA  (ou ORCADA, APROVADA, etc.)
-     * Sem parâmetro: retorna todas as solicitações.
+     * RF011/RF013 — listagem para funcionário.
+     * periodo: todas | hoje | intervalo (com dataInicio e dataFim).
      */
     @GetMapping
     public ResponseEntity<List<SolicitacaoResponse>> listar(
-            @RequestParam(required = false) String status) {
-        return ResponseEntity.ok(service.listar(status));
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false, defaultValue = "todas") String periodo,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim) {
+        authorizationService.assertFuncionario();
+        return ResponseEntity.ok(service.listarParaFuncionario(
+                status, periodo, dataInicio, dataFim,
+                authorizationService.requireAuthenticated().userId()));
     }
 
-    /** Listar por cliente (uso do cliente logado) */
     @GetMapping("/cliente/{clienteId}")
     public ResponseEntity<List<SolicitacaoResponse>> listarPorCliente(@PathVariable Long clienteId) {
+        authorizationService.assertClienteSelfOrFuncionario(clienteId);
         return ResponseEntity.ok(service.listarPorCliente(clienteId));
     }
 
-    /** Buscar solicitação com histórico completo */
     @GetMapping("/{id}")
     public ResponseEntity<SolicitacaoResponse> buscar(@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscarPorId(id));
+        return ResponseEntity.ok(service.buscarPorId(id, authorizationService.requireAuthenticated()));
     }
 
-    /** Abrir nova solicitação */
     @PostMapping
     public ResponseEntity<SolicitacaoResponse> criar(@Valid @RequestBody SolicitacaoRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.criar(request));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(service.criar(request, authorizationService.requireAuthenticated()));
     }
 
-    /** Alterar status — registra histórico automaticamente (RF008) */
     @PatchMapping("/{id}/status")
     public ResponseEntity<SolicitacaoResponse> alterarStatus(
             @PathVariable Long id,
-            @RequestBody AlterarStatusRequest request) {
-        return ResponseEntity.ok(service.alterarStatus(id, request));
+            @Valid @RequestBody AlterarStatusRequest request) {
+        return ResponseEntity.ok(service.alterarStatus(id, request, authorizationService.requireAuthenticated()));
     }
 }

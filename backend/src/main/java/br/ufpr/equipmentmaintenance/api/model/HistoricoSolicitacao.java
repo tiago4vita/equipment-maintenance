@@ -23,10 +23,15 @@ public class HistoricoSolicitacao {
     @Column(nullable = false)
     private StatusSolicitacao statusNovo;
 
-    // Funcionário responsável pela mudança (null se foi o próprio sistema/cliente)
+    // Funcionário que efetuou a ação (origem no redirecionamento — RF015)
     @ManyToOne
     @JoinColumn(name = "funcionario_id")
     private Funcionario funcionarioResponsavel;
+
+    // Preenchido apenas quando statusNovo = REDIRECIONADA (RF015)
+    @ManyToOne
+    @JoinColumn(name = "funcionario_destino_id")
+    private Funcionario funcionarioDestino;
 
     @Column(length = 500)
     private String observacao;
@@ -50,6 +55,11 @@ public class HistoricoSolicitacao {
     public Funcionario getFuncionarioResponsavel() { return funcionarioResponsavel; }
     public void setFuncionarioResponsavel(Funcionario funcionarioResponsavel) {
         this.funcionarioResponsavel = funcionarioResponsavel;
+    }
+
+    public Funcionario getFuncionarioDestino() { return funcionarioDestino; }
+    public void setFuncionarioDestino(Funcionario funcionarioDestino) {
+        this.funcionarioDestino = funcionarioDestino;
     }
 
     public String getObservacao() { return observacao; }

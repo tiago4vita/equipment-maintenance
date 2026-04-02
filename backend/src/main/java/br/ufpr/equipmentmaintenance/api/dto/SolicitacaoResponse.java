@@ -8,15 +8,19 @@ import java.util.List;
 
 public record SolicitacaoResponse(
     Long id,
+    Long clienteId,
+    Long equipamentoId,
     String equipamentoNome,
     String clienteNome,
     String descricaoProblema,
     String status,
     BigDecimal valorOrcamento,
     LocalDateTime dataCriacao,
-    // Preenchidos pelo funcionário ao efetuar manutenção (RF014)
     String descricaoManutencao,
     String orientacoesCliente,
+    LocalDateTime dataHoraPagamento,
+    LocalDateTime dataHoraFinalizacao,
+    String funcionarioDestinoAtualNome,
     List<HistoricoSolicitacaoResponse> historico
 ) {
     public static SolicitacaoResponse fromEntity(Solicitacao s) {
@@ -24,8 +28,14 @@ public record SolicitacaoResponse(
             .map(HistoricoSolicitacaoResponse::fromEntity)
             .toList();
 
+        String destinoNome = s.getFuncionarioDestinoAtual() != null
+            ? s.getFuncionarioDestinoAtual().getNome()
+            : null;
+
         return new SolicitacaoResponse(
             s.getId(),
+            s.getCliente().getId(),
+            s.getEquipamento().getId(),
             s.getEquipamento().getNome(),
             s.getCliente().getNome(),
             s.getDescricaoProblema(),
@@ -34,6 +44,9 @@ public record SolicitacaoResponse(
             s.getDataCriacao(),
             s.getDescricaoManutencao(),
             s.getOrientacoesCliente(),
+            s.getDataHoraPagamento(),
+            s.getDataHoraFinalizacao(),
+            destinoNome,
             historico
         );
     }

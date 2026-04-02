@@ -8,6 +8,9 @@ public record AlterarStatusRequest(
 
     Long funcionarioId,
 
+    /** Obrigatório quando novoStatus = REDIRECIONADA (RF015): funcionário que receberá a solicitação */
+    Long funcionarioDestinoId,
+
     String observacao,
 
     java.math.BigDecimal valorOrcamento,
