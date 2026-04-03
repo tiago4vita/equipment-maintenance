@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-navbar';
 
 @Component({
@@ -11,56 +11,55 @@ import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-nav
   templateUrl: './staff-maintenance.html'
 })
 export class StaffMaintenanceComponent implements OnInit {
-  idSolicitacao!: string;
-  exibirCamposManutencao = false;
+  solicitacaoId: number = 0;
+  
+  // Campos do formulário (RF014)
+  descricaoManutencao: string = '';
+  orientacoesCliente: string = '';
+  
+  // MOCK: ID do funcionário logado
+  funcionarioLogadoId: number = 1; 
 
-  // Dados simulados (No futuro virão do Back-end)
-  solicitacao = {
-    cliente: 'Marcos Mello',
-    equipamento: 'Monitor Samsung 24"',
-    dataAbertura: '30/03/2026 10:00',
-    descricaoProblema: 'Tela piscando após 10 minutos de uso.',
-    status: 'Aberta'
-  };
-
-  // Campos que o funcionário preencherá
-  dadosManutencao = {
-    descricao: '',
-    orientacoes: ''
+  // MOCK: Dados da solicitação vindos do banco
+  dadosSolicitacao = {
+    cliente: { nome: 'João Silva', cpf: '111.222.333-44' },
+    produto: 'Notebook Dell Inspiron',
+    estado: 'aprovada', // ou 'redirecionada'
+    descricaoDefeito: 'Computador superaquecendo e desligando sozinho após abrir programas pesados.'
   };
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    this.idSolicitacao = this.route.snapshot.paramMap.get('id') || '';
+    // Pega o ID da rota (ex: /staff/maintenance/123)
+    this.solicitacaoId = Number(this.route.snapshot.paramMap.get('id')) || 123;
   }
 
-  prepararManutencao() {
-    this.exibirCamposManutencao = true;
+  salvarManutencao() {
+    if (!this.descricaoManutencao || !this.orientacoesCliente) return;
+
+    // Simulação do envio para o Backend (RF014)
+    console.log('--- MANUTENÇÃO EFETUADA ---');
+    console.log(`Solicitação: #${this.solicitacaoId}`);
+    console.log(`Estado Alterado Para: ARRUMADA`);
+    console.log(`Funcionário (ID): ${this.funcionarioLogadoId}`);
+    console.log(`Data/Hora: ${new Date().toLocaleString()}`);
+    console.log(`Descrição: ${this.descricaoManutencao}`);
+    console.log(`Orientações: ${this.orientacoesCliente}`);
+
+    // Retorna para a tela inicial ou listagem
+    this.router.navigate(['/staff/home']);
   }
 
-  redirecionar() {
-    // Aqui você navegará para o RF015
-    this.router.navigate(['/staff/redirect', this.idSolicitacao]);
+  irParaRedirecionamento() {
+    // RF015: Direciona para a tela de redirecionamento passando o ID
+    this.router.navigate(['/staff/redirect', this.solicitacaoId]);
   }
 
-  finalizarManutencao() {
-    const dataHora = new Date().toLocaleString();
-    const funcionario = 'Fulano de Tal'; // Simulação de usuário logado
-
-    console.log('Manutenção Finalizada:', {
-      id: this.idSolicitacao,
-      ...this.dadosManutencao,
-      dataHora,
-      funcionario,
-      novoStatus: 'ARRUMADA'
-    });
-
-    // Após salvar, volta para a home
-    alert('Manutenção registrada com sucesso! Estado: ARRUMADA');
+  voltar() {
     this.router.navigate(['/staff/home']);
   }
 }
