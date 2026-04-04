@@ -1,0 +1,95 @@
+<main class="relative min-h-screen bg-[var(--color-surface-page)] [font-family:'Inter',sans-serif] print:bg-white">
+  
+  <div class="print:hidden">
+    <app-staff-navbar></app-staff-navbar>
+  </div>
+
+  <div class="ml-[320px] print:ml-0 pt-[160px] print:pt-8 w-[calc(100%-360px)] print:w-full max-w-[1440px] px-8 pb-12">
+    
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-[36px] font-bold text-[var(--color-text-primary)]">Relatório de Receitas</h1>
+        <p class="text-gray-500 mt-1">Visão consolidada de faturamento diário da assistência técnica.</p>
+      </div>
+      
+      <button 
+        (click)="gerarPDF()"
+        class="print:hidden flex items-center gap-2 bg-[var(--color-button-primary)] text-white px-6 py-3 rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        Baixar Relatório (PDF)
+      </button>
+    </div>
+
+    <section class="print:hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8 flex items-end gap-6">
+      <div class="flex-1">
+        <label class="text-gray-500 block text-xs uppercase tracking-wider mb-1.5 font-semibold">Data Inicial</label>
+        <input type="date" [(ngModel)]="filtro.dataInicio"
+          class="w-full px-4 py-3 text-[14px] bg-gray-50 border-2 border-gray-100 rounded-xl focus:border-[var(--color-button-primary)] outline-none transition-all" />
+      </div>
+      <div class="flex-1">
+        <label class="text-gray-500 block text-xs uppercase tracking-wider mb-1.5 font-semibold">Data Final</label>
+        <input type="date" [(ngModel)]="filtro.dataFim"
+          class="w-full px-4 py-3 text-[14px] bg-gray-50 border-2 border-gray-100 rounded-xl focus:border-[var(--color-button-primary)] outline-none transition-all" />
+      </div>
+      <div class="w-[200px]">
+        <button 
+          (click)="aplicarFiltro()"
+          class="w-full bg-gray-800 text-white py-3.5 rounded-xl font-bold text-[15px] hover:bg-black transition-all">
+          Aplicar Filtro
+        </button>
+      </div>
+    </section>
+
+    <div class="hidden print:block mb-8 border-b-2 border-gray-200 pb-4">
+      <p class="text-gray-600 font-bold">Período Analisado: 
+        <span class="font-normal">{{ periodoExibicao }}</span>
+      </p>
+      <p class="text-gray-600 text-sm mt-1">Gerado em: {{ dataGeracao | date:'dd/MM/yyyy HH:mm' }} por {{ funcionarioLogado }}</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-6 mb-8">
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 print:shadow-none print:border-gray-300">
+        <span class="text-gray-500 text-sm uppercase tracking-wider font-semibold">Total de Receitas no Período</span>
+        <p class="text-4xl font-bold text-green-600 mt-2">R$ {{ totalReceita | number:'1.2-2' }}</p>
+      </div>
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 print:shadow-none print:border-gray-300">
+        <span class="text-gray-500 text-sm uppercase tracking-wider font-semibold">Total de Serviços Finalizados</span>
+        <p class="text-4xl font-bold text-[var(--color-text-primary)] mt-2">{{ totalServicos }}</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden print:shadow-none print:border-gray-300">
+      
+      <div class="grid grid-cols-3 bg-gray-50 px-8 py-4 border-b border-gray-200 font-bold text-[13px] uppercase tracking-wider text-[var(--color-text-primary)] print:bg-gray-200">
+        <div>Data do Faturamento</div>
+        <div class="text-center">Qtd. Serviços Paga/Finalizada</div>
+        <div class="text-right">Receita Total do Dia</div>
+      </div>
+
+      <div class="max-h-[600px] overflow-y-auto custom-scrollbar print:max-h-max print:overflow-visible">
+        
+        <div *ngFor="let dia of dadosFiltrados" 
+             class="grid grid-cols-3 items-center px-8 py-4 border-b border-gray-50 bg-white hover:bg-gray-50 transition-all print:border-gray-200">
+          
+          <div class="text-[15px] font-semibold text-[var(--color-text-primary)]">
+            {{ dia.data | date:'dd/MM/yyyy' }}
+          </div>
+          <div class="text-[14px] text-gray-600 text-center">
+            {{ dia.quantidadeServicos }}
+          </div>
+          <div class="text-[16px] font-bold text-green-600 text-right">
+            R$ {{ dia.valorTotal | number:'1.2-2' }}
+          </div>
+          
+        </div>
+
+        <div *ngIf="dadosFiltrados.length === 0" class="p-10 text-center text-gray-400">
+          Nenhuma receita encontrada para o período selecionado.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>

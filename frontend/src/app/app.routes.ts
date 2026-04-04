@@ -10,6 +10,8 @@ import { StaffRedirectComponent } from './pages/staff-pages/staff-redirect/staff
 import { StaffFinishComponent } from './pages/staff-pages/staff-finish/staff-finish';
 import { StaffCategoriesComponent } from './pages/staff-pages/staff-categories/staff-categories';
 import { StaffEmployeesComponent } from './pages/staff-pages/staff-employees/staff-employees';
+import { StaffRevenueReportComponent } from './pages/staff-pages/staff-revenue-report/staff-revenue-report';
+import { StaffCategoryReportComponent } from './pages/staff-pages/staff-category-report/staff-category-report';
 
 export const routes: Routes = [
 
@@ -62,6 +64,17 @@ export const routes: Routes = [
     component: StaffFinishComponent,
     data: { profileKind: 'funcionario' }
   },
+
+  { 
+    path: 'staff/revenue-report', 
+    component: StaffRevenueReportComponent, 
+    data: { profileKind: 'funcionario' } },
+
+    { 
+      path: 'staff/category-report', 
+      component: StaffCategoryReportComponent, 
+      data: { profileKind: 'funcionario' } 
+    },
 
   { path: '**', redirectTo: '' }
 ];
