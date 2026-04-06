@@ -166,7 +166,7 @@
             [(ngModel)]="creationCategory"
             class="w-[320px] rounded-[15px] bg-[#2c2c2c] px-[30px] py-1 text-[18px] leading-[21.6px] tracking-[-0.54px] text-white outline-none appearance-none cursor-pointer hover:brightness-110 transition-all"
           >
-            <option value="" disabled selected>Escolher Categoria</option>
+            <option value="" disabled selected>Categoria do Equipamento</option>
             <option *ngFor="let cat of listaCategorias" [value]="cat.nome">
               {{ cat.nome }}
             </option>
@@ -187,7 +187,7 @@
       @if (isCreationMode) {
         <textarea
           [(ngModel)]="creationDescription"
-          placeholder="Descrição..."
+          placeholder="Descrição do defeito..."
           class="h-20 w-full resize-none rounded-lg bg-[var(--color-surface-page)] p-[10px] text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#2c2c2c]"
         ></textarea>
       } @else {
