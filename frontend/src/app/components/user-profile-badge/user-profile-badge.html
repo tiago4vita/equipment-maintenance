@@ -1,6 +1,6 @@
 <div
   *ngIf="!isPublicPage"
-  class="fixed right-[148px] top-[72px] z-50 flex h-[52px] w-auto items-center gap-2 [font-family:'Inter',sans-serif]"
+  class="print:hidden fixed right-[148px] top-[72px] z-50 flex h-[52px] w-auto items-center gap-4 [font-family:'Inter',sans-serif]"
   role="group"
   aria-label="Perfil do usuário"
 >
@@ -20,4 +20,15 @@
     </p>
   </div>
   
+  <button
+    (click)="sair()"
+    class="flex items-center justify-center rounded-lg p-2 text-sm font-bold text-red-500 hover:bg-red-50 hover:text-red-600 transition-all outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+    title="Sair do sistema"
+    >
+    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+    </svg>
+    Sair
+  </button>
+
 </div>

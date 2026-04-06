@@ -50,17 +50,17 @@
             </header>
 
             <div class="max-h-[500px] overflow-y-auto overflow-x-hidden">
-                <article *ngFor="let s of solicitacoes"
+                <article *ngFor="let s of solicitacoesFiltradas" 
                     class="flex h-[60px] w-full items-center px-[60px] transition-all"
                     [style.background-color]="getVariant(s.estado).bg">
 
                     <div class="w-[350px] shrink-0">
-                        <p class="text-[18px] font-normal leading-[1.2] text-[var(--color-text-primary)]">{{ s.cliente }}</p>
+                        <p class="text-[18px] font-normal leading-[1.2] text-[var(--color-text-primary)]">{{ getNomeCliente(s.clienteId) }}</p>
                         <p class="text-[14px] text-[var(--color-placeholder)]">{{ s.produto }}</p>
                     </div>
 
                    <div class="w-[300px] shrink-0 text-[18px] text-[var(--color-placeholder)]">
-                        {{ s.data | date:'dd/MM/yyyy HH:mm' }}
+                        {{ s.dataAbertura | date:'dd/MM/yyyy HH:mm' }}
                     </div>
 
                     <div class="w-[200px] shrink-0">
@@ -70,13 +70,13 @@
                     </div>
 
                     <div class="flex-1 flex justify-center items-center">
-                        <button *ngIf="s.estado === 'aberta'" 
+                        <button *ngIf="s.estado === 'ABERTA'"
                             (click)="irParaOrcamento(s.id)"
                             class="h-[30px] w-[180px] rounded-[15px] text-[18px] transition-all hover:scale-[1.02] bg-[var(--color-text-primary)] text-white">
                             Efetuar Orçamento
                         </button>
 
-                        <button *ngIf="s.estado === 'aprovada' || s.estado === 'redirecionada'"
+                        <button *ngIf="s.estado === 'APROVADA' || s.estado === 'REDIRECIONADA'"
                             (click)="irParaManutencao(s.id)"
                             class="h-[30px] w-[180px] rounded-[15px] text-[18px] transition-all hover:scale-[1.02]"
                             [style.background-color]="getVariant(s.estado).text"
@@ -84,7 +84,7 @@
                             Efetuar Manutenção
                         </button>
 
-                        <button *ngIf="s.estado === 'paga'" 
+                        <button *ngIf="s.estado === 'PAGA'" 
                             (click)="finalizarSolicitacao(s.id)"
                             class="h-[30px] w-[180px] rounded-[15px] text-[18px] transition-all hover:scale-[1.02]"
                             [style.background-color]="getVariant(s.estado).text"
