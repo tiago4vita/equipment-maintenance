@@ -191,13 +191,13 @@
 
       @if (showsHistory) {
         <div
-          class="flex w-full grow flex-col items-start justify-center gap-[10px] overflow-hidden rounded-lg bg-[#2c2c2c] px-[41px] py-[94px]"
+          class="flex w-full grow flex-col items-start justify-center gap-[10px] rounded-lg bg-[#2c2c2c] px-[41px] py-[94px]"
         >
-          <div class="h-[106px] w-full overflow-x-auto overflow-y-hidden">
+          <div class="h-[126px] w-full overflow-x-auto overflow-y-visible">
             <div class="flex min-w-max items-center gap-[30px]">
               @for (item of timelineItems; track item.label + item.date) {
                 <div
-                  class="inline-flex flex-col items-start justify-center gap-[5px] rounded-lg px-5 py-[15px]"
+                  class="inline-flex min-h-[126px] min-w-[220px] flex-col items-start justify-center gap-[8px] rounded-lg px-5 py-[18px]"
                   [style.background-color]="item.bg"
                 >
                   <div class="text-[18px] leading-[21.6px] tracking-[-0.54px]" [style.color]="item.textColor">
@@ -206,7 +206,7 @@
 
                   <div class="inline-flex items-center gap-[5px]">
                     <img class="h-[19.5px] w-[19.5px]" alt="" aria-hidden="true" [src]="item.iconPath" />
-                    <div class="w-[149px] text-[18px] leading-[21.6px] tracking-[-0.54px]" [style.color]="item.subTextColor">
+                    <div class="w-fit whitespace-nowrap text-[18px] leading-[21.6px] tracking-[-0.54px]" [style.color]="item.subTextColor">
                       {{ item.date }}
                     </div>
                   </div>
