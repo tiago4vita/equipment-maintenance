@@ -10,8 +10,7 @@ import { StaffRedirectComponent } from './pages/staff-pages/staff-redirect/staff
 import { StaffFinishComponent } from './pages/staff-pages/staff-finish/staff-finish';
 import { StaffCategoriesComponent } from './pages/staff-pages/staff-categories/staff-categories';
 import { StaffEmployeesComponent } from './pages/staff-pages/staff-employees/staff-employees';
-import { StaffRevenueReportComponent } from './pages/staff-pages/staff-revenue-report/staff-revenue-report';
-import { StaffCategoryReportComponent } from './pages/staff-pages/staff-category-report/staff-category-report';
+import { StaffReportsComponent } from './pages/staff-pages/staff-reports/staff-reports';
 
 export const routes: Routes = [
 
@@ -65,16 +64,21 @@ export const routes: Routes = [
     data: { profileKind: 'funcionario' }
   },
 
-  { 
-    path: 'staff/revenue-report', 
-    component: StaffRevenueReportComponent, 
-    data: { profileKind: 'funcionario' } },
-
-    { 
-      path: 'staff/category-report', 
-      component: StaffCategoryReportComponent, 
-      data: { profileKind: 'funcionario' } 
-    },
+  {
+    path: 'staff/reports',
+    component: StaffReportsComponent,
+    data: { profileKind: 'funcionario' }
+  },
+  {
+    path: 'staff/revenue-report',
+    redirectTo: '/staff/reports',
+    pathMatch: 'full'
+  },
+  {
+    path: 'staff/category-report',
+    redirectTo: '/staff/reports',
+    pathMatch: 'full'
+  },
 
   { path: '**', redirectTo: '' }
 ];
