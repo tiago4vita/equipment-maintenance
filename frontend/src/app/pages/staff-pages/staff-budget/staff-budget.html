@@ -14,26 +14,26 @@
           <div class="grid grid-cols-2 gap-y-6 gap-x-4">
             <div>
               <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Cliente</span>
-              <strong class="text-lg">{{ dadosSolicitacao.cliente.nome }}</strong>
+              <strong class="text-lg">{{ nomeCliente }}</strong>
             </div>
             <div>
               <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">CPF</span>
-              <strong class="text-lg">{{ dadosSolicitacao.cliente.cpf }}</strong>
+              <strong class="text-lg">{{ cpfCliente }}</strong>
             </div>
             <div>
               <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Produto</span>
-              <strong class="text-lg">{{ dadosSolicitacao.produto }}</strong>
+              <strong class="text-lg">{{ solicitacaoAtual?.produto }}</strong>
             </div>
             <div>
               <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Data de Abertura</span>
-              <strong class="text-lg">{{ dadosSolicitacao.dataAbertura }}</strong>
+              <strong class="text-lg">{{ solicitacaoAtual?.dataAbertura }}</strong>
             </div>
           </div>
 
           <div class="mt-8">
             <span class="text-gray-500 block text-xs uppercase tracking-wider mb-2">Descrição Detalhada do Defeito</span>
             <p class="p-4 bg-gray-50 rounded-xl italic border-l-4 border-gray-200 text-[var(--color-text-primary)]">
-              "{{ dadosSolicitacao.descricaoDefeito }}"
+              "{{ solicitacaoAtual?.descricaoDefeito }}"
             </p>
           </div>
         </section>

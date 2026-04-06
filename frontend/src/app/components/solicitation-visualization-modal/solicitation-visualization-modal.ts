@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import type { SolicitationStatus } from '../solicitation-row/solicitation-row';
+import { CATEGORIAS } from '../../database.mock';
 
 export type SolicitationModalMode = 'creation' | SolicitationStatus;
 
@@ -125,6 +126,7 @@ export class SolicitationVisualizationModalComponent implements OnChanges {
   protected creationDescription = '';
   protected rejectionReason = '';
   protected isWritingRejectionReason = false;
+  protected listaCategorias = CATEGORIAS;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['mode'] || changes['startWithRejectFlow']) {

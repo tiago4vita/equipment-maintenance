@@ -1,6 +1,6 @@
 @if (isOpen) {
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-6"
+    class="fixed inset-0 z-100 flex items-center justify-center bg-black/40 p-6"
     role="dialog"
     aria-modal="true"
     aria-label="Visualizar solicitação"
@@ -161,12 +161,21 @@
       </div>
 
       @if (isCreationMode) {
-        <input
-          type="text"
-          [(ngModel)]="creationCategory"
-          placeholder="Escolher Categoria"
-          class="w-[320px] rounded-[15px] bg-[var(--color-placeholder)] px-[30px] py-1 text-[18px] leading-[21.6px] tracking-[-0.54px] text-white"
-        />
+        <div class="relative">
+          <select
+            [(ngModel)]="creationCategory"
+            class="w-[320px] rounded-[15px] bg-[#2c2c2c] px-[30px] py-1 text-[18px] leading-[21.6px] tracking-[-0.54px] text-white outline-none appearance-none cursor-pointer hover:brightness-110 transition-all"
+          >
+            <option value="" disabled selected>Escolher Categoria</option>
+            <option *ngFor="let cat of listaCategorias" [value]="cat.nome">
+              {{ cat.nome }}
+            </option>
+          </select>
+          
+          <div class="pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 text-white text-[12px] opacity-70">
+            ▼
+          </div>
+        </div>
       } @else {
         <div class="flex items-center justify-center rounded-[15px] bg-[#2c2c2c] px-[30px] py-1 text-[18px] leading-[21.6px] tracking-[-0.54px] text-white">
           {{ category }}

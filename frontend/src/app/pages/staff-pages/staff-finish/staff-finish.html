@@ -13,7 +13,7 @@
               Resumo da Ordem de Serviço #{{ solicitacaoId }}
             </h2>
             <span class="bg-orange-100 text-orange-700 px-4 py-1 rounded-full text-sm font-bold uppercase">
-              {{ dadosSolicitacao.estado }}
+              {{ solicitacaoAtual?.estado }}
             </span>
           </div>
           
@@ -21,23 +21,23 @@
             <div class="space-y-4">
               <div>
                 <span class="text-gray-400 block text-xs uppercase tracking-wider">Cliente</span>
-                <p class="text-lg font-semibold">{{ dadosSolicitacao.cliente.nome }}</p>
-                <p class="text-sm text-gray-500">CPF: {{ dadosSolicitacao.cliente.cpf }}</p>
+                <p class="text-lg font-semibold">{{ cliente?.nome }}</p>
+                <p class="text-sm text-gray-500">CPF: {{ cliente?.cpf }}</p>
               </div>
               <div>
                 <span class="text-gray-400 block text-xs uppercase tracking-wider">Equipamento</span>
-                <p class="text-lg font-semibold">{{ dadosSolicitacao.produto }}</p>
+                <p class="text-lg font-semibold">{{ solicitacaoAtual?.produto }}</p>
               </div>
             </div>
 
             <div class="space-y-4">
               <div>
                 <span class="text-gray-400 block text-xs uppercase tracking-wider">Técnico Responsável</span>
-                <p class="text-lg font-semibold">{{ dadosSolicitacao.tecnicoManutencao }}</p>
+                <p class="text-lg font-semibold">{{ tecnicoNome }}</p>
               </div>
               <div>
                 <span class="text-gray-400 block text-xs uppercase tracking-wider">Valor Total</span>
-                <p class="text-2xl font-bold text-green-600">R$ {{ dadosSolicitacao.valor | number:'1.2-2' }}</p>
+                <p class="text-2xl font-bold text-green-600">R$ {{ solicitacaoAtual?.valor || 0 }}</p>
               </div>
             </div>
           </div>
@@ -45,7 +45,7 @@
           <div class="mt-8 p-6 bg-gray-50 rounded-xl space-y-4">
             <div>
               <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Descrição da Manutenção</span>
-              <p class="text-gray-700">{{ dadosSolicitacao.descricaoManutencao }}</p>
+              <p class="text-gray-700">{{ solicitacaoAtual?.descricaoDefeito }}</p>
             </div>
           </div>
         </section>
