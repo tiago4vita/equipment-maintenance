@@ -9,32 +9,32 @@
       <div class="col-span-2 space-y-6">
         <section class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
           <h2 class="text-xl font-bold mb-6 border-b pb-4 text-[var(--color-text-primary)]">
-            Dados da Solicitação #{{ solicitacaoId }}
+            Dados da Solicitação #{{ solicitacaoAtual?.id }}
           </h2>
           
           <div class="grid grid-cols-2 gap-y-6 gap-x-4">
             <div>
               <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Cliente</span>
-              <strong class="text-lg">{{ dadosSolicitacao.cliente.nome }}</strong>
+              <strong class="text-lg">{{ nomeCliente }}</strong>
             </div>
             <div>
               <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Produto</span>
-              <strong class="text-lg">{{ dadosSolicitacao.produto }}</strong>
+              <strong class="text-lg">{{ solicitacaoAtual?.produto }}</strong>
             </div>
             <div>
               <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Status Atual</span>
-              <strong class="text-lg text-orange-500 uppercase">{{ dadosSolicitacao.estado }}</strong>
+              <strong class="text-lg text-orange-500 uppercase">{{ solicitacaoAtual?.estado }}</strong>
             </div>
             <div>
               <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Última Atualização</span>
-              <strong class="text-lg">{{ dadosSolicitacao.dataAtualizacao }}</strong>
+              <strong class="text-lg">{{ solicitacaoAtual?.dataAbertura | date:'dd/MM/yyyy HH:mm' }}</strong>
             </div>
           </div>
 
           <div class="mt-8">
             <span class="text-gray-500 block text-xs uppercase tracking-wider mb-2">Descrição Detalhada do Defeito</span>
             <p class="p-4 bg-gray-50 rounded-xl italic border-l-4 border-gray-200 text-[var(--color-text-primary)]">
-              "{{ dadosSolicitacao.descricaoDefeito }}"
+             "{{ solicitacaoAtual?.descricaoDefeito }}"
             </p>
           </div>
         </section>
@@ -49,8 +49,8 @@
             <select 
               [(ngModel)]="funcionarioDestinoId"
               class="w-full px-4 py-4 text-[15px] font-semibold bg-gray-50 border-2 border-gray-100 rounded-xl focus:border-[var(--color-button-primary)] outline-none transition-all appearance-none cursor-pointer">
-              <option [ngValue]="null" disabled selected>Escolha um técnico...</option>
-              <option *ngFor="let func of funcionariosDisponiveis" [ngValue]="func.id">
+              <option value="" disabled selected>Escolha um técnico...</option>
+              <option *ngFor="let func of funcionariosDisponiveis" [value]="func.id">
                 {{ func.nome }} ({{ func.cargo }})
               </option>
             </select>
