@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router'; // 1. Adicionamos o import do Router
 import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-navbar';
+import { SOLICITACOES, CLIENTES } from '../../../database.mock';
 
 @Component({
   selector: 'app-staff-home',
@@ -11,26 +12,21 @@ import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-nav
   styleUrl: './staff-home.css'
 })
 export class StaffHomeComponent {
-  // 2. Adicionamos um 'id' fictício para cada item poder ser acessado na rota
-  solicitacoesAbertas = [
-    { id: 1, data: '30/03/2026 10:00', cliente: 'Marcos Mello', produto: 'Monitor Samsung 24"' },
-    { id: 2, data: '30/03/2026 14:30', cliente: 'Murilo Cardoso', produto: 'Desktop Positivo' },
-    { id: 3, data: '31/03/2026 09:15', cliente: 'Tiago Vita', produto: 'Notebook Dell Inspiron' }
-  ];
-
-  // 3. O construtor é necessário para injetar o Router
+  
   constructor(private router: Router) {}
 
-  truncate(text: string, limit: number): string {
-    if (!text) return '';
-    return text.length > limit ? text.substring(0, limit) + '...' : text;
+  get solicitacoesAbertas() {
+    return SOLICITACOES
+      .filter(s => s.estado === 'ABERTA')
+      .sort((a, b) => new Date(a.dataAbertura).getTime() - new Date(b.dataAbertura).getTime());
   }
 
-  efetuarOrcamento(item: any) {
-    console.log('Iniciando orçamento para:', item.cliente);
-    // 4. Aqui fazemos a navegação real para o RF012 usando o ID do item
-    this.router.navigate(['/staff/budget', item.id]);
+  getNomeCliente(id: number): string {
+    const cliente = CLIENTES.find(c => c.id === id);
+    return cliente ? cliente.nome : 'Desconhecido';
+  }
 
-    
+  irParaOrcamento(id: number) {
+    this.router.navigate(['/staff/budget', id]);
   }
 }

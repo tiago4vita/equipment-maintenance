@@ -13,18 +13,18 @@ import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-nav
 export class StaffMaintenanceComponent implements OnInit {
   solicitacaoId: number = 0;
   
-  // Campos do formulário (RF014)
+
   descricaoManutencao: string = '';
   orientacoesCliente: string = '';
   
-  // MOCK: ID do funcionário logado
+
   funcionarioLogadoId: number = 1; 
 
-  // MOCK: Dados da solicitação vindos do banco
+
   dadosSolicitacao = {
     cliente: { nome: 'João Silva', cpf: '111.222.333-44' },
     produto: 'Notebook Dell Inspiron',
-    estado: 'aprovada', // ou 'redirecionada'
+    estado: 'aprovada', 
     descricaoDefeito: 'Computador superaquecendo e desligando sozinho após abrir programas pesados.'
   };
 
@@ -41,7 +41,7 @@ export class StaffMaintenanceComponent implements OnInit {
   salvarManutencao() {
     if (!this.descricaoManutencao || !this.orientacoesCliente) return;
 
-    // Simulação do envio para o Backend (RF014)
+    
     console.log('--- MANUTENÇÃO EFETUADA ---');
     console.log(`Solicitação: #${this.solicitacaoId}`);
     console.log(`Estado Alterado Para: ARRUMADA`);
@@ -50,16 +50,16 @@ export class StaffMaintenanceComponent implements OnInit {
     console.log(`Descrição: ${this.descricaoManutencao}`);
     console.log(`Orientações: ${this.orientacoesCliente}`);
 
-    // Retorna para a tela inicial ou listagem
-    this.router.navigate(['/staff/home']);
+   
+    this.router.navigate(['/staff/all-requests']);
   }
 
   irParaRedirecionamento() {
-    // RF015: Direciona para a tela de redirecionamento passando o ID
+  
     this.router.navigate(['/staff/redirect', this.solicitacaoId]);
   }
 
   voltar() {
-    this.router.navigate(['/staff/home']);
+    this.router.navigate(['/staff/all-requests']);
   }
 }

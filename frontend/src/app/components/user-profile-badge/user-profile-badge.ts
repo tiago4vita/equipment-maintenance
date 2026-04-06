@@ -27,4 +27,9 @@ export class UserProfileBadgeComponent {
   const path = this.router.url.split('?')[0].split('#')[0];
   return publicRoutes.includes(path);
 }
+
+sair() {
+    console.log('Encerrando sessão...');
+    this.router.navigate(['/login']);
+  }
 }
