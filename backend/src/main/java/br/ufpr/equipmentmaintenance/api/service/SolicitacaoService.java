@@ -77,6 +77,7 @@ public class SolicitacaoService {
             historicoCriacao.setFuncionarioResponsavel(quemRegistrou);
             historicoCriacao.setObservacao("Abertura da solicitação registrada pelo funcionário.");
         } else {
+            historicoCriacao.setCliente(cliente);
             historicoCriacao.setObservacao("Abertura da solicitação registrada pelo cliente.");
         }
         solicitacao.getHistorico().add(historicoCriacao);
@@ -86,7 +87,7 @@ public class SolicitacaoService {
 
     @Transactional
     public SolicitacaoResponse alterarStatus(Long id, AlterarStatusRequest request, JwtPrincipal principal) {
-        Solicitacao solicitacao = solicitacaoRepository.findById(id)
+        Solicitacao solicitacao = solicitacaoRepository.findDetailedById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Solicitação não encontrada."));
 
         if ("CLIENTE".equals(principal.perfil())) {
@@ -177,6 +178,10 @@ public class SolicitacaoService {
             Funcionario responsavel = funcionarioRepository.findById(principal.userId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Funcionário inválido."));
             historico.setFuncionarioResponsavel(responsavel);
+        } else {
+            Cliente atorCliente = clienteRepository.findById(principal.userId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Cliente inválido."));
+            historico.setCliente(atorCliente);
         }
 
         if (novoStatus == StatusSolicitacao.REDIRECIONADA) {
@@ -257,7 +262,7 @@ public class SolicitacaoService {
 
     @Transactional(readOnly = true)
     public SolicitacaoResponse buscarPorId(Long id, JwtPrincipal principal) {
-        Solicitacao s = solicitacaoRepository.findById(id)
+        Solicitacao s = solicitacaoRepository.findDetailedById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Solicitação não encontrada."));
         if ("CLIENTE".equals(principal.perfil())) {
             if (!s.getCliente().getId().equals(principal.userId())) {

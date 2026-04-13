@@ -146,48 +146,48 @@ public class DemoDataLoader implements CommandLineRunner {
         switch (alvo) {
             case ABERTA -> {
                 s.setStatus(StatusSolicitacao.ABERTA);
-                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, null, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, null, null, s.getCliente(),
                         "Abertura da solicitação registrada pelo cliente.", t0));
             }
             case ORCADA -> {
                 s.setValorOrcamento(orc);
                 s.setStatus(StatusSolicitacao.ORCADA);
-                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, null, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, null, null, s.getCliente(),
                         "Abertura da solicitação registrada pelo cliente.", t0));
-                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ORCADA, origem, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ORCADA, origem, null, null,
                         "Orçamento efetuado.", t0.plusHours(2)));
             }
             case APROVADA -> {
                 s.setValorOrcamento(orc);
                 s.setStatus(StatusSolicitacao.APROVADA);
-                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, null, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, null, null, s.getCliente(),
                         "Abertura.", t0));
-                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ORCADA, origem, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ORCADA, origem, null, null,
                         "Orçamento.", t0.plusHours(1)));
-                s.getHistorico().add(hist(s, StatusSolicitacao.ORCADA, StatusSolicitacao.APROVADA, null, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ORCADA, StatusSolicitacao.APROVADA, null, null, s.getCliente(),
                         "Cliente aprovou o serviço.", t0.plusHours(5)));
             }
             case REJEITADA -> {
                 s.setValorOrcamento(orc);
                 s.setStatus(StatusSolicitacao.REJEITADA);
-                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, null, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, null, null, s.getCliente(),
                         "Abertura.", t0));
-                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ORCADA, marioFunc, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ORCADA, marioFunc, null, null,
                         "Orçamento.", t0.plusHours(1)));
-                s.getHistorico().add(hist(s, StatusSolicitacao.ORCADA, StatusSolicitacao.REJEITADA, null, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ORCADA, StatusSolicitacao.REJEITADA, null, null, s.getCliente(),
                         "Cliente rejeitou: valor acima do esperado.", t0.plusHours(3)));
             }
             case REDIRECIONADA -> {
                 s.setValorOrcamento(orc);
                 s.setFuncionarioDestinoAtual(outro);
                 s.setStatus(StatusSolicitacao.REDIRECIONADA);
-                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, null, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, null, null, s.getCliente(),
                         "Abertura.", t0));
-                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ORCADA, origem, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ORCADA, origem, null, null,
                         "Orçamento.", t0.plusHours(1)));
-                s.getHistorico().add(hist(s, StatusSolicitacao.ORCADA, StatusSolicitacao.APROVADA, null, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ORCADA, StatusSolicitacao.APROVADA, null, null, s.getCliente(),
                         "Aprovação.", t0.plusHours(2)));
-                s.getHistorico().add(hist(s, StatusSolicitacao.APROVADA, StatusSolicitacao.REDIRECIONADA, origem, outro,
+                s.getHistorico().add(hist(s, StatusSolicitacao.APROVADA, StatusSolicitacao.REDIRECIONADA, origem, outro, null,
                         "Redirecionamento para outro especialista.", t0.plusHours(4)));
             }
             case ARRUMADA -> {
@@ -195,13 +195,13 @@ public class DemoDataLoader implements CommandLineRunner {
                 s.setDescricaoManutencao("Substituição de componente e testes de carga.");
                 s.setOrientacoesCliente("Evitar uso contínuo por 24h; contato em caso de novos sintomas.");
                 s.setStatus(StatusSolicitacao.ARRUMADA);
-                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, null, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, null, null, s.getCliente(),
                         "Abertura.", t0));
-                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ORCADA, origem, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ORCADA, origem, null, null,
                         "Orçamento.", t0.plusHours(1)));
-                s.getHistorico().add(hist(s, StatusSolicitacao.ORCADA, StatusSolicitacao.APROVADA, null, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ORCADA, StatusSolicitacao.APROVADA, null, null, s.getCliente(),
                         "Aprovação.", t0.plusHours(2)));
-                s.getHistorico().add(hist(s, StatusSolicitacao.APROVADA, StatusSolicitacao.ARRUMADA, origem, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.APROVADA, StatusSolicitacao.ARRUMADA, origem, null, null,
                         "Manutenção concluída.", t0.plusDays(1)));
             }
             case PAGA -> {
@@ -211,15 +211,15 @@ public class DemoDataLoader implements CommandLineRunner {
                 LocalDateTime tpag = t0.plusDays(2);
                 s.setDataHoraPagamento(tpag);
                 s.setStatus(StatusSolicitacao.PAGA);
-                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, null, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, null, null, s.getCliente(),
                         "Abertura.", t0));
-                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ORCADA, marioFunc, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ORCADA, marioFunc, null, null,
                         "Orçamento.", t0.plusHours(2)));
-                s.getHistorico().add(hist(s, StatusSolicitacao.ORCADA, StatusSolicitacao.APROVADA, null, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ORCADA, StatusSolicitacao.APROVADA, null, null, s.getCliente(),
                         "Aprovação.", t0.plusHours(5)));
-                s.getHistorico().add(hist(s, StatusSolicitacao.APROVADA, StatusSolicitacao.ARRUMADA, origem, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.APROVADA, StatusSolicitacao.ARRUMADA, origem, null, null,
                         "Manutenção.", t0.plusDays(1)));
-                s.getHistorico().add(hist(s, StatusSolicitacao.ARRUMADA, StatusSolicitacao.PAGA, null, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ARRUMADA, StatusSolicitacao.PAGA, null, null, s.getCliente(),
                         "Pagamento registrado.", tpag));
             }
             case FINALIZADA -> {
@@ -231,17 +231,17 @@ public class DemoDataLoader implements CommandLineRunner {
                 s.setDataHoraPagamento(tpag);
                 s.setDataHoraFinalizacao(tfim);
                 s.setStatus(StatusSolicitacao.FINALIZADA);
-                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, null, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, null, null, s.getCliente(),
                         "Abertura.", t0));
-                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ORCADA, origem, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ORCADA, origem, null, null,
                         "Orçamento.", t0.plusHours(1)));
-                s.getHistorico().add(hist(s, StatusSolicitacao.ORCADA, StatusSolicitacao.APROVADA, null, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ORCADA, StatusSolicitacao.APROVADA, null, null, s.getCliente(),
                         "Aprovação.", t0.plusHours(3)));
-                s.getHistorico().add(hist(s, StatusSolicitacao.APROVADA, StatusSolicitacao.ARRUMADA, marioFunc, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.APROVADA, StatusSolicitacao.ARRUMADA, marioFunc, null, null,
                         "Manutenção.", t0.plusDays(1)));
-                s.getHistorico().add(hist(s, StatusSolicitacao.ARRUMADA, StatusSolicitacao.PAGA, null, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.ARRUMADA, StatusSolicitacao.PAGA, null, null, s.getCliente(),
                         "Pagamento.", tpag));
-                s.getHistorico().add(hist(s, StatusSolicitacao.PAGA, StatusSolicitacao.FINALIZADA, origem, null,
+                s.getHistorico().add(hist(s, StatusSolicitacao.PAGA, StatusSolicitacao.FINALIZADA, origem, null, null,
                         "Solicitação finalizada.", tfim));
             }
             default -> throw new IllegalStateException("Estado não tratado no seed: " + alvo);
@@ -254,6 +254,7 @@ public class DemoDataLoader implements CommandLineRunner {
             StatusSolicitacao novo,
             Funcionario responsavel,
             Funcionario destino,
+            Cliente atorCliente,
             String obs,
             LocalDateTime quando) {
         HistoricoSolicitacao h = new HistoricoSolicitacao();
@@ -262,6 +263,7 @@ public class DemoDataLoader implements CommandLineRunner {
         h.setStatusNovo(novo);
         h.setFuncionarioResponsavel(responsavel);
         h.setFuncionarioDestino(destino);
+        h.setCliente(atorCliente);
         h.setObservacao(obs);
         h.setDataAlteracao(quando);
         return h;
