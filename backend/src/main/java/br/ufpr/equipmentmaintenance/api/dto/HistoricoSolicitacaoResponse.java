@@ -11,7 +11,9 @@ public record HistoricoSolicitacaoResponse(
     String funcionarioResponsavel,
     String funcionarioDestino,
     String observacao,
-    LocalDateTime dataAlteracao
+    LocalDateTime dataAlteracao,
+    Long clienteId,
+    String clienteNome
 ) {
     public static HistoricoSolicitacaoResponse fromEntity(HistoricoSolicitacao h) {
         String funcionario = h.getFuncionarioResponsavel() != null
@@ -20,6 +22,8 @@ public record HistoricoSolicitacaoResponse(
         String destino = h.getFuncionarioDestino() != null
             ? h.getFuncionarioDestino().getNome()
             : null;
+        Long cid = h.getCliente() != null ? h.getCliente().getId() : null;
+        String cnome = h.getCliente() != null ? h.getCliente().getNome() : null;
 
         return new HistoricoSolicitacaoResponse(
             h.getId(),
@@ -28,7 +32,9 @@ public record HistoricoSolicitacaoResponse(
             funcionario,
             destino,
             h.getObservacao(),
-            h.getDataAlteracao()
+            h.getDataAlteracao(),
+            cid,
+            cnome
         );
     }
 }

@@ -5,6 +5,7 @@ import br.ufpr.equipmentmaintenance.api.repository.*;
 import br.ufpr.equipmentmaintenance.api.util.SenhaUtil;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Random;
 
 @Configuration
+@Profile("!test")
 public class DatabaseSeeder implements CommandLineRunner {
 
     private final FuncionarioRepository funcionarioRepository;
@@ -164,48 +166,49 @@ public class DatabaseSeeder implements CommandLineRunner {
             solicitacao.setDescricaoProblema("Equipamento apresentando falhas intermitentes. Chamado #" + i);
             solicitacao.setStatus(statusAlvo);
 
-            solicitacao.getHistorico().add(gerarHistorico(solicitacao, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, "Abertura inicial da solicitação pelo cliente", null));
+            solicitacao.getHistorico().add(gerarHistorico(solicitacao, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, "Abertura inicial da solicitação pelo cliente", null, solicitacao.getCliente()));
 
             if (statusAlvo != StatusSolicitacao.ABERTA) {
                 solicitacao.setValorOrcamento(BigDecimal.valueOf(120.50 + (i * 12.25)));
-                solicitacao.getHistorico().add(gerarHistorico(solicitacao, StatusSolicitacao.ABERTA, StatusSolicitacao.ORCADA, "Orçamento técnico gerado no sistema", funcionario));
+                solicitacao.getHistorico().add(gerarHistorico(solicitacao, StatusSolicitacao.ABERTA, StatusSolicitacao.ORCADA, "Orçamento técnico gerado no sistema", funcionario, null));
             }
 
             if (statusAlvo == StatusSolicitacao.REJEITADA) {
-                solicitacao.getHistorico().add(gerarHistorico(solicitacao, StatusSolicitacao.ORCADA, StatusSolicitacao.REJEITADA, "Cliente não aprovou o valor do orçamento", null));
+                solicitacao.getHistorico().add(gerarHistorico(solicitacao, StatusSolicitacao.ORCADA, StatusSolicitacao.REJEITADA, "Cliente não aprovou o valor do orçamento", null, solicitacao.getCliente()));
             }
 
             if (statusAlvo == StatusSolicitacao.APROVADA || statusAlvo == StatusSolicitacao.ARRUMADA || statusAlvo == StatusSolicitacao.PAGA || statusAlvo == StatusSolicitacao.FINALIZADA) {
-                solicitacao.getHistorico().add(gerarHistorico(solicitacao, StatusSolicitacao.ORCADA, StatusSolicitacao.APROVADA, "Orçamento aprovado pelo cliente via portal", null));
+                solicitacao.getHistorico().add(gerarHistorico(solicitacao, StatusSolicitacao.ORCADA, StatusSolicitacao.APROVADA, "Orçamento aprovado pelo cliente via portal", null, solicitacao.getCliente()));
             }
 
             if (statusAlvo == StatusSolicitacao.ARRUMADA || statusAlvo == StatusSolicitacao.PAGA || statusAlvo == StatusSolicitacao.FINALIZADA) {
                 solicitacao.setDescricaoManutencao("Substituição de componentes defeituosos, limpeza interna e testes de estresse finalizados.");
                 solicitacao.setOrientacoesCliente("Manter em ambiente com temperatura controlada e evitar umidade excessiva.");
-                solicitacao.getHistorico().add(gerarHistorico(solicitacao, StatusSolicitacao.APROVADA, StatusSolicitacao.ARRUMADA, "Serviço de manutenção executado e testado", funcionario));
+                solicitacao.getHistorico().add(gerarHistorico(solicitacao, StatusSolicitacao.APROVADA, StatusSolicitacao.ARRUMADA, "Serviço de manutenção executado e testado", funcionario, null));
             }
 
             if (statusAlvo == StatusSolicitacao.PAGA || statusAlvo == StatusSolicitacao.FINALIZADA) {
                 solicitacao.setDataHoraPagamento(dataEvento.plusDays(2));
-                solicitacao.getHistorico().add(gerarHistorico(solicitacao, StatusSolicitacao.ARRUMADA, StatusSolicitacao.PAGA, "Confirmação de recebimento do pagamento", null));
+                solicitacao.getHistorico().add(gerarHistorico(solicitacao, StatusSolicitacao.ARRUMADA, StatusSolicitacao.PAGA, "Confirmação de recebimento do pagamento", null, solicitacao.getCliente()));
             }
 
             if (statusAlvo == StatusSolicitacao.FINALIZADA) {
                 solicitacao.setDataHoraFinalizacao(dataEvento.plusDays(4));
-                solicitacao.getHistorico().add(gerarHistorico(solicitacao, StatusSolicitacao.PAGA, StatusSolicitacao.FINALIZADA, "Equipamento devolvido ao cliente e chamado encerrado", funcionario));
+                solicitacao.getHistorico().add(gerarHistorico(solicitacao, StatusSolicitacao.PAGA, StatusSolicitacao.FINALIZADA, "Equipamento devolvido ao cliente e chamado encerrado", funcionario, null));
             }
 
             solicitacaoRepository.save(solicitacao);
         }
     }
 
-    private HistoricoSolicitacao gerarHistorico(Solicitacao solicitacao, StatusSolicitacao anterior, StatusSolicitacao novo, String observacao, Funcionario funcionario) {
+    private HistoricoSolicitacao gerarHistorico(Solicitacao solicitacao, StatusSolicitacao anterior, StatusSolicitacao novo, String observacao, Funcionario funcionario, Cliente cliente) {
         HistoricoSolicitacao historico = new HistoricoSolicitacao();
         historico.setSolicitacao(solicitacao);
         historico.setStatusAnterior(anterior);
         historico.setStatusNovo(novo);
         historico.setObservacao(observacao);
         historico.setFuncionarioResponsavel(funcionario);
+        historico.setCliente(cliente);
         return historico;
     }
 }

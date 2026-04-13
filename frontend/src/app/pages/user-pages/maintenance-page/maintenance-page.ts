@@ -12,6 +12,12 @@ import {
   SolicitationVisualizationModalComponent,
   type SolicitationModalMode
 } from '../../../components/solicitation-visualization-modal/solicitation-visualization-modal';
+import {
+  formatHistoricoAutor,
+  type HistoricoSolicitacaoDTO
+} from '../../../models/cliente-integracao.model';
+
+type HistoricoAtorPick = Pick<HistoricoSolicitacaoDTO, 'clienteNome' | 'funcionarioResponsavel' | 'funcionarioDestino'>;
 
 interface SolicitationItem {
   id: number;
@@ -137,7 +143,11 @@ export class MaintenancePageComponent {
     solicitation.status = nextStatus;
     solicitation.history = [
       ...solicitation.history,
-      this.createHistoryItem(nextStatus, this.getNowDateTime(), 'Feito pelo Cliente')
+      this.createHistoryItem(nextStatus, this.getNowDateTime(), {
+        clienteNome: 'Cliente (demo)',
+        funcionarioResponsavel: null,
+        funcionarioDestino: null
+      })
     ];
 
     if (reason) {
@@ -181,15 +191,42 @@ export class MaintenancePageComponent {
     const currentIndex = orderedStatuses.indexOf(status);
     const until = currentIndex >= 0 ? currentIndex : 0;
     return orderedStatuses.slice(0, until + 1).map((current) =>
-      this.createHistoryItem(current, dateTime, 'Feito por Rafael')
+      this.createHistoryItem(current, dateTime, this.mockHistoricoAtor(current))
     );
   }
 
-  private createHistoryItem(
-    status: SolicitationStatus,
-    date: string,
-    author: string
-  ): SolicitationTimelineItem {
+  private mockHistoricoAtor(status: SolicitationStatus): HistoricoAtorPick {
+    const cliente: HistoricoAtorPick = {
+      clienteNome: 'Cliente (demo)',
+      funcionarioResponsavel: null,
+      funcionarioDestino: null
+    };
+    const tecnico: HistoricoAtorPick = {
+      clienteNome: null,
+      funcionarioResponsavel: 'Rafael (demo)',
+      funcionarioDestino: null
+    };
+    const redir: HistoricoAtorPick = {
+      clienteNome: null,
+      funcionarioResponsavel: 'Maria (demo)',
+      funcionarioDestino: 'Mário (demo)'
+    };
+    switch (status) {
+      case 'aberta':
+      case 'aprovada':
+      case 'rejeitada':
+      case 'resgatada':
+      case 'paga':
+        return cliente;
+      case 'redirecionada':
+        return redir;
+      default:
+        return tecnico;
+    }
+  }
+
+  private createHistoryItem(status: SolicitationStatus, date: string, ator: HistoricoAtorPick): SolicitationTimelineItem {
+    const author = formatHistoricoAutor(ator);
     if (status === 'orcada') {
       return { label: 'Orçada', bg: '#f2d0b2', textColor: '#885000', subTextColor: '#885000b2', iconPath: '/svg/Clock.svg', date, author };
     }

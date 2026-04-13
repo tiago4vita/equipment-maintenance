@@ -33,6 +33,11 @@ public class HistoricoSolicitacao {
     @JoinColumn(name = "funcionario_destino_id")
     private Funcionario funcionarioDestino;
 
+    /** Ator da transição quando a ação é do cliente (ex.: aprovar/rejeitar orçamento, pagar). Mutuamente exclusivo com funcionarioResponsavel. */
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    private Cliente cliente;
+
     @Column(length = 500)
     private String observacao;
 
@@ -61,6 +66,9 @@ public class HistoricoSolicitacao {
     public void setFuncionarioDestino(Funcionario funcionarioDestino) {
         this.funcionarioDestino = funcionarioDestino;
     }
+
+    public Cliente getCliente() { return cliente; }
+    public void setCliente(Cliente cliente) { this.cliente = cliente; }
 
     public String getObservacao() { return observacao; }
     public void setObservacao(String observacao) { this.observacao = observacao; }

@@ -1,6 +1,7 @@
 package br.ufpr.equipmentmaintenance.api.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.BatchSize;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class Solicitacao {
     private LocalDateTime dataHoraPagamento;
     private LocalDateTime dataHoraFinalizacao;
 
+    @BatchSize(size = 32)
     @OneToMany(mappedBy = "solicitacao", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("dataAlteracao ASC")
     private List<HistoricoSolicitacao> historico = new ArrayList<>();
