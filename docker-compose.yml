@@ -1,0 +1,34 @@
+# MySQL 8 para o equipment-maintenance (desenvolvimento local).
+# Uso: na raiz do repositório → docker compose up -d
+#
+# MySQL: localhost:3306
+# Adminer (interface web para o banco): http://localhost:8081
+#   Servidor: mysql  |  Usuário: equipment  |  Senha: equipment  |  Base: equipment_maintenance
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: equipment-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: equipment_maintenance
+      MYSQL_USER: equipment
+      MYSQL_PASSWORD: equipment
+    ports:
+      - "3306:3306"
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - equipment-mysql-data:/var/lib/mysql
+
+  adminer:
+    image: adminer:latest
+    container_name: equipment-adminer
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mysql
+
+volumes:
+  equipment-mysql-data:

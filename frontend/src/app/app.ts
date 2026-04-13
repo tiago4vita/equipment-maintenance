@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 import {
   UserProfileBadgeComponent,
   UserProfileKind
@@ -19,6 +20,16 @@ export class App {
 
   constructor() {
     const syncProfileKind = (): void => {
+      const perfil = localStorage.getItem(AuthService.KEY_PERFIL);
+      if (perfil === 'FUNCIONARIO') {
+        this.profileKind.set('funcionario');
+        return;
+      }
+      if (perfil === 'CLIENTE') {
+        this.profileKind.set('cliente');
+        return;
+      }
+
       let route = this.router.routerState.snapshot.root;
       while (route.firstChild) {
         route = route.firstChild;

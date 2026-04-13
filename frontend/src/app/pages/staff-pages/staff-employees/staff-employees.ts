@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../../auth.service';
 import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-navbar';
 
 @Component({
@@ -10,9 +11,10 @@ import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-nav
   templateUrl: './staff-employees.html'
 })
 export class StaffEmployeesComponent implements OnInit {
-  
-  // MOCK: ID do funcionário que está logado usando o sistema no momento
-  funcionarioLogadoId: number = 1;
+  private readonly auth = inject(AuthService);
+
+  /** ID do funcionário autenticado (JWT / sessão). */
+  funcionarioLogadoId = 1;
 
   // Dados exigidos pela especificação (Maria e Mário)
   funcionarios = [
@@ -41,7 +43,12 @@ export class StaffEmployeesComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit(): void {
+    const id = this.auth.getUserId();
+    if (id != null) {
+      this.funcionarioLogadoId = id;
+    }
+  }
 
 
   getMotivoBloqueioExclusao(idFuncionario: number): string {

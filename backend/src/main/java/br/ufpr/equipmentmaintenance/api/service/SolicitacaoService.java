@@ -195,6 +195,7 @@ public class SolicitacaoService {
      * RF011/RF013: listagem para funcionário — filtros periodo (todas|hoje|intervalo).
      * Sem {@code status} ou vazio: filtra ABERTA (RF011). Use {@code status=todos} para listar todos os status.
      */
+    @Transactional(readOnly = true)
     public List<SolicitacaoResponse> listarParaFuncionario(
             String statusParam,
             String periodo,
@@ -247,12 +248,14 @@ public class SolicitacaoService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<SolicitacaoResponse> listarPorCliente(Long clienteId) {
         return solicitacaoRepository.findByClienteIdOrderByDataCriacaoAsc(clienteId).stream()
                 .map(SolicitacaoResponse::fromEntity)
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public SolicitacaoResponse buscarPorId(Long id, JwtPrincipal principal) {
         Solicitacao s = solicitacaoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Solicitação não encontrada."));

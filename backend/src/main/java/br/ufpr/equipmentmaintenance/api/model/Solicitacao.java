@@ -76,6 +76,9 @@ public class Solicitacao {
 
     public LocalDateTime getDataCriacao() { return dataCriacao; }
 
+    /** Uso em carga de dados / testes; não exposto na API. */
+    public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }
+
     public String getDescricaoManutencao() { return descricaoManutencao; }
     public void setDescricaoManutencao(String descricaoManutencao) { this.descricaoManutencao = descricaoManutencao; }
 

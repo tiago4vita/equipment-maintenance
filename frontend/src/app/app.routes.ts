@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './auth.guard';
 import { LoginPageComponent } from './pages/login-page/login-page';
 import { SignUpPageComponent } from './pages/sign-up-page/sign-up-page';
 import { MaintenancePageComponent } from './pages/user-pages/maintenance-page/maintenance-page';
@@ -19,55 +20,69 @@ export const routes: Routes = [
   { path: '', component: LoginPageComponent, data: { profileKind: 'cliente' } },
   { path: 'login', component: LoginPageComponent, data: { profileKind: 'cliente' } },
   { path: 'sign-up', component: SignUpPageComponent, data: { profileKind: 'cliente' } },
-  { path: 'user/maintenance', component: MaintenancePageComponent, data: { profileKind: 'cliente' } },
+  {
+    path: 'user/maintenance',
+    component: MaintenancePageComponent,
+    canActivate: [authGuard],
+    data: { profileKind: 'cliente', role: 'CLIENTE' }
+  },
 
   // ROTAS DE FUNCIONÁRIO (STAFF)
   { 
     path: 'staff/home', 
     component: StaffHomeComponent, 
-    data: { profileKind: 'funcionario' } 
+    canActivate: [authGuard],
+    data: { profileKind: 'funcionario', role: 'FUNCIONARIO' } 
   },
   { 
     path: 'staff/all-requests', 
     component: StaffAllRequestsComponent, 
-    data: { profileKind: 'funcionario' } 
+    canActivate: [authGuard],
+    data: { profileKind: 'funcionario', role: 'FUNCIONARIO' } 
   },
   {
     path: 'staff/categories', 
     component: StaffCategoriesComponent,
-    data: { profileKind: 'funcionario' }
+    canActivate: [authGuard],
+    data: { profileKind: 'funcionario', role: 'FUNCIONARIO' }
   },
   {
     path: 'staff/employees', 
     component: StaffEmployeesComponent,
-    data: { profileKind: 'funcionario' }
+    canActivate: [authGuard],
+    data: { profileKind: 'funcionario', role: 'FUNCIONARIO' }
   },
 
   { 
     path: 'staff/budget/:id', 
     component: StaffBudgetComponent, 
-    data: { profileKind: 'funcionario' } 
+    canActivate: [authGuard],
+    data: { profileKind: 'funcionario', role: 'FUNCIONARIO' } 
   },
   { 
     path: 'staff/maintenance/:id', 
     component: StaffMaintenanceComponent, 
-    data: { profileKind: 'funcionario' } 
+    canActivate: [authGuard],
+    data: { profileKind: 'funcionario', role: 'FUNCIONARIO' } 
   },
   {
     path: 'staff/redirect/:id',
     component: StaffRedirectComponent,
-    data: { profileKind: 'funcionario' }
+    canActivate: [authGuard],
+    data: { profileKind: 'funcionario', role: 'FUNCIONARIO' }
   },
   {
     path: 'staff/finish/:id',
     component: StaffFinishComponent,
-    data: { profileKind: 'funcionario' }
+    canActivate: [authGuard],
+    data: { profileKind: 'funcionario', role: 'FUNCIONARIO' }
   },
 
   {
     path: 'staff/reports',
     component: StaffReportsComponent,
-    data: { profileKind: 'funcionario' }
+    canActivate: [authGuard],
+    data: { profileKind: 'funcionario', role: 'FUNCIONARIO' }
   },
   {
     path: 'staff/revenue-report',

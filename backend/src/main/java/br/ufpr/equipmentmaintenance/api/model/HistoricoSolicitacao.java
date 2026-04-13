@@ -66,4 +66,7 @@ public class HistoricoSolicitacao {
     public void setObservacao(String observacao) { this.observacao = observacao; }
 
     public LocalDateTime getDataAlteracao() { return dataAlteracao; }
+
+    /** Uso em carga de dados / testes. */
+    public void setDataAlteracao(LocalDateTime dataAlteracao) { this.dataAlteracao = dataAlteracao; }
 }
