@@ -1,5 +1,7 @@
 package br.ufpr.equipmentmaintenance.api.service;
 
+import br.ufpr.equipmentmaintenance.api.dto.ReceitaCategoriaResponse;
+import br.ufpr.equipmentmaintenance.api.dto.ReceitaDiariaResponse;
 import br.ufpr.equipmentmaintenance.api.model.Solicitacao;
 import br.ufpr.equipmentmaintenance.api.model.StatusSolicitacao;
 import br.ufpr.equipmentmaintenance.api.repository.SolicitacaoRepository;
@@ -38,7 +40,6 @@ public class RelatorioService {
         this.solicitacaoRepository = solicitacaoRepository;
     }
 
-    /** RF019 — receitas no período, agrupadas por dia (valor do orçamento na data do pagamento). */
     public byte[] gerarPdfReceitasPorPeriodo(LocalDate dataInicio, LocalDate dataFim) {
         List<Solicitacao> pagas = solicitacaoRepository.findByStatusIn(
                 List.of(StatusSolicitacao.PAGA, StatusSolicitacao.FINALIZADA));
@@ -105,7 +106,6 @@ public class RelatorioService {
         }
     }
 
-    /** RF020 — receitas desde sempre, agrupadas por categoria de equipamento. */
     public byte[] gerarPdfReceitasPorCategoria() {
         List<Solicitacao> pagas = solicitacaoRepository.findByStatusIn(
                 List.of(StatusSolicitacao.PAGA, StatusSolicitacao.FINALIZADA));
@@ -158,5 +158,43 @@ public class RelatorioService {
 
     private static String formatarMoeda(BigDecimal v) {
         return String.format(java.util.Locale.forLanguageTag("pt-BR"), "%,.2f", v);
+    }
+
+    public List<ReceitaDiariaResponse> obterDadosReceitasPorPeriodo(LocalDate dataInicio, LocalDate dataFim) {
+        List<Solicitacao> pagas = solicitacaoRepository.findByStatusIn(
+                List.of(StatusSolicitacao.PAGA, StatusSolicitacao.FINALIZADA));
+
+        LocalDateTime inicio = dataInicio != null ? dataInicio.atStartOfDay() : LocalDateTime.of(1970, 1, 1, 0, 0);
+        LocalDateTime fim = dataFim != null ? dataFim.atTime(LocalTime.MAX) : LocalDateTime.of(2999, 12, 31, 23, 59, 59);
+
+        Map<LocalDate, BigDecimal> porDia = pagas.stream()
+                .filter(s -> s.getDataHoraPagamento() != null)
+                .filter(s -> !s.getDataHoraPagamento().isBefore(inicio) && !s.getDataHoraPagamento().isAfter(fim))
+                .collect(Collectors.groupingBy(
+                        s -> s.getDataHoraPagamento().toLocalDate(),
+                        Collectors.reducing(BigDecimal.ZERO, 
+                                s -> s.getValorOrcamento() != null ? s.getValorOrcamento() : BigDecimal.ZERO, 
+                                BigDecimal::add)));
+
+        return porDia.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(e -> new ReceitaDiariaResponse(e.getKey(), e.getValue()))
+                .toList();
+    }
+
+    public List<ReceitaCategoriaResponse> obterDadosReceitasPorCategoria() {
+        List<Solicitacao> pagas = solicitacaoRepository.findByStatusIn(
+                List.of(StatusSolicitacao.PAGA, StatusSolicitacao.FINALIZADA));
+
+        Map<String, BigDecimal> porCategoria = pagas.stream()
+                .filter(s -> s.getValorOrcamento() != null)
+                .collect(Collectors.groupingBy(
+                        s -> s.getEquipamento().getCategoria() != null ? s.getEquipamento().getCategoria().getNome() : "(sem categoria)",
+                        Collectors.reducing(BigDecimal.ZERO, Solicitacao::getValorOrcamento, BigDecimal::add)));
+
+        return porCategoria.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(e -> new ReceitaCategoriaResponse(e.getKey(), e.getValue()))
+                .toList();
     }
 }
