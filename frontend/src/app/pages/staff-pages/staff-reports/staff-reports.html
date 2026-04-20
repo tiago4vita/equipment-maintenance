@@ -1,35 +1,23 @@
-<main class="relative min-h-screen bg-[var(--color-surface-page)] [font-family:'Inter',sans-serif] print:bg-white">
-  <div class="print:hidden">
-    <app-staff-navbar></app-staff-navbar>
-  </div>
+<main class="relative min-h-screen bg-[var(--color-surface-page)] [font-family:'Inter',sans-serif]">
+  <app-staff-navbar></app-staff-navbar>
 
-  <div class="ml-[320px] print:ml-0 pt-[160px] print:pt-8 w-[calc(100%-360px)] print:w-full max-w-[1440px] px-8 pb-12">
+  <div class="ml-[320px] pt-[160px] w-[calc(100%-360px)] max-w-[1440px] px-8 pb-12">
     <div class="flex items-center justify-between mb-8">
       <div>
         <h1 class="text-[36px] font-bold text-[var(--color-text-primary)]">Relatórios financeiros</h1>
         <p class="text-gray-500 mt-1">
-          Receitas por período e por categoria. Use o filtro de categorias quando quiser restringir o relatório.
+          Receitas por período (RF019) e por categoria (RF020). Os PDFs são gerados pelo backend.
         </p>
       </div>
-
-      <button
-        type="button"
-        (click)="gerarPDF()"
-        class="print:hidden flex items-center gap-2 bg-[var(--color-button-primary)] text-white px-6 py-3 rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md"
-      >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-          />
-        </svg>
-        Baixar relatório (PDF)
-      </button>
     </div>
 
-    <section class="print:hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6 space-y-6">
+    @if (errorMessage()) {
+      <p class="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+        {{ errorMessage() }}
+      </p>
+    }
+
+    <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6 space-y-6">
       <div class="flex flex-wrap items-end gap-6">
         <div class="flex-1 min-w-[160px]">
           <label class="text-gray-500 block text-xs uppercase tracking-wider mb-1.5 font-semibold">Data inicial</label>
@@ -58,108 +46,63 @@
         </div>
       </div>
 
-      <div class="flex flex-col gap-4 border-t border-gray-100 pt-6">
-        <div class="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <p class="text-sm font-semibold text-[var(--color-text-primary)]">Filtrar por categorias</p>
-            <p class="text-xs text-gray-500 mt-0.5">
-              Quando ativado, apenas as categorias marcadas entram no relatório (receita diária e por categoria).
-            </p>
-          </div>
-          <button
-            type="button"
-            role="switch"
-            [attr.aria-checked]="categoryFilterEnabled"
-            (click)="toggleCategoryFilter()"
-            class="relative inline-flex h-8 w-14 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-button-primary)]"
-            [class.bg-[var(--color-button-primary)]]="categoryFilterEnabled"
-            [class.bg-gray-200]="!categoryFilterEnabled"
-          >
-            <span
-              class="pointer-events-none inline-block h-7 w-7 translate-x-0.5 rounded-full bg-white shadow transition"
-              [class.translate-x-6]="categoryFilterEnabled"
-            ></span>
-          </button>
-        </div>
-
-        @if (categoryFilterEnabled) {
-          <div class="flex flex-wrap gap-3">
-            @for (cat of categorias; track cat.id) {
-              <button
-                type="button"
-                (click)="toggleCategoryId(cat.id)"
-                class="inline-flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2 text-sm transition-colors"
-                [class.border-[var(--color-button-primary)]]="isCategorySelected(cat.id)"
-                [class.bg-gray-50]="!isCategorySelected(cat.id)"
-                [class.border-gray-200]="!isCategorySelected(cat.id)"
-              >
-                <span
-                  class="inline-block size-2 rounded-full"
-                  [class.bg-[var(--color-button-primary)]]="isCategorySelected(cat.id)"
-                  [class.bg-gray-300]="!isCategorySelected(cat.id)"
-                ></span>
-                {{ cat.nome }}
-              </button>
-            }
-          </div>
-        }
-      </div>
+      <p class="text-xs text-gray-500">
+        Período em análise: <strong>{{ periodoExibicao() }}</strong>
+      </p>
     </section>
 
-    <div class="hidden print:block mb-8 border-b-2 border-gray-200 pb-4">
-      <p class="text-gray-600 font-bold">
-        Período analisado:
-        <span class="font-normal">{{ periodoExibicao }}</span>
-      </p>
-      <p class="text-gray-600 text-sm mt-1">
-        Filtro por categorias:
-        <span class="font-normal">{{
-          categoryFilterEnabled
-            ? 'Sim — ' + selectedCategoryIds.length + ' selecionada(s)'
-            : 'Não (todas)'
-        }}</span>
-      </p>
-      <p class="text-gray-600 text-sm mt-1">
-        Gerado em: {{ dataGeracao | date: 'dd/MM/yyyy HH:mm' }} por {{ funcionarioLogado }}
-      </p>
-    </div>
-
     <div class="grid grid-cols-2 gap-6 mb-8">
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 print:shadow-none print:border-gray-300">
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <span class="text-gray-500 text-sm uppercase tracking-wider font-semibold">Total de receitas no período</span>
-        <p class="text-4xl font-bold text-green-600 mt-2">R$ {{ totalReceita | number: '1.2-2' }}</p>
+        <p class="text-4xl font-bold text-green-600 mt-2">
+          {{ totalReceita() | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+        </p>
+        <button
+          type="button"
+          (click)="baixarPdfPeriodo()"
+          [disabled]="baixandoPeriodo()"
+          class="mt-4 inline-flex items-center gap-2 bg-[var(--color-button-primary)] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md disabled:opacity-50">
+          {{ baixandoPeriodo() ? 'Gerando…' : 'Baixar PDF (RF019)' }}
+        </button>
       </div>
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 print:shadow-none print:border-gray-300">
-        <span class="text-gray-500 text-sm uppercase tracking-wider font-semibold">Total de serviços (pagos/finalizados)</span>
-        <p class="text-4xl font-bold text-[var(--color-text-primary)] mt-2">{{ totalServicos }}</p>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <span class="text-gray-500 text-sm uppercase tracking-wider font-semibold">Receita por categoria (desde sempre)</span>
+        <p class="text-2xl font-bold text-[var(--color-text-primary)] mt-2">{{ dadosPorCategoria().length }} categoria(s) com faturamento</p>
+        <button
+          type="button"
+          (click)="baixarPdfCategoria()"
+          [disabled]="baixandoCategoria()"
+          class="mt-4 inline-flex items-center gap-2 bg-[var(--color-button-primary)] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md disabled:opacity-50">
+          {{ baixandoCategoria() ? 'Gerando…' : 'Baixar PDF (RF020)' }}
+        </button>
       </div>
     </div>
 
     <div class="mb-10">
       <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-4">Receita por dia</h2>
-      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden print:shadow-none print:border-gray-300">
-        <div
-          class="grid grid-cols-3 bg-gray-50 px-8 py-4 border-b border-gray-200 font-bold text-[13px] uppercase tracking-wider text-[var(--color-text-primary)] print:bg-gray-200"
-        >
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="grid grid-cols-2 bg-gray-50 px-8 py-4 border-b border-gray-200 font-bold text-[13px] uppercase tracking-wider text-[var(--color-text-primary)]">
           <div>Data do faturamento</div>
-          <div class="text-center">Qtd. serviços</div>
           <div class="text-right">Receita do dia</div>
         </div>
 
-        <div class="max-h-[400px] overflow-y-auto custom-scrollbar print:max-h-max print:overflow-visible">
-          @for (dia of dadosPorDia; track dia.data) {
-            <div
-              class="grid grid-cols-3 items-center px-8 py-4 border-b border-gray-50 bg-white hover:bg-gray-50 transition-all print:border-gray-200"
-            >
-              <div class="text-[15px] font-semibold text-[var(--color-text-primary)]">
-                {{ dia.data | date: 'dd/MM/yyyy' }}
-              </div>
-              <div class="text-[14px] text-gray-600 text-center">{{ dia.quantidadeServicos }}</div>
-              <div class="text-[16px] font-bold text-green-600 text-right">R$ {{ dia.valorTotal | number: '1.2-2' }}</div>
-            </div>
-          }
-          @if (dadosPorDia.length === 0) {
+        <div class="max-h-[400px] overflow-y-auto">
+          @if (loadingDia()) {
+            <div class="p-10 text-center text-gray-400">Carregando…</div>
+          } @else if (dadosPorDia().length === 0) {
             <div class="p-10 text-center text-gray-400">Nenhuma receita encontrada para os filtros selecionados.</div>
+          } @else {
+            @for (dia of dadosPorDia(); track dia.data) {
+              <div class="grid grid-cols-2 items-center px-8 py-4 border-b border-gray-50 bg-white hover:bg-gray-50 transition-all">
+                <div class="text-[15px] font-semibold text-[var(--color-text-primary)]">
+                  {{ dia.data || '—' }}
+                </div>
+                <div class="text-[16px] font-bold text-green-600 text-right">
+                  {{ dia.valorTotal | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+                </div>
+              </div>
+            }
           }
         </div>
       </div>
@@ -167,39 +110,32 @@
 
     <div class="mb-4">
       <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-4">Receitas por categoria</h2>
-      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden print:shadow-none print:border-gray-300 print:border-2">
-        <div
-          class="grid grid-cols-12 bg-gray-50 px-8 py-4 border-b border-gray-200 font-bold text-[13px] uppercase tracking-wider text-[var(--color-text-primary)] print:bg-gray-200"
-        >
-          <div class="col-span-6">Categoria do equipamento</div>
-          <div class="col-span-3 text-center">Volume de serviços</div>
-          <div class="col-span-3 text-right">Faturamento total</div>
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="grid grid-cols-2 bg-gray-50 px-8 py-4 border-b border-gray-200 font-bold text-[13px] uppercase tracking-wider text-[var(--color-text-primary)]">
+          <div>Categoria do equipamento</div>
+          <div class="text-right">Faturamento total</div>
         </div>
 
-        <div class="max-h-[400px] overflow-y-auto custom-scrollbar print:max-h-max print:overflow-visible">
-          @for (item of dadosPorCategoria; track item.categoria) {
-            <div
-              class="grid grid-cols-12 items-center px-8 py-4 border-b border-gray-50 bg-white hover:bg-gray-50 transition-all print:border-gray-200 print:break-inside-avoid"
-            >
-              <div class="col-span-6 flex items-center gap-3">
-                <div class="w-2 h-2 rounded-full bg-[var(--color-button-primary)] print:hidden"></div>
-                <span class="text-[16px] font-semibold text-[var(--color-text-primary)]">{{ item.categoria }}</span>
+        <div class="max-h-[400px] overflow-y-auto">
+          @if (loadingCategoria()) {
+            <div class="p-10 text-center text-gray-400">Carregando…</div>
+          } @else if (dadosPorCategoria().length === 0) {
+            <div class="p-10 text-center text-gray-400">Nenhum dado por categoria.</div>
+          } @else {
+            @for (item of dadosPorCategoria(); track item.categoria) {
+              <div class="grid grid-cols-2 items-center px-8 py-4 border-b border-gray-50 bg-white hover:bg-gray-50 transition-all">
+                <div class="flex items-center gap-3">
+                  <div class="w-2 h-2 rounded-full bg-[var(--color-button-primary)]"></div>
+                  <span class="text-[16px] font-semibold text-[var(--color-text-primary)]">{{ item.categoria }}</span>
+                </div>
+                <div class="text-[16px] font-bold text-green-600 text-right">
+                  {{ item.valorTotal | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+                </div>
               </div>
-              <div class="col-span-3 text-[15px] text-gray-600 text-center font-medium">{{ item.quantidadeServicos }}</div>
-              <div class="col-span-3 text-[16px] font-bold text-green-600 text-right">
-                R$ {{ item.valorTotal | number: '1.2-2' }}
-              </div>
-            </div>
-          }
-          @if (dadosPorCategoria.length === 0) {
-            <div class="p-10 text-center text-gray-400">Nenhum dado por categoria para os filtros selecionados.</div>
+            }
           }
         </div>
       </div>
-    </div>
-
-    <div class="hidden print:block mt-8 text-center text-sm text-gray-400">
-      Fim do relatório — documento gerado pelo sistema de gestão de assistência técnica.
     </div>
   </div>
 </main>

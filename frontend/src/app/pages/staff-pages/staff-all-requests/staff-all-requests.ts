@@ -1,9 +1,19 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-navbar';
-import { SOLICITACOES, CLIENTES } from '../../../database.mock';
+import { compareBrDateTime } from '../../../date-util';
+import {
+  SolicitacaoResponse,
+  STATUS_BG_CLASSES,
+  STATUS_LABELS,
+  StatusManutencao
+} from '../../../models/cliente-integracao.model';
+import { SolicitacaoService } from '../../../services/solicitacao.service';
+
+type FiltroPeriodo = 'TODAS' | 'HOJE' | 'PERIODO';
 
 @Component({
   selector: 'app-staff-all-requests',
@@ -11,71 +21,83 @@ import { SOLICITACOES, CLIENTES } from '../../../database.mock';
   imports: [CommonModule, FormsModule, StaffNavbarComponent],
   templateUrl: './staff-all-requests.html'
 })
-export class StaffAllRequestsComponent {
-  filtroAtual: 'HOJE' | 'PERIODO' | 'TODAS' = 'TODAS';
-  dataInicio: string = '';
-  dataFim: string = '';
+export class StaffAllRequestsComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly solicitacoes = inject(SolicitacaoService);
 
-  constructor(private router: Router) {}
+  protected filtroAtual: FiltroPeriodo = 'TODAS';
+  protected dataInicio = '';
+  protected dataFim = '';
 
-  getNomeCliente(id: number): string {
-    const cliente = CLIENTES.find(c => c.id === id);
-    return cliente ? cliente.nome : 'Desconhecido';
+  protected readonly items = signal<SolicitacaoResponse[]>([]);
+  protected readonly loading = signal(false);
+  protected readonly errorMessage = signal<string | null>(null);
+
+  ngOnInit(): void {
+    this.carregar();
   }
 
-  solicitacoes = SOLICITACOES;
+  protected carregar(): void {
+    this.loading.set(true);
+    this.errorMessage.set(null);
 
-  get solicitacoesFiltradas() {
-    return this.solicitacoes.filter(s => {
-
-      if (this.filtroAtual === 'TODAS') {
-        return true;
-      }
-      const dataSolicitacao = new Date(s.dataAbertura);
-
-      if (this.filtroAtual === 'HOJE') {
-        const hoje = new Date();
-        return dataSolicitacao.toDateString() === hoje.toDateString();
-      }
-
-      if (this.filtroAtual === 'PERIODO') {
-        if (!this.dataInicio && !this.dataFim) return true;
-
-        const tempoSol = dataSolicitacao.getTime();
-        const inicio = this.dataInicio ? new Date(this.dataInicio + 'T00:00:00').getTime() : 0;
-        const fim = this.dataFim ? new Date(this.dataFim + 'T23:59:59').getTime() : Infinity;
-
-        return tempoSol >= inicio && tempoSol <= fim;
-      }
-
-      return true;
-    });
+    const periodo = this.mapPeriodo(this.filtroAtual);
+    this.solicitacoes
+      .listarStaff({
+        status: 'todos',
+        periodo,
+        dataInicio: periodo === 'intervalo' ? this.dataInicio || undefined : undefined,
+        dataFim: periodo === 'intervalo' ? this.dataFim || undefined : undefined
+      })
+      .subscribe({
+        next: (lista) => {
+          const ordenadas = [...lista].sort(
+            (a, b) => compareBrDateTime(a.dataCriacao, b.dataCriacao)
+          );
+          this.items.set(ordenadas);
+          this.loading.set(false);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.loading.set(false);
+          this.errorMessage.set(
+            err.error?.message ?? 'Não foi possível carregar as solicitações.'
+          );
+        }
+      });
   }
 
-  getVariant(status: string) {
-    const variants: any = {
-      aberta: { bg: 'var(--color-row-open-bg)', text: 'var(--color-row-open-text)', label: 'Aberta' },
-      aprovada: { bg: 'var(--color-row-approved-bg)', text: 'var(--color-row-approved-text)', label: 'Aprovada' },
-      arrumada: { bg: 'var(--color-row-fixed-bg)', text: 'var(--color-row-fixed-text)', label: 'Arrumada' },
-      finalizada: { bg: 'var(--color-row-finished-bg)', text: 'var(--color-row-finished-text)', label: 'Finalizada' },
-      orçada: { bg: 'var(--color-row-quoted-bg)', text: 'var(--color-row-quoted-text)', label: 'Orçada' },
-      paga: { bg: 'var(--color-row-paid-bg)', text: 'var(--color-row-paid-text)', label: 'Paga' },
-      redirecionada: { bg: 'var(--color-row-redirected-bg)', text: 'var(--color-row-redirected-text)', label: 'Redirecionada' },
-      rejeitada: { bg: 'var(--color-row-rejected-bg)', text: 'var(--color-row-rejected-text)', label: 'Rejeitada' }
-    };
-    return variants[status.toLowerCase()] || variants['aberta'];
+  protected aplicarFiltro(): void {
+    this.carregar();
   }
 
-  irParaOrcamento(id: number) { 
-    this.router.navigate(['/staff/budget', id]); 
+  protected bgClassPara(status: StatusManutencao): string {
+    return STATUS_BG_CLASSES[status] ?? 'bg-gray-400';
   }
 
-  irParaManutencao(id: number) { 
-    this.router.navigate(['/staff/maintenance', id]); 
+  protected rotulo(status: StatusManutencao): string {
+    return STATUS_LABELS[status] ?? status;
   }
 
-finalizarSolicitacao(id: number) { 
-    console.log('Navegando para finalizar a solicitação:', id);
-    this.router.navigate(['/staff/finish', id]); 
+  protected descricaoCurta(s: SolicitacaoResponse): string {
+    const texto = s.descricaoEquipamento ?? '';
+    return texto.length > 30 ? `${texto.slice(0, 30)}...` : texto;
+  }
+
+  protected irParaOrcamento(id: number): void {
+    void this.router.navigate(['/staff/budget', id]);
+  }
+
+  protected irParaManutencao(id: number): void {
+    void this.router.navigate(['/staff/maintenance', id]);
+  }
+
+  protected finalizarSolicitacao(id: number): void {
+    void this.router.navigate(['/staff/finish', id]);
+  }
+
+  private mapPeriodo(filtro: FiltroPeriodo): 'todas' | 'hoje' | 'intervalo' {
+    if (filtro === 'HOJE') return 'hoje';
+    if (filtro === 'PERIODO') return 'intervalo';
+    return 'todas';
   }
 }

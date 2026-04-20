@@ -1,8 +1,13 @@
-import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-navbar';
-import { SOLICITACOES, CLIENTES, FUNCIONARIOS } from '../../../database.mock';
+import {
+  STATUS_LABELS,
+  SolicitacaoResponse
+} from '../../../models/cliente-integracao.model';
+import { SolicitacaoService } from '../../../services/solicitacao.service';
 
 @Component({
   selector: 'app-staff-finish',
@@ -11,44 +16,74 @@ import { SOLICITACOES, CLIENTES, FUNCIONARIOS } from '../../../database.mock';
   templateUrl: './staff-finish.html'
 })
 export class StaffFinishComponent implements OnInit {
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly solicitacoes = inject(SolicitacaoService);
 
-  solicitacaoId: number = 0;
-  dataAtual: Date = new Date();
-  
+  protected readonly statusLabels = STATUS_LABELS;
+  protected readonly dataAtual = new Date();
 
-  solicitacaoAtual: any;
-  cliente: any;
-  tecnicoNome: string = 'Não atribuído';
-  funcionarioLogado = { id: 1, nome: 'Mário' };  //usuario logado simulado
+  protected readonly solicitacao = signal<SolicitacaoResponse | null>(null);
+  protected readonly loading = signal(false);
+  protected readonly submitting = signal(false);
+  protected readonly errorMessage = signal<string | null>(null);
 
-  ngOnInit() {
+  protected solicitacaoId = 0;
 
+  ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
     this.solicitacaoId = Number(idParam);
 
-    if (this.solicitacaoId) {
-      this.solicitacaoAtual = SOLICITACOES.find(s => s.id === this.solicitacaoId);
-
-      if (this.solicitacaoAtual) {
-  
-        this.cliente = CLIENTES.find(c => c.id === this.solicitacaoAtual.clienteId);
-        
-
-        const tecnico = FUNCIONARIOS.find(f => f.id === 2); 
-        this.tecnicoNome = tecnico?.nome || 'Técnico Externo';
-      }
+    if (!this.solicitacaoId) {
+      this.errorMessage.set('Solicitação inválida.');
+      return;
     }
+
+    this.carregar();
   }
 
-  finalizar() {
-    console.log('--- FINALIZAÇÃO REAL ---');
-    console.log(`Solicitação #${this.solicitacaoId} FINALIZADA por ${this.funcionarioLogado.nome}`);
-    this.router.navigate(['/staff/all-requests']);
+  private carregar(): void {
+    this.loading.set(true);
+    this.solicitacoes.buscarPorId(this.solicitacaoId).subscribe({
+      next: (s) => {
+        this.solicitacao.set(s);
+        this.loading.set(false);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.loading.set(false);
+        this.errorMessage.set(
+          err.error?.message ?? 'Não foi possível carregar a solicitação.'
+        );
+      }
+    });
   }
 
-  voltar() {
-    this.router.navigate(['/staff/all-requests']);
+  protected finalizar(): void {
+    if (!confirm('Confirmar finalização desta solicitação?')) {
+      return;
+    }
+
+    this.submitting.set(true);
+    this.errorMessage.set(null);
+
+    this.solicitacoes
+      .alterarStatus(this.solicitacaoId, { novoStatus: 'FINALIZADA' })
+      .subscribe({
+        next: () => {
+          this.submitting.set(false);
+          alert('Solicitação finalizada com sucesso.');
+          void this.router.navigate(['/staff/all-requests']);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.submitting.set(false);
+          this.errorMessage.set(
+            err.error?.message ?? 'Não foi possível finalizar a solicitação.'
+          );
+        }
+      });
+  }
+
+  protected voltar(): void {
+    void this.router.navigate(['/staff/all-requests']);
   }
 }

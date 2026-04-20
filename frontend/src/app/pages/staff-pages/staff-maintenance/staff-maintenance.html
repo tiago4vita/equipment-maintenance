@@ -4,8 +4,9 @@
   <div class="ml-[320px] pt-[150px] w-[calc(100%-360px)] max-w-[1440px] px-8 pb-12">
     <div class="flex items-center justify-between mb-8">
       <h1 class="text-[36px] font-bold text-[var(--color-text-primary)]">Efetuar Manutenção</h1>
-      
-      <button 
+
+      <button
+        type="button"
         (click)="irParaRedirecionamento()"
         class="flex items-center gap-2 bg-white border-2 border-purple-200 text-purple-700 px-6 py-2.5 rounded-xl font-bold hover:bg-purple-50 transition-all shadow-sm">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -15,96 +16,110 @@
       </button>
     </div>
 
-    <div class="grid grid-cols-3 gap-8">
-      
-      <div class="col-span-1 space-y-6">
-        <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 sticky top-[150px]">
-          <h2 class="text-lg font-bold mb-4 border-b pb-3 text-[var(--color-text-primary)]">
-            Solicitação #{{ solicitacaoId }}
-          </h2>
-          
-          <div class="space-y-4">
-            <div>
-              <span class="text-gray-500 block text-[11px] uppercase tracking-wider mb-0.5">Cliente</span>
-              <strong class="text-[15px]">{{ nomeCliente }}</strong>
-            </div>
-            <div>
-              <span class="text-gray-500 block text-[11px] uppercase tracking-wider mb-0.5">Equipamento</span>
-              <strong class="text-[15px]">{{ solicitacaoAtual?.produto }}</strong>
-            </div>
-            <div>
-              <span class="text-gray-500 block text-[11px] uppercase tracking-wider mb-0.5">Status Atual</span>
-              <strong class="text-[14px] text-yellow-600 bg-yellow-50 px-3 py-1 rounded-full uppercase inline-block mt-1">
-                {{ solicitacaoAtual?.estado }}
-              </strong>
-            </div>
-          </div>
+    @if (errorMessage()) {
+      <p class="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+        {{ errorMessage() }}
+      </p>
+    }
 
-          <div class="mt-6 pt-4 border-t border-gray-100">
-            <span class="text-gray-500 block text-[11px] uppercase tracking-wider mb-2">Relato do Defeito</span>
-            <p class="text-[14px] leading-relaxed text-gray-700 italic bg-gray-50 p-4 rounded-xl border-l-4 border-gray-300">
-              "{{ solicitacaoAtual?.descricaoDefeito }}"
-            </p>
-          </div>
-        </section>
-      </div>
+    @if (loading()) {
+      <p class="text-gray-500">Carregando…</p>
+    } @else if (solicitacao(); as s) {
+      <div class="grid grid-cols-3 gap-8">
 
-      <div class="col-span-2">
-        <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-[var(--color-button-primary)]">
-          <h2 class="text-xl font-bold mb-6 text-[var(--color-text-primary)] flex items-center gap-3">
-            <svg class="w-6 h-6 text-[var(--color-button-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            Registro do Serviço
-          </h2>
-          
-          <div class="space-y-6">
-            <div>
-              <label class="text-gray-500 block text-xs uppercase tracking-wider mb-2 font-semibold">
-                Descrição da Manutenção Realizada <span class="text-red-500">*</span>
-              </label>
-              <textarea 
-                [(ngModel)]="descricaoManutencao"
-                rows="4"
-                placeholder="Descreva detalhadamente os procedimentos técnicos realizados, peças trocadas, etc."
-                class="w-full p-4 text-[15px] bg-gray-50 border-2 border-gray-100 rounded-xl focus:border-[var(--color-button-primary)] outline-none transition-all resize-none"></textarea>
+        <div class="col-span-1 space-y-6">
+          <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 sticky top-[150px]">
+            <h2 class="text-lg font-bold mb-4 border-b pb-3 text-[var(--color-text-primary)]">
+              Solicitação #{{ s.id }}
+            </h2>
+
+            <div class="space-y-4">
+              <div>
+                <span class="text-gray-500 block text-[11px] uppercase tracking-wider mb-0.5">Cliente</span>
+                <strong class="text-[15px]">{{ s.clienteNome }}</strong>
+              </div>
+              <div>
+                <span class="text-gray-500 block text-[11px] uppercase tracking-wider mb-0.5">Equipamento</span>
+                <strong class="text-[15px]">{{ s.descricaoEquipamento }}</strong>
+              </div>
+              <div>
+                <span class="text-gray-500 block text-[11px] uppercase tracking-wider mb-0.5">Categoria</span>
+                <strong class="text-[15px]">{{ s.categoriaNome ?? '—' }}</strong>
+              </div>
+              <div>
+                <span class="text-gray-500 block text-[11px] uppercase tracking-wider mb-0.5">Status Atual</span>
+                <strong class="text-[14px] text-yellow-600 bg-yellow-50 px-3 py-1 rounded-full uppercase inline-block mt-1">
+                  {{ statusLabels[s.status] }}
+                </strong>
+              </div>
+              <div>
+                <span class="text-gray-500 block text-[11px] uppercase tracking-wider mb-0.5">Valor Orçado</span>
+                <strong class="text-[15px]">{{ (s.valorOrcamento ?? 0) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</strong>
+              </div>
             </div>
 
-            <div>
-              <label class="text-gray-500 block text-xs uppercase tracking-wider mb-2 font-semibold">
-                Orientações para o Cliente <span class="text-red-500">*</span>
-              </label>
-              <textarea 
-                [(ngModel)]="orientacoesCliente"
-                rows="4"
-                placeholder="Dicas de uso, cuidados a serem tomados ou informações sobre a garantia..."
-                class="w-full p-4 text-[15px] bg-gray-50 border-2 border-gray-100 rounded-xl focus:border-[var(--color-button-primary)] outline-none transition-all resize-none"></textarea>
+            <div class="mt-6 pt-4 border-t border-gray-100">
+              <span class="text-gray-500 block text-[11px] uppercase tracking-wider mb-2">Relato do Defeito</span>
+              <p class="text-[14px] leading-relaxed text-gray-700 italic bg-gray-50 p-4 rounded-xl border-l-4 border-gray-300">
+                "{{ s.descricaoProblema }}"
+              </p>
             </div>
-
-            <div class="pt-6 border-t border-gray-100 flex items-center justify-between">
-              <button 
-                (click)="voltar()"
-                class="px-6 py-3 text-gray-500 font-semibold hover:text-gray-800 transition-colors">
-                Cancelar
-              </button>
-              
-              <button 
-                (click)="salvarManutencao()"
-                [disabled]="!descricaoManutencao || !orientacoesCliente"
-                class="bg-[var(--color-button-primary)] text-white px-8 py-3 rounded-xl font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed">
-                Finalizar Manutenção
-              </button>
-            </div>
-            
-            <div class="text-center text-[12px] text-gray-400 mt-2">
-              Ao confirmar, a solicitação passará para o estado <strong class="text-blue-500 uppercase">Arrumada</strong>.
-            </div>
-          </div>
-
+          </section>
         </div>
+
+        <div class="col-span-2">
+          <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-[var(--color-button-primary)]">
+            <h2 class="text-xl font-bold mb-6 text-[var(--color-text-primary)]">Registro do Serviço</h2>
+
+            <div class="space-y-6">
+              <div>
+                <label class="text-gray-500 block text-xs uppercase tracking-wider mb-2 font-semibold">
+                  Descrição da Manutenção Realizada <span class="text-red-500">*</span>
+                </label>
+                <textarea
+                  [(ngModel)]="descricaoManutencao"
+                  rows="4"
+                  placeholder="Descreva detalhadamente os procedimentos técnicos realizados, peças trocadas, etc."
+                  class="w-full p-4 text-[15px] bg-gray-50 border-2 border-gray-100 rounded-xl focus:border-[var(--color-button-primary)] outline-none transition-all resize-none"></textarea>
+              </div>
+
+              <div>
+                <label class="text-gray-500 block text-xs uppercase tracking-wider mb-2 font-semibold">
+                  Orientações para o Cliente <span class="text-red-500">*</span>
+                </label>
+                <textarea
+                  [(ngModel)]="orientacoesCliente"
+                  rows="4"
+                  placeholder="Dicas de uso, cuidados a serem tomados ou informações sobre a garantia..."
+                  class="w-full p-4 text-[15px] bg-gray-50 border-2 border-gray-100 rounded-xl focus:border-[var(--color-button-primary)] outline-none transition-all resize-none"></textarea>
+              </div>
+
+              <div class="pt-6 border-t border-gray-100 flex items-center justify-between">
+                <button
+                  type="button"
+                  (click)="voltar()"
+                  class="px-6 py-3 text-gray-500 font-semibold hover:text-gray-800 transition-colors">
+                  Cancelar
+                </button>
+
+                <button
+                  type="button"
+                  (click)="salvarManutencao()"
+                  [disabled]="submitting() || !descricaoManutencao.trim() || !orientacoesCliente.trim()"
+                  class="bg-[var(--color-button-primary)] text-white px-8 py-3 rounded-xl font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed">
+                  {{ submitting() ? 'Salvando…' : 'Finalizar Manutenção' }}
+                </button>
+              </div>
+
+              <div class="text-center text-[12px] text-gray-400 mt-2">
+                Ao confirmar, a solicitação passará para o estado <strong class="text-blue-500 uppercase">Arrumada</strong>.
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
-      
-    </div>
+    }
   </div>
 </main>

@@ -2,14 +2,15 @@
   <app-cliente-navbar />
 
   <div class="flex-1 ml-[100px] mt-[150px] p-8 overflow-x-hidden">
-    
+
     <section class="mx-auto w-full max-w-[1440px]">
-      
+
       <div class="mb-6 flex items-center justify-between">
         <h1 class="text-[36px] font-bold text-[var(--color-text-primary)]">Minhas Solicitações</h1>
         <button
           type="button"
-          class="inline-flex items-center gap-2 rounded-[160px] bg-[var(--color-button-primary)] px-[30px] py-[6px] text-white transition-all duration-200 hover:scale-[1.02]"
+          class="inline-flex items-center gap-2 rounded-[160px] bg-[var(--color-button-primary)] px-[30px] py-[6px] text-white transition-all duration-200 hover:scale-[1.02] disabled:opacity-60"
+          [disabled]="categoriasOptions().length === 0"
           (click)="openCreationModal()"
         >
           <img src="/svg/Plus.svg" alt="" class="size-6 shrink-0" aria-hidden="true" />
@@ -17,20 +18,34 @@
         </button>
       </div>
 
+      @if (errorMessage()) {
+        <p class="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+          {{ errorMessage() }}
+        </p>
+      }
+
       <div class="w-full rounded-2xl border border-gray-200 bg-white shadow-lg overflow-hidden">
         <app-solicitation-fields-header />
 
         <div class="max-h-[531px] overflow-y-auto overflow-x-hidden">
-          @for (solicitation of sortedSolicitations; track solicitation.id) {
-            <app-solicitation-row
-              [status]="solicitation.status"
-              [device]="solicitation.device"
-              [dateTime]="solicitation.dateTime"
-              [category]="solicitation.category"
-              [quotedPrice]="solicitation.quotedPrice"
-              (visualize)="openModalFor(solicitation)"
-              (action)="handleRowAction(solicitation, $event)"
-            />
+          @if (loading()) {
+            <div class="flex items-center justify-center p-10 text-gray-500">Carregando solicitações…</div>
+          } @else if (sortedSolicitations.length === 0) {
+            <div class="flex items-center justify-center p-10 text-gray-500">
+              Você ainda não possui solicitações.
+            </div>
+          } @else {
+            @for (solicitation of sortedSolicitations; track solicitation.id) {
+              <app-solicitation-row
+                [status]="solicitation.status"
+                [device]="solicitation.device"
+                [dateTime]="solicitation.dateTime"
+                [category]="solicitation.category"
+                [quotedPrice]="solicitation.quotedPrice"
+                (visualize)="openModalFor(solicitation)"
+                (action)="handleRowAction(solicitation, $event)"
+              />
+            }
           }
         </div>
       </div>
@@ -45,8 +60,9 @@
     [dateTime]="selectedSolicitation?.dateTime ?? ''"
     [category]="selectedSolicitation?.category ?? ''"
     [description]="selectedSolicitation?.description ?? ''"
-    [price]="selectedSolicitation?.quotedPrice ?? 'R$1250,00'"
+    [price]="selectedSolicitation?.quotedPrice ?? ''"
     [timelineItems]="selectedSolicitation?.history ?? []"
+    [categorias]="categoriasOptions()"
     [startWithRejectFlow]="startWithRejectFlow"
     (statusChangeRequested)="handleStatusChange($event)"
     (createRequested)="handleCreation($event)"

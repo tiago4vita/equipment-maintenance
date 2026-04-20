@@ -1,9 +1,14 @@
-import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-navbar';
-import { SOLICITACOES, CLIENTES } from '../../../database.mock';
+import {
+  STATUS_LABELS,
+  SolicitacaoResponse
+} from '../../../models/cliente-integracao.model';
+import { SolicitacaoService } from '../../../services/solicitacao.service';
 
 @Component({
   selector: 'app-staff-maintenance',
@@ -12,49 +17,83 @@ import { SOLICITACOES, CLIENTES } from '../../../database.mock';
   templateUrl: './staff-maintenance.html'
 })
 export class StaffMaintenanceComponent implements OnInit {
- private router = inject(Router);
-private route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly solicitacoes = inject(SolicitacaoService);
 
-  solicitacaoId: number = 0;
-  solicitacaoAtual: any;
-  nomeCliente: string = '';
+  protected readonly statusLabels = STATUS_LABELS;
 
-  descricaoManutencao: string = '';
-  orientacoesCliente: string = '';
-  funcionarioLogadoId: number = 1; 
+  protected solicitacaoId = 0;
+  protected readonly solicitacao = signal<SolicitacaoResponse | null>(null);
+  protected readonly loading = signal(false);
+  protected readonly submitting = signal(false);
+  protected readonly errorMessage = signal<string | null>(null);
 
-  ngOnInit() {
-    // 2. Pega o ID da rota
+  protected descricaoManutencao = '';
+  protected orientacoesCliente = '';
+
+  ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
     this.solicitacaoId = Number(idParam);
 
-    if (this.solicitacaoId) {
-      // 3. Busca a solicitação real no mock
-      this.solicitacaoAtual = SOLICITACOES.find(s => s.id === this.solicitacaoId);
-
-      if (this.solicitacaoAtual) {
-        // 4. Busca o nome do cliente vinculado
-        const cliente = CLIENTES.find(c => c.id === this.solicitacaoAtual.clienteId);
-        this.nomeCliente = cliente ? cliente.nome : 'Desconhecido';
-      }
+    if (!this.solicitacaoId) {
+      this.errorMessage.set('Solicitação inválida.');
+      return;
     }
+
+    this.carregar();
   }
 
-  salvarManutencao() {
-    if (!this.descricaoManutencao || !this.orientacoesCliente) return;
-
-    // Simulação de salvamento (Log no console)
-    console.log('--- MANUTENÇÃO EFETUADA ---');
-    console.log(`Solicitação: #${this.solicitacaoId}`);
-    console.log(`Estado Alterado Para: ARRUMADA`);
-    this.router.navigate(['/staff/all-requests']);
+  private carregar(): void {
+    this.loading.set(true);
+    this.solicitacoes.buscarPorId(this.solicitacaoId).subscribe({
+      next: (s) => {
+        this.solicitacao.set(s);
+        this.loading.set(false);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.loading.set(false);
+        this.errorMessage.set(
+          err.error?.message ?? 'Não foi possível carregar a solicitação.'
+        );
+      }
+    });
   }
 
-  irParaRedirecionamento() {
-    this.router.navigate(['/staff/redirect', this.solicitacaoId]);
+  protected salvarManutencao(): void {
+    if (!this.descricaoManutencao.trim() || !this.orientacoesCliente.trim()) {
+      return;
+    }
+
+    this.submitting.set(true);
+    this.errorMessage.set(null);
+
+    this.solicitacoes
+      .alterarStatus(this.solicitacaoId, {
+        novoStatus: 'ARRUMADA',
+        descricaoManutencao: this.descricaoManutencao.trim(),
+        orientacoesCliente: this.orientacoesCliente.trim()
+      })
+      .subscribe({
+        next: () => {
+          this.submitting.set(false);
+          alert('Manutenção registrada. Solicitação marcada como ARRUMADA.');
+          void this.router.navigate(['/staff/all-requests']);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.submitting.set(false);
+          this.errorMessage.set(
+            err.error?.message ?? 'Não foi possível registrar a manutenção.'
+          );
+        }
+      });
   }
 
-  voltar() {
-    this.router.navigate(['/staff/all-requests']);
+  protected irParaRedirecionamento(): void {
+    void this.router.navigate(['/staff/redirect', this.solicitacaoId]);
+  }
+
+  protected voltar(): void {
+    void this.router.navigate(['/staff/all-requests']);
   }
 }

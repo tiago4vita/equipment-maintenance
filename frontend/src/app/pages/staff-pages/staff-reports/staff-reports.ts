@@ -1,22 +1,14 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-navbar';
-import { CATEGORIAS, SOLICITACOES } from '../../../database.mock';
-
-type SolicitacaoMock = (typeof SOLICITACOES)[number];
-
-interface DiaReceita {
-  data: string;
-  quantidadeServicos: number;
-  valorTotal: number;
-}
-
-interface LinhaCategoria {
-  categoria: string;
-  quantidadeServicos: number;
-  valorTotal: number;
-}
+import {
+  FiltroReceitasPeriodo,
+  ReceitaCategoria,
+  ReceitaDiaria,
+  RelatorioService
+} from '../../../services/relatorio.service';
 
 @Component({
   selector: 'app-staff-reports',
@@ -25,172 +17,147 @@ interface LinhaCategoria {
   templateUrl: './staff-reports.html'
 })
 export class StaffReportsComponent implements OnInit {
-  funcionarioLogado = 'Mário Souza';
-  dataGeracao = new Date();
+  private readonly relatorios = inject(RelatorioService);
 
-  filtro = {
+  protected dataGeracao = new Date();
+
+  protected filtro: FiltroReceitasPeriodo = {
     dataInicio: '',
     dataFim: ''
   };
 
-  /** Quando ativo, aplica `selectedCategoryIds` em receita diária e por categoria. */
-  categoryFilterEnabled = false;
+  protected readonly dadosPorDia = signal<ReceitaDiaria[]>([]);
+  protected readonly dadosPorCategoria = signal<ReceitaCategoria[]>([]);
+  protected readonly totalReceita = signal(0);
+  protected readonly periodoExibicao = signal('Todo o período');
 
-  /** IDs selecionados (quando o filtro está ativo). */
-  selectedCategoryIds: number[] = [];
-
-  dadosFiltrados: SolicitacaoMock[] = [];
-  dadosPorDia: DiaReceita[] = [];
-  dadosPorCategoria: LinhaCategoria[] = [];
-
-  totalReceita = 0;
-  totalServicos = 0;
-  periodoExibicao = 'Todo o período';
-
-  readonly categorias = CATEGORIAS;
+  protected readonly loadingDia = signal(false);
+  protected readonly loadingCategoria = signal(false);
+  protected readonly baixandoPeriodo = signal(false);
+  protected readonly baixandoCategoria = signal(false);
+  protected readonly errorMessage = signal<string | null>(null);
 
   ngOnInit(): void {
-    this.selectedCategoryIds = CATEGORIAS.map((c) => c.id);
-    this.aplicarFiltro();
+    this.carregarDados();
+    this.carregarCategorias();
   }
 
-  aplicarFiltro(): void {
+  protected aplicarFiltro(): void {
+    this.carregarDados();
+  }
+
+  protected carregarDados(): void {
+    this.loadingDia.set(true);
+    this.errorMessage.set(null);
     this.dataGeracao = new Date();
 
-    let base = SOLICITACOES.filter(
-      (s) => s.estado === 'PAGA' || s.estado === 'FINALIZADA'
-    ) as SolicitacaoMock[];
+    const filtro = this.normalizarFiltro();
 
-    if (this.categoryFilterEnabled) {
-      const set = new Set(this.selectedCategoryIds);
-      base = base.filter((s) => set.has(s.categoriaId));
+    this.relatorios.dadosReceitasPeriodo(filtro).subscribe({
+      next: (lista) => {
+        const ordenada = [...lista].sort((a, b) => a.data.localeCompare(b.data));
+        this.dadosPorDia.set(ordenada);
+        const total = ordenada.reduce((acc, x) => acc + Number(x.valorTotal ?? 0), 0);
+        this.totalReceita.set(total);
+        this.atualizarPeriodoExibicao(filtro);
+        this.loadingDia.set(false);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.loadingDia.set(false);
+        this.errorMessage.set(
+          err.error?.message ?? 'Não foi possível carregar o relatório de receitas por período.'
+        );
+      }
+    });
+  }
+
+  protected carregarCategorias(): void {
+    this.loadingCategoria.set(true);
+    this.relatorios.dadosReceitasCategoria().subscribe({
+      next: (lista) => {
+        this.dadosPorCategoria.set(lista);
+        this.loadingCategoria.set(false);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.loadingCategoria.set(false);
+        this.errorMessage.set(
+          err.error?.message ?? 'Não foi possível carregar o relatório por categoria.'
+        );
+      }
+    });
+  }
+
+  protected baixarPdfPeriodo(): void {
+    this.baixandoPeriodo.set(true);
+    this.errorMessage.set(null);
+    const filtro = this.normalizarFiltro();
+
+    this.relatorios.baixarReceitasPeriodo(filtro).subscribe({
+      next: (blob) => {
+        this.salvarBlob(blob, 'receitas_periodo.pdf');
+        this.baixandoPeriodo.set(false);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.baixandoPeriodo.set(false);
+        this.errorMessage.set(
+          err.error?.message ?? 'Não foi possível baixar o PDF de receitas por período.'
+        );
+      }
+    });
+  }
+
+  protected baixarPdfCategoria(): void {
+    this.baixandoCategoria.set(true);
+    this.errorMessage.set(null);
+
+    this.relatorios.baixarReceitasCategoria().subscribe({
+      next: (blob) => {
+        this.salvarBlob(blob, 'receitas_categoria.pdf');
+        this.baixandoCategoria.set(false);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.baixandoCategoria.set(false);
+        this.errorMessage.set(
+          err.error?.message ?? 'Não foi possível baixar o PDF de receitas por categoria.'
+        );
+      }
+    });
+  }
+
+  private salvarBlob(blob: Blob, nomeArquivo: string): void {
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = nomeArquivo;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  }
+
+  private normalizarFiltro(): FiltroReceitasPeriodo {
+    return {
+      dataInicio: this.filtro.dataInicio?.trim() || undefined,
+      dataFim: this.filtro.dataFim?.trim() || undefined
+    };
+  }
+
+  private atualizarPeriodoExibicao(filtro: FiltroReceitasPeriodo): void {
+    if (!filtro.dataInicio && !filtro.dataFim) {
+      this.periodoExibicao.set('Todo o período');
+    } else if (filtro.dataInicio && !filtro.dataFim) {
+      this.periodoExibicao.set(`A partir de ${this.formatarDataBr(filtro.dataInicio)}`);
+    } else if (!filtro.dataInicio && filtro.dataFim) {
+      this.periodoExibicao.set(`Até ${this.formatarDataBr(filtro.dataFim)}`);
+    } else if (filtro.dataInicio && filtro.dataFim) {
+      this.periodoExibicao.set(
+        `De ${this.formatarDataBr(filtro.dataInicio)} a ${this.formatarDataBr(filtro.dataFim)}`
+      );
     }
-
-    this.dadosFiltrados = base.filter((s) => this.passDateFilter(s));
-
-    this.buildPorDia();
-    this.buildPorCategoria();
-    this.calcularTotais();
-    this.gerarTextoPeriodo();
   }
 
-  toggleCategoryFilter(): void {
-    this.categoryFilterEnabled = !this.categoryFilterEnabled;
-    if (this.categoryFilterEnabled && this.selectedCategoryIds.length === 0) {
-      this.selectedCategoryIds = CATEGORIAS.map((c) => c.id);
-    }
-    this.aplicarFiltro();
-  }
-
-  toggleCategoryId(id: number): void {
-    const idx = this.selectedCategoryIds.indexOf(id);
-    if (idx === -1) {
-      this.selectedCategoryIds = [...this.selectedCategoryIds, id];
-    } else {
-      this.selectedCategoryIds = this.selectedCategoryIds.filter((x) => x !== id);
-    }
-    if (this.categoryFilterEnabled) {
-      this.aplicarFiltro();
-    }
-  }
-
-  isCategorySelected(id: number): boolean {
-    return this.selectedCategoryIds.includes(id);
-  }
-
-  gerarPDF(): void {
-    window.print();
-  }
-
-  formatarDataBr(dataString: string): string {
-    const [ano, mes, dia] = dataString.split('-');
+  private formatarDataBr(dataIso: string): string {
+    const [ano, mes, dia] = dataIso.split('-');
     return `${dia}/${mes}/${ano}`;
-  }
-
-  private passDateFilter(s: SolicitacaoMock): boolean {
-    const dataItem = new Date(this.getDataFaturamentoIso(s)).getTime();
-    if (this.filtro.dataInicio) {
-      const inicio = new Date(this.filtro.dataInicio).getTime();
-      if (dataItem < inicio) return false;
-    }
-    if (this.filtro.dataFim) {
-      const fim = new Date(this.filtro.dataFim).getTime();
-      if (dataItem > fim + 86400000) return false;
-    }
-    return true;
-  }
-
-  /** Data usada no agrupamento diário (pagamento, se existir). */
-  private getDataFaturamentoIso(s: SolicitacaoMock): string {
-    const h = s.historico ?? [];
-    const paga = [...h].reverse().find((e: { status?: string }) => e.status === 'PAGA');
-    if (paga && 'dataHora' in paga) {
-      return (paga as { dataHora: string }).dataHora.split('T')[0];
-    }
-    const fin = [...h].reverse().find((e: { status?: string }) => e.status === 'FINALIZADA');
-    if (fin && 'dataHora' in fin) {
-      return (fin as { dataHora: string }).dataHora.split('T')[0];
-    }
-    return s.dataAbertura.split('T')[0];
-  }
-
-  private buildPorDia(): void {
-    const map = new Map<string, { q: number; v: number }>();
-    for (const s of this.dadosFiltrados) {
-      const d = this.getDataFaturamentoIso(s);
-      const valor = s.valorOrcamento ?? 0;
-      const cur = map.get(d) ?? { q: 0, v: 0 };
-      cur.q += 1;
-      cur.v += valor;
-      map.set(d, cur);
-    }
-    this.dadosPorDia = [...map.entries()]
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([data, { q, v }]) => ({
-        data,
-        quantidadeServicos: q,
-        valorTotal: v
-      }));
-  }
-
-  private buildPorCategoria(): void {
-    const byCat = new Map<number, { q: number; v: number }>();
-    for (const s of this.dadosFiltrados) {
-      const id = s.categoriaId;
-      const valor = s.valorOrcamento ?? 0;
-      const cur = byCat.get(id) ?? { q: 0, v: 0 };
-      cur.q += 1;
-      cur.v += valor;
-      byCat.set(id, cur);
-    }
-
-    this.dadosPorCategoria = CATEGORIAS.map((c) => {
-      const agg = byCat.get(c.id) ?? { q: 0, v: 0 };
-      return {
-        categoria: c.nome,
-        quantidadeServicos: agg.q,
-        valorTotal: agg.v
-      };
-    }).filter((row) => row.quantidadeServicos > 0);
-  }
-
-  private calcularTotais(): void {
-    this.totalReceita = this.dadosFiltrados.reduce(
-      (acc, s) => acc + (s.valorOrcamento ?? 0),
-      0
-    );
-    this.totalServicos = this.dadosFiltrados.length;
-  }
-
-  private gerarTextoPeriodo(): void {
-    if (!this.filtro.dataInicio && !this.filtro.dataFim) {
-      this.periodoExibicao = 'Todo o período';
-    } else if (this.filtro.dataInicio && !this.filtro.dataFim) {
-      this.periodoExibicao = `A partir de ${this.formatarDataBr(this.filtro.dataInicio)}`;
-    } else if (!this.filtro.dataInicio && this.filtro.dataFim) {
-      this.periodoExibicao = `Até ${this.formatarDataBr(this.filtro.dataFim)}`;
-    } else {
-      this.periodoExibicao = `De ${this.formatarDataBr(this.filtro.dataInicio)} a ${this.formatarDataBr(this.filtro.dataFim)}`;
-    }
   }
 }

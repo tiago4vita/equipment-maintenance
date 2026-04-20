@@ -7,8 +7,14 @@
       <h1 class="text-[32px] font-bold text-[var(--color-text-primary)]">Solicitações Abertas</h1>
     </section>
 
+    @if (errorMessage()) {
+      <p class="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+        {{ errorMessage() }}
+      </p>
+    }
+
     <div class="rounded-2xl border border-gray-200 bg-white shadow-lg overflow-hidden">
-      
+
       <div class="grid grid-cols-4 bg-gray-50 px-6 py-4 border-b border-gray-200 font-bold text-[14px] uppercase tracking-wider text-[var(--color-text-primary)]">
         <div>Data/Hora</div>
         <div>Cliente</div>
@@ -17,29 +23,31 @@
       </div>
 
       <div class="max-h-[500px] overflow-y-auto custom-scrollbar">
-        
-        <div *ngFor="let item of solicitacoesAbertas" 
-             class="grid grid-cols-4 items-center px-6 py-3 border-b border-gray-100 bg-white hover:bg-gray-50 transition-all">
-          
-          <div class="text-[14px] text-gray-600">{{ item.dataAbertura | date:'dd/MM/yyyy HH:mm' }}</div>
-          
-          <div class="text-[15px] font-semibold text-[var(--color-text-primary)]">{{ getNomeCliente(item.clienteId) }}</div>
-          
-          <div class="text-[14px] text-gray-600 truncate pr-4">{{ item.produto }}</div>
 
-          <div class="flex justify-center">
-            <button
-              (click)="irParaOrcamento(item.id)"
-              class="rounded-[15px] bg-[var(--color-text-primary)] px-5 py-1.5 text-[14px] font-medium text-white transition-all hover:scale-[1.02]"
-            >
-              Efetuar Orçamento
-            </button>
+        @if (loading()) {
+          <div class="p-10 text-center text-gray-500">Carregando…</div>
+        } @else if (items().length === 0) {
+          <div class="p-10 text-center text-gray-400">
+            Nenhuma solicitação aguardando atenção no momento.
           </div>
-        </div>
-
-        <div *ngIf="solicitacoesAbertas.length === 0" class="p-10 text-center text-gray-400">
-          Nenhuma solicitação aguardando atenção no momento.
-        </div>
+        } @else {
+          @for (item of items(); track item.id) {
+            <div class="grid grid-cols-4 items-center px-6 py-3 border-b border-gray-100 bg-white hover:bg-gray-50 transition-all">
+              <div class="text-[14px] text-gray-600">{{ item.dataCriacao || '—' }}</div>
+              <div class="text-[15px] font-semibold text-[var(--color-text-primary)]">{{ item.clienteNome }}</div>
+              <div class="text-[14px] text-gray-600 truncate pr-4">{{ descricaoTruncada(item) }}</div>
+              <div class="flex justify-center">
+                <button
+                  type="button"
+                  (click)="irParaOrcamento(item.id)"
+                  class="rounded-[15px] bg-[var(--color-text-primary)] px-5 py-1.5 text-[14px] font-medium text-white transition-all hover:scale-[1.02]"
+                >
+                  Efetuar Orçamento
+                </button>
+              </div>
+            </div>
+          }
+        }
 
       </div>
     </div>

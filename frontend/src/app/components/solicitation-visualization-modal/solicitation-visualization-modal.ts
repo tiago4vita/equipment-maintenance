@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import type { SolicitationStatus } from '../solicitation-row/solicitation-row';
-import { CATEGORIAS } from '../../database.mock';
 
 export type SolicitationModalMode = 'creation' | SolicitationStatus;
 
@@ -16,85 +15,18 @@ export interface SolicitationTimelineItem {
   author: string;
 }
 
-const DEFAULT_TIMELINE_ITEMS: SolicitationTimelineItem[] = [
-  {
-    label: 'Aberta',
-    bg: '#e4e4e4',
-    textColor: '#2c2c2c',
-    subTextColor: '#2c2c2c99',
-    iconPath: '/svg/Clock.svg',
-    date: '19/02/2026 19h47',
-    author: 'Feito por Rafael'
-  },
-  {
-    label: 'Orçada',
-    bg: '#f2d0b2',
-    textColor: '#885000',
-    subTextColor: '#885000b2',
-    iconPath: '/svg/Clock.svg',
-    date: '19/02/2026 19h47',
-    author: 'Feito por Rafael'
-  },
-  {
-    label: 'Rejeitada',
-    bg: '#ffc3bc',
-    textColor: '#9d3634',
-    subTextColor: '#9d363499',
-    iconPath: '/svg/Clock.svg',
-    date: '19/02/2026 19h47',
-    author: 'Feito por Rafael'
-  },
-  {
-    label: 'Aprovada',
-    bg: '#fcfbb0',
-    textColor: '#676200',
-    subTextColor: '#66600099',
-    iconPath: '/svg/Clock.svg',
-    date: '19/02/2026 19h47',
-    author: 'Feito por Rafael'
-  },
-  {
-    label: 'Finalizada',
-    bg: '#c6e8c4',
-    textColor: '#1f7122',
-    subTextColor: '#1f712299',
-    iconPath: '/svg/Clock.svg',
-    date: '19/02/2026 19h47',
-    author: 'Feito por Rafael'
-  },
-  {
-    label: 'Paga',
-    bg: '#ffcdb3',
-    textColor: '#924e31',
-    subTextColor: '#924e3199',
-    iconPath: '/svg/Clock.svg',
-    date: '19/02/2026 19h47',
-    author: 'Feito por Rafael'
-  },
-  {
-    label: 'Arrumada',
-    bg: '#cce4ff',
-    textColor: '#2e5bab',
-    subTextColor: '#2e5bab99',
-    iconPath: '/svg/Clock.svg',
-    date: '19/02/2026 19h47',
-    author: 'Feito por Rafael'
-  },
-  {
-    label: 'Redirecionada',
-    bg: '#e5d6ff',
-    textColor: '#6849a1',
-    subTextColor: '#6849a199',
-    iconPath: '/svg/Clock.svg',
-    date: '19/02/2026 19h47',
-    author: 'Feito por Rafael'
-  }
-];
+export interface ModalCategoriaOption {
+  id: number;
+  nome: string;
+}
 
+/** RF004 — payload emitido pelo modal. */
 export interface CreateSolicitationPayload {
-  device: string;
-  category: string;
-  description: string;
+  categoriaId: number;
+  descricaoEquipamento: string;
+  descricaoProblema: string;
+  /** Rótulo amigável da categoria, útil apenas para UI otimista. */
+  categoriaNome: string;
 }
 
 @Component({
@@ -107,12 +39,13 @@ export class SolicitationVisualizationModalComponent implements OnChanges {
   @Input() isOpen = false;
   @Input() mode: SolicitationModalMode = 'aberta';
   @Input() startWithRejectFlow = false;
-  @Input() device = 'Macbook M1 Pro';
-  @Input() dateTime = '19 de Fevereiro 19h47';
-  @Input() category = 'Notebook';
-  @Input() description = 'Descrição...';
-  @Input() price = 'R$1250,00';
-  @Input() timelineItems: SolicitationTimelineItem[] = DEFAULT_TIMELINE_ITEMS;
+  @Input() device = '';
+  @Input() dateTime = '';
+  @Input() category = '';
+  @Input() description = '';
+  @Input() price = '';
+  @Input() timelineItems: SolicitationTimelineItem[] = [];
+  @Input() categorias: ModalCategoriaOption[] = [];
 
   @Output() readonly closed = new EventEmitter<void>();
   @Output() readonly statusChangeRequested = new EventEmitter<{
@@ -122,11 +55,10 @@ export class SolicitationVisualizationModalComponent implements OnChanges {
   @Output() readonly createRequested = new EventEmitter<CreateSolicitationPayload>();
 
   protected creationDevice = '';
-  protected creationCategory = '';
+  protected creationCategoryId: number | null = null;
   protected creationDescription = '';
   protected rejectionReason = '';
   protected isWritingRejectionReason = false;
-  protected listaCategorias = CATEGORIAS;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['mode'] || changes['startWithRejectFlow']) {
@@ -139,7 +71,7 @@ export class SolicitationVisualizationModalComponent implements OnChanges {
 
     if (changes['isOpen'] && this.isOpen && this.isCreationMode) {
       this.creationDevice = '';
-      this.creationCategory = '';
+      this.creationCategoryId = null;
       this.creationDescription = '';
     }
   }
@@ -198,14 +130,23 @@ export class SolicitationVisualizationModalComponent implements OnChanges {
   }
 
   protected confirmCreation(): void {
-    if (!this.creationDevice.trim() || !this.creationCategory.trim() || !this.creationDescription.trim()) {
+    const categoriaId = Number(this.creationCategoryId);
+    if (
+      !this.creationDevice.trim() ||
+      !Number.isFinite(categoriaId) ||
+      categoriaId <= 0 ||
+      !this.creationDescription.trim()
+    ) {
       return;
     }
 
+    const categoria = this.categorias.find((c) => c.id === categoriaId);
+
     this.createRequested.emit({
-      device: this.creationDevice.trim(),
-      category: this.creationCategory.trim(),
-      description: this.creationDescription.trim()
+      categoriaId,
+      descricaoEquipamento: this.creationDevice.trim(),
+      descricaoProblema: this.creationDescription.trim(),
+      categoriaNome: categoria?.nome ?? ''
     });
   }
 

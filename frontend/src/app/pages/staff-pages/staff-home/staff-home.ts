@@ -1,32 +1,59 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router'; // 1. Adicionamos o import do Router
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-navbar';
-import { SOLICITACOES, CLIENTES } from '../../../database.mock';
+import { compareBrDateTime } from '../../../date-util';
+import { SolicitacaoResponse } from '../../../models/cliente-integracao.model';
+import { SolicitacaoService } from '../../../services/solicitacao.service';
 
 @Component({
   selector: 'app-staff-home',
   standalone: true,
   imports: [CommonModule, StaffNavbarComponent],
-  templateUrl: './staff-home.html', 
+  templateUrl: './staff-home.html',
   styleUrl: './staff-home.css'
 })
-export class StaffHomeComponent {
-  
-  constructor(private router: Router) {}
+export class StaffHomeComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly solicitacoes = inject(SolicitacaoService);
 
-  get solicitacoesAbertas() {
-    return SOLICITACOES
-      .filter(s => s.estado === 'ABERTA')
-      .sort((a, b) => new Date(a.dataAbertura).getTime() - new Date(b.dataAbertura).getTime());
+  protected readonly items = signal<SolicitacaoResponse[]>([]);
+  protected readonly loading = signal(false);
+  protected readonly errorMessage = signal<string | null>(null);
+
+  ngOnInit(): void {
+    this.carregar();
   }
 
-  getNomeCliente(id: number): string {
-    const cliente = CLIENTES.find(c => c.id === id);
-    return cliente ? cliente.nome : 'Desconhecido';
+  protected carregar(): void {
+    this.loading.set(true);
+    this.errorMessage.set(null);
+
+    // RF011 — status omitido faz o backend filtrar apenas ABERTA.
+    this.solicitacoes.listarStaff({ periodo: 'todas' }).subscribe({
+      next: (lista) => {
+        const ordenadas = [...lista].sort(
+          (a, b) => compareBrDateTime(a.dataCriacao, b.dataCriacao)
+        );
+        this.items.set(ordenadas);
+        this.loading.set(false);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.errorMessage.set(
+          err.error?.message ?? 'Não foi possível carregar as solicitações abertas.'
+        );
+        this.loading.set(false);
+      }
+    });
   }
 
-  irParaOrcamento(id: number) {
-    this.router.navigate(['/staff/budget', id]);
+  protected descricaoTruncada(s: SolicitacaoResponse): string {
+    const texto = s.descricaoEquipamento ?? '';
+    return texto.length > 30 ? `${texto.slice(0, 30)}...` : texto;
+  }
+
+  protected irParaOrcamento(id: number): void {
+    void this.router.navigate(['/staff/budget', id]);
   }
 }

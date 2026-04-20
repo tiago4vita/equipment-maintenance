@@ -4,86 +4,118 @@
   <div class="ml-[320px] pt-[150px] w-[calc(100%-360px)] max-w-[1440px] px-8 pb-12">
     <h1 class="text-[36px] font-bold text-[var(--color-text-primary)] mb-8">Finalizar Solicitação</h1>
 
-    <div class="grid grid-cols-3 gap-8">
-      
-      <div class="col-span-2 space-y-6">
-        <section class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-          <div class="flex justify-between items-start mb-6 border-b pb-4">
-            <h2 class="text-xl font-bold text-[var(--color-text-primary)]">
-              Resumo da Ordem de Serviço #{{ solicitacaoId }}
-            </h2>
-            <span class="bg-orange-100 text-orange-700 px-4 py-1 rounded-full text-sm font-bold uppercase">
-              {{ solicitacaoAtual?.estado }}
-            </span>
-          </div>
-          
-          <div class="grid grid-cols-2 gap-8">
-            <div class="space-y-4">
-              <div>
-                <span class="text-gray-400 block text-xs uppercase tracking-wider">Cliente</span>
-                <p class="text-lg font-semibold">{{ cliente?.nome }}</p>
-                <p class="text-sm text-gray-500">CPF: {{ cliente?.cpf }}</p>
+    @if (errorMessage()) {
+      <p class="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+        {{ errorMessage() }}
+      </p>
+    }
+
+    @if (loading()) {
+      <p class="text-gray-500">Carregando…</p>
+    } @else if (solicitacao(); as s) {
+      <div class="grid grid-cols-3 gap-8">
+
+        <div class="col-span-2 space-y-6">
+          <section class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+            <div class="flex justify-between items-start mb-6 border-b pb-4">
+              <h2 class="text-xl font-bold text-[var(--color-text-primary)]">
+                Resumo da Ordem de Serviço #{{ s.id }}
+              </h2>
+              <span class="bg-orange-100 text-orange-700 px-4 py-1 rounded-full text-sm font-bold uppercase">
+                {{ statusLabels[s.status] }}
+              </span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-8">
+              <div class="space-y-4">
+                <div>
+                  <span class="text-gray-400 block text-xs uppercase tracking-wider">Cliente</span>
+                  <p class="text-lg font-semibold">{{ s.clienteNome }}</p>
+                </div>
+                <div>
+                  <span class="text-gray-400 block text-xs uppercase tracking-wider">Equipamento</span>
+                  <p class="text-lg font-semibold">{{ s.descricaoEquipamento }}</p>
+                </div>
+                <div>
+                  <span class="text-gray-400 block text-xs uppercase tracking-wider">Categoria</span>
+                  <p class="text-lg font-semibold">{{ s.categoriaNome ?? '—' }}</p>
+                </div>
               </div>
-              <div>
-                <span class="text-gray-400 block text-xs uppercase tracking-wider">Equipamento</span>
-                <p class="text-lg font-semibold">{{ solicitacaoAtual?.produto }}</p>
+
+              <div class="space-y-4">
+                <div>
+                  <span class="text-gray-400 block text-xs uppercase tracking-wider">Aberta em</span>
+                  <p class="text-lg font-semibold">{{ s.dataCriacao || '—' }}</p>
+                </div>
+                <div>
+                  <span class="text-gray-400 block text-xs uppercase tracking-wider">Pagamento em</span>
+                  <p class="text-lg font-semibold">{{ s.dataHoraPagamento || '—' }}</p>
+                </div>
+                <div>
+                  <span class="text-gray-400 block text-xs uppercase tracking-wider">Valor Total</span>
+                  <p class="text-2xl font-bold text-green-600">{{ (s.valorOrcamento ?? 0) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</p>
+                </div>
               </div>
+            </div>
+
+            <div class="mt-8 p-6 bg-gray-50 rounded-xl space-y-4">
+              <div>
+                <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Defeito Reportado</span>
+                <p class="text-gray-700 italic">"{{ s.descricaoProblema }}"</p>
+              </div>
+              @if (s.descricaoManutencao) {
+                <div>
+                  <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Manutenção Realizada</span>
+                  <p class="text-gray-700">{{ s.descricaoManutencao }}</p>
+                </div>
+              }
+              @if (s.orientacoesCliente) {
+                <div>
+                  <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Orientações ao Cliente</span>
+                  <p class="text-gray-700">{{ s.orientacoesCliente }}</p>
+                </div>
+              }
+            </div>
+          </section>
+        </div>
+
+        <div class="space-y-6">
+          <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-green-500 h-fit">
+            <div class="flex flex-col items-center text-center mb-6">
+              <div class="size-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
+                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h2 class="text-xl font-bold text-[var(--color-text-primary)]">Concluir Processo</h2>
+              <p class="text-sm text-gray-500 mt-2">Confirme que o equipamento foi entregue ao cliente e o processo está encerrado.</p>
             </div>
 
             <div class="space-y-4">
-              <div>
-                <span class="text-gray-400 block text-xs uppercase tracking-wider">Técnico Responsável</span>
-                <p class="text-lg font-semibold">{{ tecnicoNome }}</p>
-              </div>
-              <div>
-                <span class="text-gray-400 block text-xs uppercase tracking-wider">Valor Total</span>
-                <p class="text-2xl font-bold text-green-600">R$ {{ solicitacaoAtual?.valor || 0 }}</p>
-              </div>
+              <button
+                type="button"
+                (click)="finalizar()"
+                [disabled]="submitting() || s.status !== 'PAGA'"
+                class="w-full bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed">
+                {{ submitting() ? 'Finalizando…' : 'Finalizar Agora' }}
+              </button>
+
+              <button
+                type="button"
+                (click)="voltar()"
+                class="w-full py-2 text-gray-400 font-medium hover:text-gray-600 hover:underline transition-colors text-sm">
+                Voltar para Lista
+              </button>
             </div>
-          </div>
 
-          <div class="mt-8 p-6 bg-gray-50 rounded-xl space-y-4">
-            <div>
-              <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Descrição da Manutenção</span>
-              <p class="text-gray-700">{{ solicitacaoAtual?.descricaoDefeito }}</p>
+            <div class="mt-8 pt-6 border-t border-gray-100 text-[11px] text-gray-400 leading-tight">
+              <p class="mb-1">● O estado passará para <strong class="text-green-600">FINALIZADA</strong>.</p>
+              <p>● Registro: <strong>{{ dataAtual | date:'dd/MM/yyyy HH:mm' }}</strong></p>
             </div>
-          </div>
-        </section>
-      </div>
-
-      <div class="space-y-6">
-        <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-green-500 h-fit">
-          <div class="flex flex-col items-center text-center mb-6">
-            <div class="size-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
-              <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <h2 class="text-xl font-bold text-[var(--color-text-primary)]">Concluir Processo</h2>
-            <p class="text-sm text-gray-500 mt-2">Confirme que o equipamento foi entregue ao cliente e o processo está encerrado.</p>
-          </div>
-
-          <div class="space-y-4">
-            <button 
-              (click)="finalizar()"
-              class="w-full bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md">
-              Finalizar Agora
-            </button>
-            
-            <button 
-              (click)="voltar()"
-              class="w-full py-2 text-gray-400 font-medium hover:text-gray-600 hover:underline transition-colors text-sm">
-              Voltar para Lista
-            </button>
-          </div>
-
-          <div class="mt-8 pt-6 border-t border-gray-100 text-[11px] text-gray-400 leading-tight">
-            <p class="mb-1">● O estado passará para <strong class="text-green-600">FINALIZADA</strong>.</p>
-            <p>● Registro: <strong>{{ funcionarioLogado.nome }}</strong> em {{ dataAtual | date:'dd/MM/yyyy HH:mm' }}</p>
           </div>
         </div>
+
       </div>
-      
-    </div>
+    }
   </div>
 </main>

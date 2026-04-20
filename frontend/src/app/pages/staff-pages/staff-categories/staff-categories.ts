@@ -1,12 +1,9 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-navbar';
-
-interface Categoria {
-  id: number;
-  nome: string;
-}
+import { CategoriaService, CategoriaResponse } from '../../../services/categoria.service';
 
 @Component({
   selector: 'app-staff-categories',
@@ -15,76 +12,107 @@ interface Categoria {
   templateUrl: './staff-categories.html'
 })
 export class StaffCategoriesComponent implements OnInit {
-  
-  // Dados exigidos na especificação
-  categorias: Categoria[] = [
-    { id: 1, nome: 'Notebook' },
-    { id: 2, nome: 'Desktop' },
-    { id: 3, nome: 'Impressora' },
-    { id: 4, nome: 'Mouse' },
-    { id: 5, nome: 'Teclado' }
-  ];
+  private readonly service = inject(CategoriaService);
 
-  // Controle do Formulário
-  categoriaAtual: Categoria = { id: 0, nome: '' };
-  modoEdicao: boolean = false;
-  
-  // Simulador de Auto-Incremento para o banco
-  proximoId: number = 6;
+  protected readonly categorias = signal<CategoriaResponse[]>([]);
+  protected readonly loading = signal(false);
+  protected readonly submitting = signal(false);
+  protected readonly errorMessage = signal<string | null>(null);
 
-  constructor() {}
+  protected categoriaAtual: { id: number; nome: string; descricao: string } = {
+    id: 0,
+    nome: '',
+    descricao: ''
+  };
+  protected modoEdicao = false;
 
-  ngOnInit() {}
+  ngOnInit(): void {
+    this.carregar();
+  }
 
-  salvarCategoria() {
-    if (!this.categoriaAtual.nome.trim()) return;
-
-    if (this.modoEdicao) {
-      // UPDATE: Atualiza a categoria existente
-      const index = this.categorias.findIndex(c => c.id === this.categoriaAtual.id);
-      if (index !== -1) {
-        this.categorias[index] = { ...this.categoriaAtual };
-        console.log(`Categoria #${this.categoriaAtual.id} atualizada para: ${this.categoriaAtual.nome}`);
+  protected carregar(): void {
+    this.loading.set(true);
+    this.errorMessage.set(null);
+    this.service.listar().subscribe({
+      next: (lista) => {
+        this.categorias.set([...lista].sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR')));
+        this.loading.set(false);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.loading.set(false);
+        this.errorMessage.set(err.error?.message ?? 'Não foi possível carregar as categorias.');
       }
-    } else {
-      // CREATE: Insere uma nova categoria
-      const novaCategoria = {
-        id: this.proximoId++,
-        nome: this.categoriaAtual.nome.trim()
-      };
-      this.categorias.push(novaCategoria);
-      console.log(`Nova categoria adicionada: ${novaCategoria.nome}`);
-    }
-
-    // Limpa o formulário após salvar
-    this.resetarFormulario();
+    });
   }
 
-  editarCategoria(cat: Categoria) {
-    // READ (Carrega para edição)
-    this.modoEdicao = true;
-    this.categoriaAtual = { ...cat }; // Usa spread para não alterar a lista antes de salvar
-  }
+  protected salvarCategoria(): void {
+    const nome = this.categoriaAtual.nome.trim();
+    if (!nome) return;
 
-  excluirCategoria(id: number) {
-    // DELETE: Remove da lista
-    if (confirm('Tem certeza que deseja excluir esta categoria?')) {
-      this.categorias = this.categorias.filter(c => c.id !== id);
-      console.log(`Categoria #${id} removida.`);
-      
-      // Se estava editando a categoria que foi apagada, limpa o formulário
-      if (this.categoriaAtual.id === id) {
+    this.submitting.set(true);
+    this.errorMessage.set(null);
+
+    const payload = {
+      nome,
+      descricao: this.categoriaAtual.descricao?.trim() || null
+    };
+
+    const request$ = this.modoEdicao
+      ? this.service.atualizar(this.categoriaAtual.id, payload)
+      : this.service.criar(payload);
+
+    request$.subscribe({
+      next: () => {
+        this.submitting.set(false);
         this.resetarFormulario();
+        this.carregar();
+      },
+      error: (err: HttpErrorResponse) => {
+        this.submitting.set(false);
+        this.errorMessage.set(
+          err.error?.message ?? 'Não foi possível salvar a categoria.'
+        );
       }
-    }
+    });
   }
 
-  cancelar() {
+  protected editarCategoria(cat: CategoriaResponse): void {
+    this.modoEdicao = true;
+    this.categoriaAtual = {
+      id: cat.id,
+      nome: cat.nome,
+      descricao: cat.descricao ?? ''
+    };
+  }
+
+  protected excluirCategoria(cat: CategoriaResponse): void {
+    const confirmacao = window.confirm(
+      `Confirma a remoção da categoria "${cat.nome}"? Ela ficará inativa no sistema (soft-delete).`
+    );
+    if (!confirmacao) return;
+
+    this.errorMessage.set(null);
+    this.service.deletar(cat.id).subscribe({
+      next: () => {
+        if (this.categoriaAtual.id === cat.id) {
+          this.resetarFormulario();
+        }
+        this.carregar();
+      },
+      error: (err: HttpErrorResponse) => {
+        this.errorMessage.set(
+          err.error?.message ?? 'Não foi possível remover a categoria.'
+        );
+      }
+    });
+  }
+
+  protected cancelar(): void {
     this.resetarFormulario();
   }
 
-  private resetarFormulario() {
+  private resetarFormulario(): void {
     this.modoEdicao = false;
-    this.categoriaAtual = { id: 0, nome: '' };
+    this.categoriaAtual = { id: 0, nome: '', descricao: '' };
   }
 }
