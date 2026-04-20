@@ -1,47 +1,75 @@
 # Decisões de projeto (suposições documentadas)
 
-Conforme o enunciado, suposições não definidas no texto oficial devem ser documentadas. Este arquivo registra as decisões da equipe.
+Conforme o enunciado, suposições não definidas no texto oficial devem ser documentadas. Este arquivo registra as decisões da equipe para a integração frontend ↔ backend.
 
-## RF004 — Solicitação de manutenção e cadastro de equipamento
+## RF004 — Solicitação de manutenção (extensão do modelo)
 
-**Contexto:** O enunciado exige que a solicitação contenha descrição do equipamento, categoria e descrição do defeito, mas não define um RF separado para “cadastro de equipamento” pelo cliente.
+**Contexto:** O enunciado exige que a solicitação contenha **descrição do equipamento (texto livre)**, **categoria do equipamento** e **descrição do defeito**, mas a implementação inicial vinculava obrigatoriamente um `equipamentoId` previamente cadastrado.
 
 **Decisão adotada:**
 
-1. O **equipamento** é uma entidade própria (`Equipamento`), vinculada a um **cliente** e a uma **categoria** (`CategoriaEquipamento`).
-2. O fluxo no sistema é em **duas etapas**:
-   - **Etapa A — cadastro do equipamento:** o cliente autenticado registra o equipamento via `POST /api/equipamentos` (informando `clienteId`, `categoriaId`, nome, marca, modelo, etc.).
-   - **Etapa B — abertura da solicitação:** o cliente cria a solicitação via `POST /api/solicitacoes`, informando `equipamentoId`, `clienteId` e `descricaoProblema` (defeito).
-3. A **“descrição do equipamento”** exigida pelo RF004 é atendida pelos dados do equipamento já cadastrado (nome/marca/modelo); a **categoria** vem do vínculo do equipamento com a categoria; a **descrição do defeito** é o campo `descricaoProblema` da solicitação.
+1. A entidade `Solicitacao` foi estendida com dois campos persistidos diretamente:
+   - `descricaoEquipamento` (texto livre, NOT NULL, máx. 200 caracteres) — corresponde literalmente à “descrição do equipamento” do enunciado.
+   - `categoria` (FK obrigatória para `CategoriaEquipamento`) — corresponde à “categoria do equipamento”.
+2. O `equipamentoId` (vínculo a um `Equipamento` previamente cadastrado) tornou-se **opcional**, mantido apenas para retrocompatibilidade com massas de teste e cenários em que o cliente já possua o equipamento cadastrado.
+3. Como o backend passou a expor `descricaoEquipamento` e `categoriaId/categoriaNome` no `SolicitacaoResponse`, o cliente cria uma solicitação enviando apenas `clienteId`, `categoriaId`, `descricaoEquipamento` e `descricaoProblema` no `POST /api/solicitacoes`.
+4. O serviço de relatórios (`RelatorioService`) passou a agrupar receitas por `solicitacao.categoria.nome` (RF020), com fallback para `equipamento.categoria.nome` quando a solicitação ainda não tiver categoria explícita (massa antiga).
 
-**Alternativa não adotada:** enviar todos os dados do equipamento e do defeito em uma única requisição de solicitação (criaria duplicação de modelo ou lógica mais complexa). A opção em duas etapas mantém normalização e reutilização de equipamentos em novas solicitações.
+**Alternativa não adotada:** manter dois fluxos (cadastro de equipamento + abertura) e exigir `equipamentoId` em RF004. Foi descartada porque obrigaria mais um RF/tela não previsto no enunciado e dificultaria a implementação literal do RF004.
 
 ---
 
-## Autenticação (RF002)
+## RF001 — Autocadastro do cliente
 
-**Decisão:** Após login bem-sucedido, a API retorna um **token JWT** no campo `token` de `LoginResponse`. As demais rotas (exceto login, autocadastro de cliente e health check) exigem o cabeçalho `Authorization: Bearer <token>`. O cliente da API (navegador, Postman, app Angular etc.) deve armazenar o token e reenviá-lo nas requisições protegidas.
+- A senha gerada aleatoriamente possui **4 dígitos numéricos** (conforme enunciado), gerada no backend (`SenhaUtil`) e enviada por e-mail via `EmailService` no momento do autocadastro. O cliente nunca digita a senha no formulário.
+- O endereço persistido inclui **CEP, logradouro, número, bairro, complemento, cidade e estado**. Cidade e estado **não** foram normalizados (FK), conforme exceção autorizada pelo enunciado.
+- A consulta ViaCEP é feita no frontend (`ViaCepService`) e preenche os campos antes do envio. Mesmo que o usuário ajuste manualmente, todos os campos vão para o backend.
+- Máscaras aplicadas no frontend: CPF (`000.000.000-00`), CEP (`00000-000`) e telefone (`(00) 00000-0000`).
 
-## Listagem de solicitações (funcionário — RF013)
+## RF002 — Autenticação JWT
 
-**Parâmetros em** `GET /api/solicitacoes`:
+- Após login bem-sucedido, `POST /api/auth/login` retorna `LoginResponse { id, nome, email, perfil, token }`.
+- O frontend armazena o token em `localStorage` (chave `token`) e envia em todas as chamadas via interceptor (`Authorization: Bearer <token>`).
+- Apenas `RF001 (POST /api/clientes)`, `RF002 (POST /api/auth/login)` e endpoints públicos de health check ficam fora do guard.
+- O perfil retornado (`CLIENTE` ou `FUNCIONARIO`) é usado pelo `authGuard` para impedir acesso cruzado às áreas.
 
-| Parâmetro | Valores | Descrição |
-|-----------|---------|-----------|
-| `periodo` | `todas` (padrão), `hoje`, `intervalo` | Filtro pela **data de abertura** (`dataCriacao`). Com `intervalo`, envie também `dataInicio` e `dataFim` (ISO `yyyy-MM-dd`). |
-| `status` | ex.: `ABERTA`, `ORCADA`, … | Opcional; filtra por estado atual. |
-| `dataInicio`, `dataFim` | datas | Obrigatórios quando `periodo=intervalo`. |
+## Mapeamento de status (`ORCADA` sem cedilha)
 
-Solicitações **REDIRECIONADAS** só aparecem para o funcionário que é o **destino atual** (`funcionarioDestinoAtual` na entidade), exceto quando o filtro de status restringe outros casos.
+- O enum `StatusSolicitacao` no backend usa identificadores ASCII (`ORCADA`, não `ORÇADA`) por conveniência de serialização e parsing JPA/JSON.
+- O frontend mantém o **rótulo de exibição com cedilha** (`Orçada`) através do mapa `STATUS_LABELS` em `cliente-integracao.model.ts`. O wire continua usando `ORCADA`.
+- Mesmo princípio para a coloração de RF013, padronizada em `STATUS_BG_CLASSES` e na regra `solicitation-states.mdc`.
 
-## Relatórios PDF (RF019 / RF020)
+## RF013 — Listagem para funcionário
 
-- `GET /api/relatorios/receitas?dataInicio=&dataFim=` — receitas por dia no período (datas opcionais; usa `dataHoraPagamento`).
-- `GET /api/relatorios/receitas-por-categoria` — receitas agrupadas por categoria de equipamento.
+- Endpoint único `GET /api/solicitacoes` aceita:
+  - `status` opcional. Quando **omitido**, retorna apenas `ABERTA` (RF011). Para listar tudo (RF013), enviar `status=todos`.
+  - `periodo`: `todas` (padrão), `hoje`, `intervalo`. Com `intervalo`, exigem-se `dataInicio` e `dataFim` (ISO `yyyy-MM-dd`).
+- Solicitações no estado `REDIRECIONADA` só aparecem para o funcionário **destino atual** do redirecionamento (regra aplicada no service).
 
-Ambos exigem perfil **FUNCIONARIO** e retornam `application/pdf`.
+## RF015 — Redirecionamento
+
+- O dropdown de “Novo responsável” lista todos os funcionários ativos **exceto o usuário logado** (regra aplicada no `staff-redirect`, e replicada no backend para defesa em profundidade).
+- O `funcionarioDestinoId` é enviado no `PATCH /api/solicitacoes/{id}/status` junto com `novoStatus=REDIRECIONADA`. O motivo (opcional) vai em `observacao`.
+
+## RF019 / RF020 — Relatórios PDF
+
+- `GET /api/relatorios/receitas-periodo?dataInicio=&dataFim=` retorna `application/pdf`.
+- `GET /api/relatorios/receitas-categoria` retorna `application/pdf`.
+- Para preview na tela, há os endpoints irmãos `/dados` que retornam JSON (`ReceitaDiariaResponse`, `ReceitaCategoriaResponse`) com `valorTotal: BigDecimal`.
+- O frontend baixa o PDF via `HttpClient.get` com `responseType: 'blob'` e dispara o download criando um `<a download>` em memória.
+
+## RF018 — CRUD de funcionários
+
+- O backend impede remover o último funcionário ativo e impede que o funcionário remova a si mesmo. O frontend replica essa regra para feedback imediato (botão desabilitado + mensagem).
+- Senha é obrigatória ao criar um funcionário e **opcional** na atualização (mantém a senha atual quando vazia).
+
+## Soft-delete
+
+- Toda exclusão (categoria, funcionário, equipamento, cliente) usa o campo `ativo = false`. Não há `DELETE` físico.
+- O frontend pede confirmação (`confirm(...)`) antes de qualquer remoção, conforme exigido pelos requisitos não-funcionais.
 
 ## Produção
 
 - Defina a variável de ambiente **`JWT_SECRET`** com uma chave forte (≥ 256 bits para HS256).
-- Ative o perfil **`prod`** (`spring.profiles.active=prod`) para desabilitar o console H2 (`application-prod.properties`).
+- Ative o perfil **`prod`** (`spring.profiles.active=prod`) para desabilitar o console H2 e migrar para PostgreSQL/MySQL (`application-prod.properties`).
+- Em desenvolvimento, o frontend usa `proxy.conf.json` para encaminhar `/api/*` ao backend em `localhost:8080`.

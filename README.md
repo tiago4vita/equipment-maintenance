@@ -111,6 +111,19 @@ mvn package
 - Frontend sem conectar na API:
   - Confirme backend ativo em `http://localhost:8080`
   - Teste `http://localhost:8080/api/status`
+- Seed de dados (Maria, Mário, João, José, Joana, Joaquina) não aparece após login:
+  - O `DemoDataLoader` é idempotente por `maria@empresa.com`. Em bancos MySQL com volume antigo (versões anteriores criavam Maria com clientes diferentes), o loader detecta a Maria existente e não recarrega.
+  - Em desenvolvimento, faça o reset do volume MySQL para repopular a partir de uma base limpa:
+    ```bash
+    docker compose down -v
+    docker compose up -d
+    cd backend && mvn spring-boot:run
+    ```
+  - Atenção: `down -v` apaga TODOS os dados locais do MySQL.
+- POST `/api/solicitacoes` retornando HTTP 500:
+  - Quase sempre é schema MySQL legado: colunas `solicitacao.categoria_id`, `solicitacao.descricao_equipamento` e `historico_solicitacao.cliente_id` foram adicionadas como `NOT NULL` em versões recentes, e o `ddl-auto=update` do Hibernate não reescreve constraints em tabelas com dados.
+  - Solução recomendada: o reset do volume descrito acima.
+  - Logs detalhados de SQL/bind já estão habilitados em `application.properties` (`logging.level.org.hibernate.SQL=DEBUG`, `org.hibernate.orm.jdbc.bind=TRACE`) — consulte o console do backend para identificar a query exata que falhou.
 
 ## 9. Referências
 
