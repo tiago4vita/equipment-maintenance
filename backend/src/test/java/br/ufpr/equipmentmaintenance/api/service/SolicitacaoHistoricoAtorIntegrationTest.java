@@ -47,7 +47,12 @@ class SolicitacaoHistoricoAtorIntegrationTest {
         JwtPrincipal funcJwt = new JwtPrincipal(funcionario.getEmail(), funcionario.getId(), "FUNCIONARIO");
 
         SolicitacaoResponse criada = solicitacaoService.criar(
-                new SolicitacaoRequest(equipamento.getId(), cliente.getId(), "Tela piscando."),
+                new SolicitacaoRequest(
+                        equipamento.getId(),
+                        cat.getId(),
+                        "Notebook X",
+                        cliente.getId(),
+                        "Tela piscando."),
                 clienteJwt);
 
         HistoricoSolicitacaoResponse abertura = ultimoHistorico(criada.historico());

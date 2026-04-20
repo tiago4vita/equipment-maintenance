@@ -15,9 +15,22 @@ public class Solicitacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    /**
+     * RF004 — vínculo opcional com um Equipamento pré-cadastrado do cliente.
+     * A entidade ganhou FK direta para {@link CategoriaEquipamento} e
+     * {@code descricaoEquipamento} em texto livre, mas mantemos o campo para
+     * compatibilidade com seeds/telas existentes.
+     */
+    @ManyToOne
     @JoinColumn(name = "equipamento_id")
     private Equipamento equipamento;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "categoria_id")
+    private CategoriaEquipamento categoria;
+
+    @Column(name = "descricao_equipamento", nullable = false, length = 200)
+    private String descricaoEquipamento;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "cliente_id")
@@ -63,6 +76,12 @@ public class Solicitacao {
 
     public Equipamento getEquipamento() { return equipamento; }
     public void setEquipamento(Equipamento equipamento) { this.equipamento = equipamento; }
+
+    public CategoriaEquipamento getCategoria() { return categoria; }
+    public void setCategoria(CategoriaEquipamento categoria) { this.categoria = categoria; }
+
+    public String getDescricaoEquipamento() { return descricaoEquipamento; }
+    public void setDescricaoEquipamento(String descricaoEquipamento) { this.descricaoEquipamento = descricaoEquipamento; }
 
     public Cliente getCliente() { return cliente; }
     public void setCliente(Cliente cliente) { this.cliente = cliente; }

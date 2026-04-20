@@ -124,6 +124,8 @@ public class DemoDataLoader implements CommandLineRunner {
             LocalDateTime t0 = base.plusDays(i % 20).plusHours(i % 9).plusMinutes(i * 7L);
             Solicitacao s = new Solicitacao();
             s.setEquipamento(eq);
+            s.setCategoria(eq.getCategoria());
+            s.setDescricaoEquipamento(eq.getNome());
             s.setCliente(cli);
             s.setDescricaoProblema("Defeito relatado #" + (i + 1) + ": equipamento apresenta falha intermitente.");
             s.setDataCriacao(t0);

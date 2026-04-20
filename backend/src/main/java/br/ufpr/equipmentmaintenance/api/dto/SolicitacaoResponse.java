@@ -9,9 +9,12 @@ import java.util.List;
 public record SolicitacaoResponse(
     Long id,
     Long clienteId,
+    String clienteNome,
     Long equipamentoId,
     String equipamentoNome,
-    String clienteNome,
+    Long categoriaId,
+    String categoriaNome,
+    String descricaoEquipamento,
     String descricaoProblema,
     String status,
     BigDecimal valorOrcamento,
@@ -20,6 +23,7 @@ public record SolicitacaoResponse(
     String orientacoesCliente,
     LocalDateTime dataHoraPagamento,
     LocalDateTime dataHoraFinalizacao,
+    Long funcionarioDestinoAtualId,
     String funcionarioDestinoAtualNome,
     List<HistoricoSolicitacaoResponse> historico
 ) {
@@ -28,6 +32,15 @@ public record SolicitacaoResponse(
             .map(HistoricoSolicitacaoResponse::fromEntity)
             .toList();
 
+        Long equipamentoId = s.getEquipamento() != null ? s.getEquipamento().getId() : null;
+        String equipamentoNome = s.getEquipamento() != null ? s.getEquipamento().getNome() : null;
+
+        Long categoriaId = s.getCategoria() != null ? s.getCategoria().getId() : null;
+        String categoriaNome = s.getCategoria() != null ? s.getCategoria().getNome() : null;
+
+        Long destinoId = s.getFuncionarioDestinoAtual() != null
+            ? s.getFuncionarioDestinoAtual().getId()
+            : null;
         String destinoNome = s.getFuncionarioDestinoAtual() != null
             ? s.getFuncionarioDestinoAtual().getNome()
             : null;
@@ -35,9 +48,12 @@ public record SolicitacaoResponse(
         return new SolicitacaoResponse(
             s.getId(),
             s.getCliente().getId(),
-            s.getEquipamento().getId(),
-            s.getEquipamento().getNome(),
             s.getCliente().getNome(),
+            equipamentoId,
+            equipamentoNome,
+            categoriaId,
+            categoriaNome,
+            s.getDescricaoEquipamento(),
             s.getDescricaoProblema(),
             s.getStatus().name(),
             s.getValorOrcamento(),
@@ -46,6 +62,7 @@ public record SolicitacaoResponse(
             s.getOrientacoesCliente(),
             s.getDataHoraPagamento(),
             s.getDataHoraFinalizacao(),
+            destinoId,
             destinoNome,
             historico
         );

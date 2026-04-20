@@ -113,9 +113,7 @@ public class RelatorioService {
         Map<String, BigDecimal> porCategoria = pagas.stream()
                 .filter(s -> s.getValorOrcamento() != null)
                 .collect(Collectors.groupingBy(
-                        s -> s.getEquipamento().getCategoria() != null
-                                ? s.getEquipamento().getCategoria().getNome()
-                                : "(sem categoria)",
+                        RelatorioService::nomeCategoria,
                         Collectors.reducing(BigDecimal.ZERO, Solicitacao::getValorOrcamento, BigDecimal::add)));
 
         List<String> categorias = porCategoria.keySet().stream().sorted().toList();
@@ -189,12 +187,27 @@ public class RelatorioService {
         Map<String, BigDecimal> porCategoria = pagas.stream()
                 .filter(s -> s.getValorOrcamento() != null)
                 .collect(Collectors.groupingBy(
-                        s -> s.getEquipamento().getCategoria() != null ? s.getEquipamento().getCategoria().getNome() : "(sem categoria)",
+                        RelatorioService::nomeCategoria,
                         Collectors.reducing(BigDecimal.ZERO, Solicitacao::getValorOrcamento, BigDecimal::add)));
 
         return porCategoria.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .map(e -> new ReceitaCategoriaResponse(e.getKey(), e.getValue()))
                 .toList();
+    }
+
+    /**
+     * RF020: agrupar por categoria da solicitação. Fallback para a categoria do equipamento
+     * mantém compatibilidade com registros antigos.
+     */
+    private static String nomeCategoria(Solicitacao s) {
+        if (s.getCategoria() != null && s.getCategoria().getNome() != null) {
+            return s.getCategoria().getNome();
+        }
+        if (s.getEquipamento() != null && s.getEquipamento().getCategoria() != null
+                && s.getEquipamento().getCategoria().getNome() != null) {
+            return s.getEquipamento().getCategoria().getNome();
+        }
+        return "(sem categoria)";
     }
 }

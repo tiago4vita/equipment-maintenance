@@ -24,15 +24,18 @@ public class SolicitacaoService {
     private final EquipamentoRepository equipamentoRepository;
     private final ClienteRepository clienteRepository;
     private final FuncionarioRepository funcionarioRepository;
+    private final CategoriaRepository categoriaRepository;
 
     public SolicitacaoService(SolicitacaoRepository solicitacaoRepository,
                               EquipamentoRepository equipamentoRepository,
                               ClienteRepository clienteRepository,
-                              FuncionarioRepository funcionarioRepository) {
+                              FuncionarioRepository funcionarioRepository,
+                              CategoriaRepository categoriaRepository) {
         this.solicitacaoRepository = solicitacaoRepository;
         this.equipamentoRepository = equipamentoRepository;
         this.clienteRepository = clienteRepository;
         this.funcionarioRepository = funcionarioRepository;
+        this.categoriaRepository = categoriaRepository;
     }
 
     @Transactional
@@ -44,25 +47,33 @@ public class SolicitacaoService {
             }
         }
 
-        Equipamento equipamento = equipamentoRepository.findById(request.equipamentoId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Equipamento não encontrado."));
-
-        if ("CLIENTE".equals(principal.perfil())
-                && !equipamento.getCliente().getId().equals(principal.userId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "O equipamento não pertence ao cliente logado.");
-        }
-
         Cliente cliente = clienteRepository.findById(request.clienteId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado."));
 
-        if (!equipamento.getCliente().getId().equals(cliente.getId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "O equipamento informado não pertence ao cliente indicado.");
+        CategoriaEquipamento categoria = categoriaRepository.findById(request.categoriaId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada."));
+
+        Equipamento equipamento = null;
+        if (request.equipamentoId() != null) {
+            equipamento = equipamentoRepository.findById(request.equipamentoId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Equipamento não encontrado."));
+
+            if ("CLIENTE".equals(principal.perfil())
+                    && !equipamento.getCliente().getId().equals(principal.userId())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                        "O equipamento não pertence ao cliente logado.");
+            }
+
+            if (!equipamento.getCliente().getId().equals(cliente.getId())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "O equipamento informado não pertence ao cliente indicado.");
+            }
         }
 
         Solicitacao solicitacao = new Solicitacao();
         solicitacao.setEquipamento(equipamento);
+        solicitacao.setCategoria(categoria);
+        solicitacao.setDescricaoEquipamento(request.descricaoEquipamento());
         solicitacao.setCliente(cliente);
         solicitacao.setDescricaoProblema(request.descricaoProblema());
         solicitacao.setStatus(StatusSolicitacao.ABERTA);
