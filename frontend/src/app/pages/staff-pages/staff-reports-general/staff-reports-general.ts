@@ -5,21 +5,18 @@ import { FormsModule } from '@angular/forms';
 import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-navbar';
 import {
   FiltroReceitasPeriodo,
-  ReceitaCategoria,
   ReceitaDiaria,
   RelatorioService
 } from '../../../services/relatorio.service';
 
 @Component({
-  selector: 'app-staff-reports',
+  selector: 'app-staff-reports-general',
   standalone: true,
   imports: [CommonModule, FormsModule, StaffNavbarComponent],
-  templateUrl: './staff-reports.html'
+  templateUrl: './staff-reports-general.html'
 })
-export class StaffReportsComponent implements OnInit {
+export class StaffReportsGeneralComponent implements OnInit {
   private readonly relatorios = inject(RelatorioService);
-
-  protected dataGeracao = new Date();
 
   protected filtro: FiltroReceitasPeriodo = {
     dataInicio: '',
@@ -27,19 +24,15 @@ export class StaffReportsComponent implements OnInit {
   };
 
   protected readonly dadosPorDia = signal<ReceitaDiaria[]>([]);
-  protected readonly dadosPorCategoria = signal<ReceitaCategoria[]>([]);
   protected readonly totalReceita = signal(0);
   protected readonly periodoExibicao = signal('Todo o período');
 
   protected readonly loadingDia = signal(false);
-  protected readonly loadingCategoria = signal(false);
   protected readonly baixandoPeriodo = signal(false);
-  protected readonly baixandoCategoria = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
   ngOnInit(): void {
     this.carregarDados();
-    this.carregarCategorias();
   }
 
   protected aplicarFiltro(): void {
@@ -49,7 +42,6 @@ export class StaffReportsComponent implements OnInit {
   protected carregarDados(): void {
     this.loadingDia.set(true);
     this.errorMessage.set(null);
-    this.dataGeracao = new Date();
 
     const filtro = this.normalizarFiltro();
 
@@ -71,22 +63,6 @@ export class StaffReportsComponent implements OnInit {
     });
   }
 
-  protected carregarCategorias(): void {
-    this.loadingCategoria.set(true);
-    this.relatorios.dadosReceitasCategoria().subscribe({
-      next: (lista) => {
-        this.dadosPorCategoria.set(lista);
-        this.loadingCategoria.set(false);
-      },
-      error: (err: HttpErrorResponse) => {
-        this.loadingCategoria.set(false);
-        this.errorMessage.set(
-          err.error?.message ?? 'Não foi possível carregar o relatório por categoria.'
-        );
-      }
-    });
-  }
-
   protected baixarPdfPeriodo(): void {
     this.baixandoPeriodo.set(true);
     this.errorMessage.set(null);
@@ -101,24 +77,6 @@ export class StaffReportsComponent implements OnInit {
         this.baixandoPeriodo.set(false);
         this.errorMessage.set(
           err.error?.message ?? 'Não foi possível baixar o PDF de receitas por período.'
-        );
-      }
-    });
-  }
-
-  protected baixarPdfCategoria(): void {
-    this.baixandoCategoria.set(true);
-    this.errorMessage.set(null);
-
-    this.relatorios.baixarReceitasCategoria().subscribe({
-      next: (blob) => {
-        this.salvarBlob(blob, 'receitas_categoria.pdf');
-        this.baixandoCategoria.set(false);
-      },
-      error: (err: HttpErrorResponse) => {
-        this.baixandoCategoria.set(false);
-        this.errorMessage.set(
-          err.error?.message ?? 'Não foi possível baixar o PDF de receitas por categoria.'
         );
       }
     });

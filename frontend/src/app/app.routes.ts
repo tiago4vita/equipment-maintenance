@@ -11,7 +11,8 @@ import { StaffRedirectComponent } from './pages/staff-pages/staff-redirect/staff
 import { StaffFinishComponent } from './pages/staff-pages/staff-finish/staff-finish';
 import { StaffCategoriesComponent } from './pages/staff-pages/staff-categories/staff-categories';
 import { StaffEmployeesComponent } from './pages/staff-pages/staff-employees/staff-employees';
-import { StaffReportsComponent } from './pages/staff-pages/staff-reports/staff-reports';
+import { StaffReportsGeneralComponent } from './pages/staff-pages/staff-reports-general/staff-reports-general';
+import { StaffReportsByCategoryComponent } from './pages/staff-pages/staff-reports-by-category/staff-reports-by-category';
 
 export const routes: Routes = [
 
@@ -80,18 +81,29 @@ export const routes: Routes = [
 
   {
     path: 'staff/reports',
-    component: StaffReportsComponent,
+    redirectTo: '/staff/reports/general',
+    pathMatch: 'full'
+  },
+  {
+    path: 'staff/reports/general',
+    component: StaffReportsGeneralComponent,
+    canActivate: [authGuard],
+    data: { profileKind: 'funcionario', role: 'FUNCIONARIO' }
+  },
+  {
+    path: 'staff/reports/category',
+    component: StaffReportsByCategoryComponent,
     canActivate: [authGuard],
     data: { profileKind: 'funcionario', role: 'FUNCIONARIO' }
   },
   {
     path: 'staff/revenue-report',
-    redirectTo: '/staff/reports',
+    redirectTo: '/staff/reports/general',
     pathMatch: 'full'
   },
   {
     path: 'staff/category-report',
-    redirectTo: '/staff/reports',
+    redirectTo: '/staff/reports/category',
     pathMatch: 'full'
   },
 
