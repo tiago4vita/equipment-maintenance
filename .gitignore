@@ -30,3 +30,6 @@ yarn-error.log*
 # Spring Boot / Maven
 /backend/target/
 .cursor/
+
+# Checklist pessoal de defesa (não versionar)
+docs/checklist-defesa.md

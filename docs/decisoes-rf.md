@@ -22,9 +22,20 @@ Conforme o enunciado, suposições não definidas no texto oficial devem ser doc
 ## RF001 — Autocadastro do cliente
 
 - A senha gerada aleatoriamente possui **4 dígitos numéricos** (conforme enunciado), gerada no backend (`SenhaUtil`) e enviada por e-mail via `EmailService` no momento do autocadastro. O cliente nunca digita a senha no formulário.
-- O endereço persistido inclui **CEP, logradouro, número, bairro, complemento, cidade e estado**. Cidade e estado **não** foram normalizados (FK), conforme exceção autorizada pelo enunciado.
-- A consulta ViaCEP é feita no frontend (`ViaCepService`) e preenche os campos antes do envio. Mesmo que o usuário ajuste manualmente, todos os campos vão para o backend.
+- O endereço persistido inclui **CEP, logradouro (campo `rua`), número, bairro, complemento, cidade e estado**, atendendo literalmente "Endereço completo" do enunciado. Cidade e estado **não** foram normalizados (FK), conforme exceção autorizada pelo enunciado. `bairro` é obrigatório; `complemento` é opcional.
+- A consulta ViaCEP é feita no frontend (`ViaCepService`) e preenche logradouro e bairro antes do envio. Mesmo que o usuário ajuste manualmente, todos os campos vão separados para o backend (não há concatenação de logradouro + bairro).
 - Máscaras aplicadas no frontend: CPF (`000.000.000-00`), CEP (`00000-000`) e telefone (`(00) 00000-0000`).
+- **Migração de esquema:** em desenvolvimento o H2 com `ddl-auto=update` cria as colunas `bairro` e `complemento` automaticamente. Em produção (MySQL/PostgreSQL) aplicar:
+  ```sql
+  ALTER TABLE cliente ADD COLUMN bairro VARCHAR(100);
+  ALTER TABLE cliente ADD COLUMN complemento VARCHAR(150);
+  ```
+
+## RF003 / RF005 — Fluxo de aprovar/rejeitar pelo cliente
+
+- Os botões **Aprovar** e **Rejeitar** na linha da tela RF003 (quando o estado é ORÇADA) **não executam ação direta**. Ambos abrem a tela **Mostrar Orçamento (RF005)** no modal, onde o cliente vê o valor orçado em destaque junto com os botões **Aprovar** e **Rejeitar** definitivos, atendendo literalmente o enunciado: _"Botão Aprovar/Rejeitar Serviço, que apresenta a tela de Mostrar orçamento (RF005)"._
+- RF006: a mensagem exibida após aprovar é exatamente **"Serviço Aprovado no Valor R$ xxxx"** (com iniciais maiúsculas, conforme enunciado). O clique em **Ok** fecha o modal e o usuário permanece na listagem do RF003.
+- RF007: a mensagem após rejeitar é exatamente **"Serviço Rejeitado"**.
 
 ## RF002 — Autenticação JWT
 
