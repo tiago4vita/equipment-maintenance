@@ -125,15 +125,12 @@ export class MaintenancePageComponent implements OnInit {
     solicitation: SolicitationItem,
     event: { status: SolicitationStatus; type: SolicitationRowActionType }
   ): void {
-    if (solicitation.status === 'orcada' && event.type === 'approve') {
-      this.alterarStatus(solicitation, 'APROVADA', 'aprovada');
-      return;
-    }
-
-    if (solicitation.status === 'orcada' && event.type === 'reject') {
+    // RF003 + RF005: ambos botões (Aprovar/Rejeitar) da linha devem abrir a tela
+    // de Mostrar Orçamento (RF005), sem pular etapas do fluxo.
+    if (solicitation.status === 'orcada' && (event.type === 'approve' || event.type === 'reject')) {
       this.selectedSolicitation = solicitation;
       this.currentModalMode = 'orcada';
-      this.startWithRejectFlow = true;
+      this.startWithRejectFlow = false;
       this.isVisualizationModalOpen = true;
       return;
     }
