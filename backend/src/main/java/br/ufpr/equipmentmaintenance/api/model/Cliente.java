@@ -28,6 +28,8 @@ public class Cliente {
     private String cep;
     private String rua;
     private String numero;
+    private String bairro;
+    private String complemento;
     private String cidade;
     private String estado;
 
@@ -93,6 +95,22 @@ public class Cliente {
 
     public void setNumero(String numero) {
         this.numero = numero;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    public String getComplemento() {
+        return complemento;
+    }
+
+    public void setComplemento(String complemento) {
+        this.complemento = complemento;
     }
 
     public String getCidade() {

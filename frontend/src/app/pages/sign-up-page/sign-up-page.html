@@ -127,6 +127,65 @@
               </div>
             </div>
           </div>
+
+          <div class="relative flex w-full flex-[0_0_auto] flex-col items-start gap-3 self-stretch">
+            <div class="relative flex w-full flex-[0_0_auto] flex-wrap items-center gap-[17px] self-stretch">
+              <div class="relative flex w-[401px] flex-col items-start gap-3">
+                <div class="relative flex w-full flex-[0_0_auto] flex-col items-start gap-3 self-stretch">
+                  <label
+                    for="bairro"
+                    class="relative h-[18px] self-stretch [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px] flex items-center gap-2 text-[var(--color-text-primary)]"
+                  >
+                    Bairro
+                    <span class="badge-required">obrigatório</span>
+                  </label>
+                </div>
+
+                <div class="relative flex w-full flex-[0_0_auto] flex-col items-start gap-2 self-stretch">
+                  <div
+                    class="relative flex w-full flex-[0_0_auto] items-center gap-2.5 rounded-lg border border-solid border-[var(--color-border-subtle)] bg-gray-50 px-4 py-3"
+                  >
+                    <input
+                      id="bairro"
+                      type="text"
+                      formControlName="bairro"
+                      placeholder="Preenchido automaticamente pelo CEP"
+                      required
+                      aria-required="true"
+                      maxlength="100"
+                      class="relative w-full bg-transparent [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px] outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="relative flex grow flex-1 flex-col items-start gap-3">
+                <div class="relative flex w-full grow flex-1 flex-col items-start gap-3 self-stretch">
+                  <label
+                    for="complemento"
+                    class="relative h-[19px] [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px] flex items-center gap-2 text-[var(--color-text-primary)]"
+                  >
+                    Complemento
+                  </label>
+                </div>
+
+                <div class="relative flex w-full flex-[0_0_auto] flex-col items-start gap-2 self-stretch">
+                  <div
+                    class="relative flex w-full flex-[0_0_auto] items-center gap-2.5 rounded-lg border border-solid border-[var(--color-border-subtle)] bg-[var(--color-surface-page)] px-4 py-3"
+                  >
+                    <input
+                      id="complemento"
+                      type="text"
+                      formControlName="complemento"
+                      placeholder="Apto, bloco, referência (opcional)"
+                      maxlength="150"
+                      class="w-full bg-transparent text-base outline-none placeholder:text-gray-400"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <button

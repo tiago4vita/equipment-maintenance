@@ -31,6 +31,13 @@ public class ClienteRequest {
     @Size(max = 20, message = "O número deve ter no máximo 20 caracteres.")
     private String numero;
 
+    @NotBlank(message = "O bairro é obrigatório.")
+    @Size(max = 100, message = "O bairro deve ter no máximo 100 caracteres.")
+    private String bairro;
+
+    @Size(max = 150, message = "O complemento deve ter no máximo 150 caracteres.")
+    private String complemento;
+
     @Size(max = 100, message = "A cidade deve ter no máximo 100 caracteres.")
     private String cidade;
 
@@ -58,6 +65,12 @@ public class ClienteRequest {
 
     public String getNumero() { return numero; }
     public void setNumero(String numero) { this.numero = numero; }
+
+    public String getBairro() { return bairro; }
+    public void setBairro(String bairro) { this.bairro = bairro; }
+
+    public String getComplemento() { return complemento; }
+    public void setComplemento(String complemento) { this.complemento = complemento; }
 
     public String getCidade() { return cidade; }
     public void setCidade(String cidade) { this.cidade = cidade; }

@@ -51,8 +51,10 @@ export class SignUpPageComponent {
     cpf: ['', [Validators.required, Validators.minLength(14), Validators.maxLength(14)]],
     phone: ['', [Validators.required, Validators.minLength(14)]],
     cep: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
-    address: this.formBuilder.nonNullable.control({ value: '', disabled: true }, [Validators.required]),
-    number: this.formBuilder.nonNullable.control({ value: '', disabled: true }, [Validators.required, Validators.maxLength(20)])
+    address: this.formBuilder.nonNullable.control({ value: '', disabled: true }, [Validators.required, Validators.maxLength(200)]),
+    number: this.formBuilder.nonNullable.control({ value: '', disabled: true }, [Validators.required, Validators.maxLength(20)]),
+    bairro: this.formBuilder.nonNullable.control({ value: '', disabled: true }, [Validators.required, Validators.maxLength(100)]),
+    complemento: this.formBuilder.nonNullable.control({ value: '', disabled: true }, [Validators.maxLength(150)])
   });
 
   private cidadeViaCep = '';
@@ -84,6 +86,8 @@ export class SignUpPageComponent {
         cep: raw.cep,
         rua: raw.address.trim(),
         numero: raw.number.trim(),
+        bairro: raw.bairro.trim(),
+        complemento: raw.complemento.trim() || undefined,
         cidade: this.cidadeViaCep,
         estado: this.estadoViaCep
       })
@@ -161,13 +165,12 @@ export class SignUpPageComponent {
         this.cidadeViaCep = endereco.cidade;
         this.estadoViaCep = endereco.estado;
 
-        const ruaMontada = [endereco.logradouro, endereco.bairro]
-          .filter(Boolean)
-          .join(', ');
-
         this.signUpForm.controls.address.enable({ emitEvent: false });
         this.signUpForm.controls.number.enable({ emitEvent: false });
-        this.signUpForm.controls.address.setValue(ruaMontada, { emitEvent: false });
+        this.signUpForm.controls.bairro.enable({ emitEvent: false });
+        this.signUpForm.controls.complemento.enable({ emitEvent: false });
+        this.signUpForm.controls.address.setValue(endereco.logradouro, { emitEvent: false });
+        this.signUpForm.controls.bairro.setValue(endereco.bairro, { emitEvent: false });
         this.errorMessage.set(null);
       });
   }
@@ -177,8 +180,12 @@ export class SignUpPageComponent {
     this.estadoViaCep = '';
     this.signUpForm.controls.address.setValue('', { emitEvent: false });
     this.signUpForm.controls.number.setValue('', { emitEvent: false });
+    this.signUpForm.controls.bairro.setValue('', { emitEvent: false });
+    this.signUpForm.controls.complemento.setValue('', { emitEvent: false });
     this.signUpForm.controls.address.disable({ emitEvent: false });
     this.signUpForm.controls.number.disable({ emitEvent: false });
+    this.signUpForm.controls.bairro.disable({ emitEvent: false });
+    this.signUpForm.controls.complemento.disable({ emitEvent: false });
   }
 
   private formatarCpf(valor: string): string {

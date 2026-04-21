@@ -92,6 +92,8 @@ public class ClienteService {
         cliente.setCep(request.getCep());
         cliente.setRua(request.getRua());
         cliente.setNumero(request.getNumero());
+        cliente.setBairro(request.getBairro());
+        cliente.setComplemento(request.getComplemento());
         cliente.setCidade(request.getCidade());
         cliente.setEstado(request.getEstado());
     }

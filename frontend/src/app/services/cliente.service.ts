@@ -10,6 +10,8 @@ export interface ClienteRequest {
   cep?: string;
   rua?: string;
   numero?: string;
+  bairro: string;
+  complemento?: string;
   cidade?: string;
   estado?: string;
 }
@@ -23,6 +25,8 @@ export interface ClienteResponse {
   cep: string | null;
   rua: string | null;
   numero: string | null;
+  bairro: string | null;
+  complemento: string | null;
   cidade: string | null;
   estado: string | null;
   ativo: boolean;

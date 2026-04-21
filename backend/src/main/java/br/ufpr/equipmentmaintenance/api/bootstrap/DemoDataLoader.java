@@ -296,6 +296,8 @@ public class DemoDataLoader implements CommandLineRunner {
         c.setCep("80010000");
         c.setRua("Rua da Universidade");
         c.setNumero("1000");
+        c.setBairro("Centro");
+        c.setComplemento("Apto 101");
         c.setCidade("Curitiba");
         c.setEstado("PR");
         c.setSenha(senhaUtil.criptografar("1234"));
