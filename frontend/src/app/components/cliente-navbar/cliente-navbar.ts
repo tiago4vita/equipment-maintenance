@@ -8,9 +8,5 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './cliente-navbar.html'
 })
 export class ClienteNavbarComponent {
-  // Rota dinâmica para o Início (padrão: cliente)
-  @Input() linkInicio: string = '/user/maintenance'; 
-  
-  // Rota dinâmica para Solicitações (padrão: cliente)
-  @Input() linkSolicitacoes: string = '/user/maintenance'; 
+  @Input() linkInicio: string = '/user/maintenance';
 }

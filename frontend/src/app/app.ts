@@ -17,30 +17,30 @@ export class App {
   private readonly router = inject(Router);
 
   protected readonly profileKind = signal<UserProfileKind>('cliente');
+  protected readonly displayName = signal<string>('');
 
   constructor() {
-    const syncProfileKind = (): void => {
+    const syncSession = (): void => {
       const perfil = localStorage.getItem(AuthService.KEY_PERFIL);
       if (perfil === 'FUNCIONARIO') {
         this.profileKind.set('funcionario');
-        return;
-      }
-      if (perfil === 'CLIENTE') {
+      } else if (perfil === 'CLIENTE') {
         this.profileKind.set('cliente');
-        return;
+      } else {
+        let route = this.router.routerState.snapshot.root;
+        while (route.firstChild) {
+          route = route.firstChild;
+        }
+        const raw = route.data['profileKind'] as UserProfileKind | undefined;
+        this.profileKind.set(raw === 'funcionario' || raw === 'cliente' ? raw : 'cliente');
       }
 
-      let route = this.router.routerState.snapshot.root;
-      while (route.firstChild) {
-        route = route.firstChild;
-      }
-      const raw = route.data['profileKind'] as UserProfileKind | undefined;
-      this.profileKind.set(raw === 'funcionario' || raw === 'cliente' ? raw : 'cliente');
+      this.displayName.set(localStorage.getItem(AuthService.KEY_USER_NOME) ?? '');
     };
 
-    syncProfileKind();
+    syncSession();
     this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
-      .subscribe(syncProfileKind);
+      .subscribe(syncSession);
   }
 }

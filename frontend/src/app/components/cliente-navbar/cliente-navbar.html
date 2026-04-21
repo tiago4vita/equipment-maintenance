@@ -26,34 +26,7 @@
         >Início</span
       >
     </a>
-
-    <a
-      [routerLink]="linkSolicitacoes"
-      routerLinkActive="font-semibold"
-      class="flex min-h-11 w-full min-w-0 shrink-0 flex-row items-center gap-3 overflow-hidden rounded-lg pl-0.5 text-[18px] font-medium leading-none text-[var(--color-text-primary)] outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[var(--color-text-primary)]"
-    >
-      <span class="inline-flex size-10 shrink-0 items-center justify-center">
-        <img src="/svg/ThreeDotedLines.svg" alt="" class="h-[25px] w-[33px] shrink-0" width="33" height="25" />
-      </span>
-      <span
-        class="min-w-0 max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-[max-width,opacity] duration-300 ease-out group-hover/nav:max-w-[200px] group-hover/nav:opacity-100 group-focus-within/nav:max-w-[200px] group-focus-within/nav:opacity-100"
-        >Solicitações</span
-      >
-    </a>
   </div>
 
-  <a
-    href="#"
-    (click)="$event.preventDefault()"
-    class="flex min-h-11 min-w-0 shrink-0 cursor-pointer flex-row items-center gap-3 overflow-hidden rounded-lg pl-0.5 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-text-primary)]"
-    aria-label="Configurações"
-  >
-    <span class="inline-flex size-10 shrink-0 items-center justify-center">
-      <img src="/svg/Settings.svg" alt="" class="h-9 w-[39px] shrink-0" width="39" height="36" />
-    </span>
-    <span
-      class="min-w-0 max-w-0 overflow-hidden whitespace-nowrap text-[18px] font-medium leading-none text-[var(--color-text-primary)] opacity-0 transition-[max-width,opacity] duration-300 ease-out group-hover/nav:max-w-[200px] group-hover/nav:opacity-100 group-focus-within/nav:max-w-[200px] group-focus-within/nav:opacity-100"
-      >Configurações</span
-    >
-  </a>
+  <span aria-hidden="true"></span>
 </nav>

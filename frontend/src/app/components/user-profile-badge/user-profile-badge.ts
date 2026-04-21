@@ -1,6 +1,7 @@
 import { Component, inject, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
+import { AuthService } from '../../auth.service';
 
 export type UserProfileKind = 'cliente' | 'funcionario';
 
@@ -12,24 +13,24 @@ export type UserProfileKind = 'cliente' | 'funcionario';
 })
 export class UserProfileBadgeComponent {
 
-  @Input() displayName = 'Fulano';
+  @Input() displayName = '';
   @Input() userKind: UserProfileKind = 'cliente';
 
   private readonly router = inject(Router);
+  private readonly auth = inject(AuthService);
 
   get userTypeLabel(): string {
     return this.userKind === 'funcionario' ? 'Funcionário' : 'Cliente';
-  
   }
 
   get isPublicPage(): boolean {
-  const publicRoutes = ['', '/', '/login', '/sign-up'];
-  const path = this.router.url.split('?')[0].split('#')[0];
-  return publicRoutes.includes(path);
-}
+    const publicRoutes = ['', '/', '/login', '/sign-up'];
+    const path = this.router.url.split('?')[0].split('#')[0];
+    return publicRoutes.includes(path);
+  }
 
-sair() {
-    console.log('Encerrando sessão...');
-    this.router.navigate(['/login']);
+  sair(): void {
+    this.auth.logout();
+    void this.router.navigate(['/login']);
   }
 }
