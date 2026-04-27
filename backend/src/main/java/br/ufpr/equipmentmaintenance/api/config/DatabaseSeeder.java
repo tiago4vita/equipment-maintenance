@@ -43,15 +43,27 @@ public class DatabaseSeeder implements CommandLineRunner {
     @Transactional
     public void run(String... args) {
         if (categoriaRepository.count() == 0) {
+            System.out.println("[SEEDER] Iniciando carga de dados no banco de dados...");
             popularBancoDeDados();
+            System.out.println("[SEEDER] Carga de dados finalizada com sucesso!");
+        } else {
+            System.out.println("[SEEDER] Banco de dados já populado. Ignorando seed.");
         }
     }
 
     private void popularBancoDeDados() {
         List<CategoriaEquipamento> categorias = salvarCategorias();
+        System.out.println("[SEEDER] " + categorias.size() + " categorias cadastradas.");
+
         List<Funcionario> funcionarios = salvarFuncionarios();
+        System.out.println("[SEEDER] " + funcionarios.size() + " funcionários cadastrados.");
+
         List<Cliente> clientes = salvarClientes();
+        System.out.println("[SEEDER] " + clientes.size() + " clientes cadastrados.");
+
         List<Equipamento> equipamentos = salvarEquipamentos(categorias, clientes);
+        System.out.println("[SEEDER] " + equipamentos.size() + " equipamentos cadastrados.");
+
         salvarSolicitacoes(clientes, equipamentos, funcionarios);
     }
 
@@ -61,7 +73,13 @@ public class DatabaseSeeder implements CommandLineRunner {
                 criarCategoria("Desktop", "Computadores de mesa e estações de trabalho"),
                 criarCategoria("Impressora", "Impressoras a laser, jato de tinta e térmicas"),
                 criarCategoria("Mouse", "Mouses ópticos e periféricos de precisão"),
-                criarCategoria("Teclado", "Teclados mecânicos e de membrana")
+                criarCategoria("Teclado", "Teclados mecânicos e de membrana"),
+                // Novas linhas adicionadas
+                criarCategoria("Monitor", "Monitores LED, LCD e Ultrawide"),
+                criarCategoria("Nobreak", "Equipamentos de proteção de energia e baterias"),
+                criarCategoria("Servidor", "Servidores em rack e torre para datacenters"),
+                criarCategoria("Projetor", "Projetores de vídeo corporativos e educacionais"),
+                criarCategoria("Switch", "Equipamentos de rede e roteadores corporativos")
         ));
     }
 
@@ -77,7 +95,11 @@ public class DatabaseSeeder implements CommandLineRunner {
         return funcionarioRepository.saveAll(List.of(
                 criarFuncionario("Maria Oliveira", "maria@empresa.com", "123456", LocalDate.of(1985, 5, 20)),
                 criarFuncionario("Mário Santos", "mario@empresa.com", "123456", LocalDate.of(1992, 8, 15)),
-                criarFuncionario("Carlos Silva", "carlos@empresa.com", "123456", LocalDate.of(1988, 11, 10))
+                criarFuncionario("Carlos Silva", "carlos@empresa.com", "123456", LocalDate.of(1988, 11, 10)),
+                // Novas linhas adicionadas
+                criarFuncionario("Ana Beatriz", "ana@empresa.com", "123456", LocalDate.of(1995, 2, 28)),
+                criarFuncionario("Paulo Mendes", "paulo@empresa.com", "123456", LocalDate.of(1980, 10, 5)),
+                criarFuncionario("Fernanda Souza", "fernanda@empresa.com", "123456", LocalDate.of(1998, 7, 12))
         ));
     }
 
@@ -97,7 +119,13 @@ public class DatabaseSeeder implements CommandLineRunner {
                 criarCliente("José Almeida", "jose@email.com", "22222222222", "41999999992"),
                 criarCliente("Joana Costa", "joana@email.com", "33333333333", "41999999993"),
                 criarCliente("Joaquina Lima", "joaquina@email.com", "44444444444", "41999999994"),
-                criarCliente("Pedro Rocha", "pedro@email.com", "55555555555", "41999999995")
+                criarCliente("Pedro Rocha", "pedro@email.com", "55555555555", "41999999995"),
+                // Novas linhas adicionadas
+                criarCliente("Lucas Martins", "lucas@email.com", "66666666666", "41999999996"),
+                criarCliente("Mariana Dias", "mariana@email.com", "77777777777", "41999999997"),
+                criarCliente("Roberto Alves", "roberto@email.com", "88888888888", "41999999998"),
+                criarCliente("Camila Ribeiro", "camila@email.com", "99999999999", "41999999999"),
+                criarCliente("Bruno Fernandes", "bruno@email.com", "00000000000", "41999999900")
         ));
     }
 
@@ -125,7 +153,13 @@ public class DatabaseSeeder implements CommandLineRunner {
                 criarEquipamento("Mouse G203", "Logitech", "G203", "SN11111", categorias.get(3), clientes.get(3)),
                 criarEquipamento("Teclado K120", "Logitech", "K120", "SN22222", categorias.get(4), clientes.get(4)),
                 criarEquipamento("MacBook Air", "Apple", "M1 2020", "SN33333", categorias.get(0), clientes.get(1)),
-                criarEquipamento("LaserJet Pro", "HP", "M15w", "SN44444", categorias.get(2), clientes.get(0))
+                criarEquipamento("LaserJet Pro", "HP", "M15w", "SN44444", categorias.get(2), clientes.get(0)),
+                // Novas linhas adicionadas
+                criarEquipamento("Monitor UltraSharp", "Dell", "U2720Q", "SN55511", categorias.get(5), clientes.get(5)),
+                criarEquipamento("Nobreak APC", "Schneider", "BR1500G", "SN66622", categorias.get(6), clientes.get(6)),
+                criarEquipamento("Projetor PowerLite", "Epson", "X39", "SN77733", categorias.get(8), clientes.get(7)),
+                criarEquipamento("Switch Catalyst", "Cisco", "2960", "SN88844", categorias.get(9), clientes.get(8)),
+                criarEquipamento("Servidor ProLiant", "HP", "DL380", "SN99955", categorias.get(7), clientes.get(9))
         ));
     }
 
@@ -144,10 +178,12 @@ public class DatabaseSeeder implements CommandLineRunner {
     private void salvarSolicitacoes(List<Cliente> clientes, List<Equipamento> equipamentos, List<Funcionario> funcionarios) {
         Random random = new Random();
         LocalDateTime dataBase = LocalDateTime.now().minusDays(60);
+        
+        // Adicionado o status REDIRECIONADA para simular todos os fluxos
         StatusSolicitacao[] statusPossiveis = {
                 StatusSolicitacao.ABERTA, StatusSolicitacao.ORCADA, StatusSolicitacao.REJEITADA,
                 StatusSolicitacao.APROVADA, StatusSolicitacao.ARRUMADA, StatusSolicitacao.PAGA,
-                StatusSolicitacao.FINALIZADA
+                StatusSolicitacao.FINALIZADA, StatusSolicitacao.REDIRECIONADA
         };
 
         for (int i = 1; i <= 35; i++) {
@@ -177,8 +213,15 @@ public class DatabaseSeeder implements CommandLineRunner {
                 solicitacao.getHistorico().add(gerarHistorico(solicitacao, StatusSolicitacao.ORCADA, StatusSolicitacao.REJEITADA, "Cliente não aprovou o valor do orçamento", null, solicitacao.getCliente()));
             }
 
-            if (statusAlvo == StatusSolicitacao.APROVADA || statusAlvo == StatusSolicitacao.ARRUMADA || statusAlvo == StatusSolicitacao.PAGA || statusAlvo == StatusSolicitacao.FINALIZADA) {
+            if (statusAlvo == StatusSolicitacao.APROVADA || statusAlvo == StatusSolicitacao.ARRUMADA || statusAlvo == StatusSolicitacao.PAGA || statusAlvo == StatusSolicitacao.FINALIZADA || statusAlvo == StatusSolicitacao.REDIRECIONADA) {
                 solicitacao.getHistorico().add(gerarHistorico(solicitacao, StatusSolicitacao.ORCADA, StatusSolicitacao.APROVADA, "Orçamento aprovado pelo cliente via portal", null, solicitacao.getCliente()));
+            }
+
+            // Lógica nova para testar o requisito RF015 (Redirecionamento)
+            if (statusAlvo == StatusSolicitacao.REDIRECIONADA) {
+                Funcionario colegaDestino = funcionarios.get((funcionarios.indexOf(funcionario) + 1) % funcionarios.size());
+                solicitacao.setFuncionarioDestinoAtual(colegaDestino);
+                solicitacao.getHistorico().add(gerarHistorico(solicitacao, StatusSolicitacao.APROVADA, StatusSolicitacao.REDIRECIONADA, "Serviço redirecionado devido à alta complexidade técnica", funcionario, colegaDestino, null));
             }
 
             if (statusAlvo == StatusSolicitacao.ARRUMADA || statusAlvo == StatusSolicitacao.PAGA || statusAlvo == StatusSolicitacao.FINALIZADA) {
@@ -199,15 +242,22 @@ public class DatabaseSeeder implements CommandLineRunner {
 
             solicitacaoRepository.save(solicitacao);
         }
+        System.out.println("[SEEDER] 35 solicitações de teste geradas com sucesso.");
     }
 
     private HistoricoSolicitacao gerarHistorico(Solicitacao solicitacao, StatusSolicitacao anterior, StatusSolicitacao novo, String observacao, Funcionario funcionario, Cliente cliente) {
+        return gerarHistorico(solicitacao, anterior, novo, observacao, funcionario, null, cliente);
+    }
+
+    // Sobrecarga de método útil para incluir o funcionário de destino nos casos de Redirecionamento
+    private HistoricoSolicitacao gerarHistorico(Solicitacao solicitacao, StatusSolicitacao anterior, StatusSolicitacao novo, String observacao, Funcionario responsavel, Funcionario destino, Cliente cliente) {
         HistoricoSolicitacao historico = new HistoricoSolicitacao();
         historico.setSolicitacao(solicitacao);
         historico.setStatusAnterior(anterior);
         historico.setStatusNovo(novo);
         historico.setObservacao(observacao);
-        historico.setFuncionarioResponsavel(funcionario);
+        historico.setFuncionarioResponsavel(responsavel);
+        historico.setFuncionarioDestino(destino);
         historico.setCliente(cliente);
         return historico;
     }
