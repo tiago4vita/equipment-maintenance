@@ -27,12 +27,6 @@
         </p>
       }
 
-      @if (successMessage()) {
-        <p class="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700" role="status">
-          {{ successMessage() }}
-        </p>
-      }
-
       <div class="relative flex w-full flex-[0_0_auto] flex-col items-center justify-center gap-[25px] self-stretch">
         <div class="relative flex w-full flex-[0_0_auto] flex-col items-start gap-2.5 self-stretch">
           @for (field of formFields; track field.id) {

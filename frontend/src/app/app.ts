@@ -6,10 +6,11 @@ import {
   UserProfileBadgeComponent,
   UserProfileKind
 } from './components/user-profile-badge/user-profile-badge';
+import { AppToastComponent } from './components/app-toast/app-toast';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, UserProfileBadgeComponent],
+  imports: [RouterOutlet, UserProfileBadgeComponent, AppToastComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

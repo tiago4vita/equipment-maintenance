@@ -30,6 +30,8 @@ export interface ClienteResponse {
   cidade: string | null;
   estado: string | null;
   ativo: boolean;
+  /** Só na criação (autocadastro): senha em claro para exibição ao usuário. */
+  senhaInicial?: string | null;
 }
 
 @Injectable({ providedIn: 'root' })

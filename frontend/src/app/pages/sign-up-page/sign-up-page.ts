@@ -6,6 +6,7 @@ import { Router, RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs';
 import { ClienteService } from '../../services/cliente.service';
 import { ViaCepService } from '../../services/viacep.service';
+import { ToastService } from '../../toast.service';
 
 type SignUpFieldId = 'fullName' | 'email' | 'cpf' | 'phone' | 'cep';
 
@@ -32,10 +33,10 @@ export class SignUpPageComponent {
   private readonly viaCep = inject(ViaCepService);
   private readonly clientes = inject(ClienteService);
   private readonly router = inject(Router);
+  private readonly toast = inject(ToastService);
 
   protected readonly submitting = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
-  protected readonly successMessage = signal<string | null>(null);
 
   protected readonly formFields: SignUpField[] = [
     { id: 'fullName', label: 'Nome Completo', placeholder: 'Digite seu nome completo', type: 'text', required: true },
@@ -67,7 +68,6 @@ export class SignUpPageComponent {
 
   protected submit(): void {
     this.errorMessage.set(null);
-    this.successMessage.set(null);
 
     if (this.signUpForm.invalid) {
       this.signUpForm.markAllAsTouched();
@@ -92,14 +92,21 @@ export class SignUpPageComponent {
         estado: this.estadoViaCep
       })
       .subscribe({
-        next: () => {
+        next: (res) => {
           this.submitting.set(false);
-          this.successMessage.set(
-            'Conta criada com sucesso! Uma senha de 4 dígitos foi enviada ao seu e-mail.'
-          );
+          const senha = res.senhaInicial?.trim();
+          if (senha) {
+            this.toast.show(
+              `Conta criada. Sua senha de acesso: ${senha}. Ela também foi enviada ao seu e-mail.`
+            );
+          } else {
+            this.toast.show(
+              'Conta criada com sucesso! Uma senha de 4 dígitos foi enviada ao seu e-mail.'
+            );
+          }
           setTimeout(() => {
             void this.router.navigateByUrl('/login');
-          }, 2500);
+          }, 3000);
         },
         error: (err: HttpErrorResponse) => {
           this.submitting.set(false);
