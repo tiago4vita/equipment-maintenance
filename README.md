@@ -42,6 +42,14 @@ No diretório raiz `equipment-maintenance`, a estrutura principal é:
 
 ## 4. Primeiro start (ordem recomendada)
 
+### 4.0 (Opcional, mas recomendado) Suba a stack auxiliar
+
+```bash
+docker compose up -d
+```
+
+Isso inicia MySQL (porta 3306), Adminer (`http://localhost:8081`) e MailHog (SMTP em `localhost:1025`, UI em `http://localhost:8025`). O MailHog captura os e-mails de senha do autocadastro (RF001). Sem MailHog, o backend continua funcionando: a falha de envio é logada como WARN e o cadastro segue normalmente — a senha gerada é exibida via toast no frontend e devolvida no corpo da resposta da API.
+
 ### 4.1 Inicie o backend
 
 No primeiro terminal:

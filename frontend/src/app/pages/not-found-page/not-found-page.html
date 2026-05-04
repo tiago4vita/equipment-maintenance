@@ -1,0 +1,22 @@
+<div class="relative min-h-screen flex items-center justify-center bg-gray-100 px-6 py-16">
+  <section
+    class="flex w-full max-w-[432px] flex-col items-center gap-6 rounded-2xl border border-[rgba(0,0,0,0.05)] bg-white px-10 py-10 text-center shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
+  >
+    <p class="text-7xl font-bold leading-none tracking-tight text-gray-300" aria-hidden="true">404</p>
+    <div class="flex flex-col gap-2">
+      <h1 class="text-2xl font-semibold text-gray-900">Página não encontrada</h1>
+      <p class="text-sm leading-relaxed text-gray-600">
+        O endereço que você acessou não existe ou foi movido.
+        @if (authenticated) {
+          <span class="block pt-1">Sua sessão permanece ativa.</span>
+        }
+      </p>
+    </div>
+    <a
+      [routerLink]="homePath"
+      class="inline-flex w-full items-center justify-center rounded-lg bg-gray-900 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+    >
+      {{ homeLabel }}
+    </a>
+  </section>
+</div>

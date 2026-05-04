@@ -57,7 +57,9 @@ public class ClienteService {
 
         emailService.enviarSenhaAutocadastro(cliente.getEmail(), cliente.getNome(), senhaGerada);
 
-        return ClienteResponse.fromEntity(cliente);
+        ClienteResponse response = ClienteResponse.fromEntity(cliente);
+        response.setSenhaInicial(senhaGerada);
+        return response;
     }
 
     public ClienteResponse atualizar(Long id, ClienteRequest request) {

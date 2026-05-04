@@ -13,6 +13,7 @@ import { StaffCategoriesComponent } from './pages/staff-pages/staff-categories/s
 import { StaffEmployeesComponent } from './pages/staff-pages/staff-employees/staff-employees';
 import { StaffReportsGeneralComponent } from './pages/staff-pages/staff-reports-general/staff-reports-general';
 import { StaffReportsByCategoryComponent } from './pages/staff-pages/staff-reports-by-category/staff-reports-by-category';
+import { NotFoundPageComponent } from './pages/not-found-page/not-found-page';
 
 export const routes: Routes = [
 
@@ -107,5 +108,5 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
 
-  { path: '**', redirectTo: '' }
+  { path: '**', component: NotFoundPageComponent }
 ];

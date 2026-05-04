@@ -26,7 +26,14 @@ export class UserProfileBadgeComponent {
   get isPublicPage(): boolean {
     const publicRoutes = ['', '/', '/login', '/sign-up'];
     const path = this.router.url.split('?')[0].split('#')[0];
-    return publicRoutes.includes(path);
+    if (publicRoutes.includes(path)) {
+      return true;
+    }
+    if (!this.auth.isAuthenticated()) {
+      const onStaffOrUserArea = path.startsWith('/user/') || path.startsWith('/staff/');
+      return !onStaffOrUserArea;
+    }
+    return false;
   }
 
   sair(): void {

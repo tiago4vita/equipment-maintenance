@@ -1,6 +1,7 @@
 package br.ufpr.equipmentmaintenance.api.dto;
 
 import br.ufpr.equipmentmaintenance.api.model.Cliente;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class ClienteResponse {
 
@@ -17,6 +18,10 @@ public class ClienteResponse {
     private String cidade;
     private String estado;
     private Boolean ativo;
+
+    /** Preenchido apenas na resposta de autocadastro (POST criar). Omitido nos demais endpoints. */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String senhaInicial;
 
     public static ClienteResponse fromEntity(Cliente c) {
         ClienteResponse r = new ClienteResponse();
@@ -74,4 +79,7 @@ public class ClienteResponse {
 
     public Boolean getAtivo() { return ativo; }
     public void setAtivo(Boolean ativo) { this.ativo = ativo; }
+
+    public String getSenhaInicial() { return senhaInicial; }
+    public void setSenhaInicial(String senhaInicial) { this.senhaInicial = senhaInicial; }
 }
