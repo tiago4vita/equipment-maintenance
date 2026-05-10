@@ -54,4 +54,7 @@ public interface SolicitacaoRepository extends JpaRepository<Solicitacao, Long>,
             List<StatusSolicitacao> statuses, LocalDateTime inicio, LocalDateTime fim);
 
     List<Solicitacao> findByStatusIn(List<StatusSolicitacao> statuses);
+
+    /** Busca solicitações de um determinado status destinadas a um funcionário específico. */
+    List<Solicitacao> findByFuncionarioDestinoAtualIdAndStatus(Long funcionarioId, StatusSolicitacao status);
 }

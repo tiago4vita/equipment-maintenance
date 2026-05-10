@@ -3,8 +3,13 @@ package br.ufpr.equipmentmaintenance.api.service;
 import br.ufpr.equipmentmaintenance.api.dto.FuncionarioRequest;
 import br.ufpr.equipmentmaintenance.api.dto.FuncionarioResponse;
 import br.ufpr.equipmentmaintenance.api.model.Funcionario;
+import br.ufpr.equipmentmaintenance.api.model.HistoricoSolicitacao;
+import br.ufpr.equipmentmaintenance.api.model.Solicitacao;
+import br.ufpr.equipmentmaintenance.api.model.StatusSolicitacao;
 import br.ufpr.equipmentmaintenance.api.repository.FuncionarioRepository;
+import br.ufpr.equipmentmaintenance.api.repository.SolicitacaoRepository;
 import br.ufpr.equipmentmaintenance.api.util.SenhaUtil;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,10 +21,14 @@ import java.util.stream.Collectors;
 public class FuncionarioService {
 
     private final FuncionarioRepository repository;
+    private final SolicitacaoRepository solicitacaoRepository;
     private final SenhaUtil senhaUtil;
 
-    public FuncionarioService(FuncionarioRepository repository, SenhaUtil senhaUtil) {
+    public FuncionarioService(FuncionarioRepository repository,
+                              SolicitacaoRepository solicitacaoRepository,
+                              SenhaUtil senhaUtil) {
         this.repository = repository;
+        this.solicitacaoRepository = solicitacaoRepository;
         this.senhaUtil = senhaUtil;
     }
 
@@ -73,6 +82,7 @@ public class FuncionarioService {
         return FuncionarioResponse.fromEntity(funcionario);
     }
 
+    @Transactional
     public void deletar(Long id, Long idUsuarioLogado) {
         Funcionario funcionario = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Funcionário não encontrado."));
@@ -83,6 +93,22 @@ public class FuncionarioService {
 
         if (repository.countByAtivoTrue() <= 1) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não é possível remover o único funcionário ativo.");
+        }
+
+        List<Solicitacao> redirecionadas = solicitacaoRepository
+                .findByFuncionarioDestinoAtualIdAndStatus(id, StatusSolicitacao.REDIRECIONADA);
+
+        for (Solicitacao sol : redirecionadas) {
+            HistoricoSolicitacao hist = new HistoricoSolicitacao();
+            hist.setSolicitacao(sol);
+            hist.setStatusAnterior(StatusSolicitacao.REDIRECIONADA);
+            hist.setStatusNovo(StatusSolicitacao.ABERTA);
+            hist.setObservacao("Funcionário destino (" + funcionario.getNome() + ") inativado pelo sistema.");
+
+            sol.setStatus(StatusSolicitacao.ABERTA);
+            sol.setFuncionarioDestinoAtual(null);
+            sol.getHistorico().add(hist);
+            solicitacaoRepository.save(sol);
         }
 
         repository.deleteById(funcionario.getId());
