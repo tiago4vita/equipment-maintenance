@@ -21,7 +21,7 @@ public class CategoriaService {
     }
 
     public List<CategoriaResponse> listarTodos() {
-        return repository.findAll().stream()
+        return repository.findByAtivoTrueOrderByNomeAsc().stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
@@ -50,10 +50,10 @@ public class CategoriaService {
     }
 
     public void deletar(Long id) {
-        if (!repository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada.");
-        }
-        repository.deleteById(id);
+        CategoriaEquipamento categoria = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada."));
+        categoria.setAtivo(false);
+        repository.save(categoria);
     }
 
     private CategoriaResponse toResponse(CategoriaEquipamento c) {

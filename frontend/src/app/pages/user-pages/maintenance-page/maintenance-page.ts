@@ -106,7 +106,15 @@ export class MaintenancePageComponent implements OnInit {
     this.selectedSolicitation = null;
     this.currentModalMode = 'creation';
     this.startWithRejectFlow = false;
-    this.isVisualizationModalOpen = true;
+    this.categorias.listar().subscribe({
+      next: (lista) => {
+        this.categoriasOptions.set(lista.map((c: CategoriaResponse) => ({ id: c.id, nome: c.nome })));
+        this.isVisualizationModalOpen = true;
+      },
+      error: () => {
+        this.isVisualizationModalOpen = true;
+      }
+    });
   }
 
   protected closeVisualizationModal(): void {
