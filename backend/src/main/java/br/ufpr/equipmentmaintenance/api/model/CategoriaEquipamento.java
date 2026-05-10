@@ -2,12 +2,18 @@ package br.ufpr.equipmentmaintenance.api.model;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
+/**
+ * Soft-delete via {@code @SQLDelete} (atualiza {@code ativo = false}).
+ * NÃO usamos {@code @SQLRestriction} porque ele aplica {@code WHERE ativo=true}
+ * em todo JOIN para esta tabela — incluindo o JOIN obrigatório de
+ * {@link Solicitacao#getCategoria()}, o que sumiria com solicitações antigas
+ * cuja categoria foi desativada. O filtro de listagem ativa fica explícito
+ * no repositório/service.
+ */
 @Entity
 @Table(name = "categoria_equipamento")
 @SQLDelete(sql = "UPDATE categoria_equipamento SET ativo = false WHERE id = ?")
-@SQLRestriction("ativo = true")
 public class CategoriaEquipamento {
 
     @Id

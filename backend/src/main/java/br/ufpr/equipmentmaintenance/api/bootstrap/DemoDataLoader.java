@@ -27,6 +27,9 @@ public class DemoDataLoader implements CommandLineRunner {
     /** E-mail da primeira funcionária — usado só para detectar seed já aplicado. */
     private static final String EMAIL_MARCADOR_SEED = "maria@empresa.com";
 
+    /** Limite superior das datas geradas no seed (RF: massa de testes em 2026). */
+    private static final LocalDateTime LIMITE_SUPERIOR = LocalDateTime.of(2026, 5, 10, 23, 59, 59);
+
     private final SenhaUtil senhaUtil;
     private final FuncionarioRepository funcionarioRepository;
     private final ClienteRepository clienteRepository;
@@ -117,11 +120,11 @@ public class DemoDataLoader implements CommandLineRunner {
                 StatusSolicitacao.ABERTA
         };
 
-        LocalDateTime base = LocalDateTime.of(2024, 2, 1, 8, 30);
+        LocalDateTime base = LocalDateTime.of(2026, 1, 5, 8, 30);
         for (int i = 0; i < alvo.length; i++) {
             Equipamento eq = equipamentos.get(i);
             Cliente cli = eq.getCliente();
-            LocalDateTime t0 = base.plusDays(i % 20).plusHours(i % 9).plusMinutes(i * 7L);
+            LocalDateTime t0 = clamp(base.plusDays(i * 5L).plusHours(i % 9).plusMinutes(i * 7L));
             Solicitacao s = new Solicitacao();
             s.setEquipamento(eq);
             s.setCategoria(eq.getCategoria());
@@ -132,6 +135,11 @@ public class DemoDataLoader implements CommandLineRunner {
             preencherPorEstado(s, alvo[i], maria, mario, t0);
             solicitacaoRepository.save(s);
         }
+    }
+
+    /** Garante que nenhuma data gerada ultrapasse o limite superior do seed. */
+    private static LocalDateTime clamp(LocalDateTime momento) {
+        return momento.isAfter(LIMITE_SUPERIOR) ? LIMITE_SUPERIOR : momento;
     }
 
     private void preencherPorEstado(
@@ -210,7 +218,7 @@ public class DemoDataLoader implements CommandLineRunner {
                 s.setValorOrcamento(orc);
                 s.setDescricaoManutencao("Manutenção concluída.");
                 s.setOrientacoesCliente("Orientações gerais de uso.");
-                LocalDateTime tpag = t0.plusDays(2);
+                LocalDateTime tpag = clamp(t0.plusDays(2));
                 s.setDataHoraPagamento(tpag);
                 s.setStatus(StatusSolicitacao.PAGA);
                 s.getHistorico().add(hist(s, StatusSolicitacao.ABERTA, StatusSolicitacao.ABERTA, null, null, s.getCliente(),
@@ -228,8 +236,8 @@ public class DemoDataLoader implements CommandLineRunner {
                 s.setValorOrcamento(orc);
                 s.setDescricaoManutencao("Serviço finalizado com sucesso.");
                 s.setOrientacoesCliente("Garantia de 90 dias.");
-                LocalDateTime tpag = t0.plusDays(2);
-                LocalDateTime tfim = t0.plusDays(3);
+                LocalDateTime tpag = clamp(t0.plusDays(2));
+                LocalDateTime tfim = clamp(t0.plusDays(3));
                 s.setDataHoraPagamento(tpag);
                 s.setDataHoraFinalizacao(tfim);
                 s.setStatus(StatusSolicitacao.FINALIZADA);
@@ -267,7 +275,7 @@ public class DemoDataLoader implements CommandLineRunner {
         h.setFuncionarioDestino(destino);
         h.setCliente(atorCliente);
         h.setObservacao(obs);
-        h.setDataAlteracao(quando);
+        h.setDataAlteracao(clamp(quando));
         return h;
     }
 

@@ -12,8 +12,6 @@
   html,
   body {
     margin: 0;
-    max-height: 100vh;
-    overflow: hidden;
   }
 
   body {
@@ -59,7 +57,7 @@
   --color-button-primary-disabled: #6a6a6a;
   --color-link-disabled: rgba(123, 123, 123, 0.5);
 
-  --color-row-open-bg: #e4e4e4;
+  --color-row-open-bg: #d6d6d6;
   --color-row-open-text: #2c2c2c;
   --color-row-approved-bg: #fcfbb0;
   --color-row-approved-text: #676200;

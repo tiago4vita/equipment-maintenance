@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog';
 import type { SolicitationStatus } from '../solicitation-row/solicitation-row';
 
 export type SolicitationModalMode = 'creation' | SolicitationStatus;
@@ -32,7 +33,7 @@ export interface CreateSolicitationPayload {
 @Component({
   selector: 'app-solicitation-visualization-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ConfirmDialogComponent],
   templateUrl: './solicitation-visualization-modal.html'
 })
 export class SolicitationVisualizationModalComponent implements OnChanges {
@@ -59,6 +60,9 @@ export class SolicitationVisualizationModalComponent implements OnChanges {
   protected creationDescription = '';
   protected rejectionReason = '';
   protected isWritingRejectionReason = false;
+  protected attemptedSubmit = false;
+  protected confirmandoResgate = false;
+  protected confirmandoPagamento = false;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['mode'] || changes['startWithRejectFlow']) {
@@ -73,7 +77,26 @@ export class SolicitationVisualizationModalComponent implements OnChanges {
       this.creationDevice = '';
       this.creationCategoryId = null;
       this.creationDescription = '';
+      this.attemptedSubmit = false;
     }
+
+    if (changes['isOpen'] && !this.isOpen) {
+      this.confirmandoResgate = false;
+      this.confirmandoPagamento = false;
+    }
+  }
+
+  protected get deviceVazio(): boolean {
+    return !this.creationDevice.trim();
+  }
+
+  protected get categoriaVazia(): boolean {
+    const id = Number(this.creationCategoryId);
+    return !Number.isFinite(id) || id <= 0;
+  }
+
+  protected get descricaoVazia(): boolean {
+    return !this.creationDescription.trim();
   }
 
   protected get isCreationMode(): boolean {
@@ -122,24 +145,39 @@ export class SolicitationVisualizationModalComponent implements OnChanges {
   }
 
   protected requestRescue(): void {
+    this.confirmandoResgate = true;
+  }
+
+  protected confirmarResgate(): void {
+    this.confirmandoResgate = false;
     this.statusChangeRequested.emit({ nextStatus: 'resgatada' });
   }
 
+  protected cancelarResgate(): void {
+    this.confirmandoResgate = false;
+  }
+
   protected requestPay(): void {
+    this.confirmandoPagamento = true;
+  }
+
+  protected confirmarPagamento(): void {
+    this.confirmandoPagamento = false;
     this.statusChangeRequested.emit({ nextStatus: 'paga' });
   }
 
+  protected cancelarPagamento(): void {
+    this.confirmandoPagamento = false;
+  }
+
   protected confirmCreation(): void {
-    const categoriaId = Number(this.creationCategoryId);
-    if (
-      !this.creationDevice.trim() ||
-      !Number.isFinite(categoriaId) ||
-      categoriaId <= 0 ||
-      !this.creationDescription.trim()
-    ) {
+    this.attemptedSubmit = true;
+
+    if (this.deviceVazio || this.categoriaVazia || this.descricaoVazia) {
       return;
     }
 
+    const categoriaId = Number(this.creationCategoryId);
     const categoria = this.categorias.find((c) => c.id === categoriaId);
 
     this.createRequested.emit({

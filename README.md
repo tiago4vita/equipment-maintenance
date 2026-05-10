@@ -48,7 +48,15 @@ No diretório raiz `equipment-maintenance`, a estrutura principal é:
 docker compose up -d
 ```
 
-Isso inicia MySQL (porta 3306), Adminer (`http://localhost:8081`) e MailHog (SMTP em `localhost:1025`, UI em `http://localhost:8025`). O MailHog captura os e-mails de senha do autocadastro (RF001). Sem MailHog, o backend continua funcionando: a falha de envio é logada como WARN e o cadastro segue normalmente — a senha gerada é exibida via toast no frontend e devolvida no corpo da resposta da API.
+Isso inicia MySQL (porta 3306) e Adminer (`http://localhost:8081`).
+
+Para capturar no navegador os e-mails de senha do autocadastro (RF001) via MailHog, suba também o perfil `mail` (SMTP em `localhost:1025`, UI em `http://localhost:8025`):
+
+```bash
+docker compose up -d --profile mail
+```
+
+O MailHog fica em perfil separado para evitar falha quando a porta 1025 já estiver ocupada (por exemplo por outro contêiner `mailhog`). Sem MailHog, o backend continua funcionando: a falha de envio é logada como WARN e o cadastro segue normalmente — a senha gerada é exibida via toast no frontend e devolvida no corpo da resposta da API.
 
 ### 4.1 Inicie o backend
 
@@ -119,12 +127,15 @@ mvn package
 - Frontend sem conectar na API:
   - Confirme backend ativo em `http://localhost:8080`
   - Teste `http://localhost:8080/api/status`
+- `docker compose` falha em MailHog com `Bind for 0.0.0.0:1025 failed: port is already allocated`:
+  - Outro MailHog (ou serviço) já usa a porta. Parar o contêiner que ocupa 1025 (`docker ps` e `docker stop <nome>`) ou subir só MySQL/Adminer com `docker compose up -d` sem `--profile mail`.
 - Seed de dados (Maria, Mário, João, José, Joana, Joaquina) não aparece após login:
   - O `DemoDataLoader` é idempotente por `maria@empresa.com`. Em bancos MySQL com volume antigo (versões anteriores criavam Maria com clientes diferentes), o loader detecta a Maria existente e não recarrega.
   - Em desenvolvimento, faça o reset do volume MySQL para repopular a partir de uma base limpa:
     ```bash
     docker compose down -v
     docker compose up -d
+    # opcional: MailHog → acrescente --profile mail na linha acima
     cd backend && mvn spring-boot:run
     ```
   - Atenção: `down -v` apaga TODOS os dados locais do MySQL.

@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SolicitationHistoryPanelComponent } from '../../../components/solicitation-history-panel/solicitation-history-panel';
 import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-navbar';
 import {
   STATUS_LABELS,
@@ -13,7 +14,7 @@ import { SolicitacaoService } from '../../../services/solicitacao.service';
 @Component({
   selector: 'app-staff-maintenance',
   standalone: true,
-  imports: [CommonModule, FormsModule, StaffNavbarComponent],
+  imports: [CommonModule, FormsModule, StaffNavbarComponent, SolicitationHistoryPanelComponent],
   templateUrl: './staff-maintenance.html'
 })
 export class StaffMaintenanceComponent implements OnInit {

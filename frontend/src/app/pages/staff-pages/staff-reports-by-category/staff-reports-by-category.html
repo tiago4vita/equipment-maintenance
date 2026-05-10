@@ -6,7 +6,7 @@
       <div>
         <h1 class="text-[36px] font-bold text-[var(--color-text-primary)]">Relatório por categoria</h1>
         <p class="text-gray-500 mt-1">
-          Receita agregada por categoria de equipamento (RF020). O PDF é gerado pelo backend. Os valores consideram todo o histórico de faturamento.
+          Receita agregada por categoria de equipamento. Os valores consideram todo o histórico de faturamento.
         </p>
       </div>
     </div>
@@ -25,7 +25,7 @@
         (click)="baixarPdfCategoria()"
         [disabled]="baixandoCategoria()"
         class="mt-4 inline-flex items-center gap-2 bg-[var(--color-button-primary)] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md disabled:opacity-50">
-        {{ baixandoCategoria() ? 'Gerando…' : 'Baixar PDF (RF020)' }}
+        {{ baixandoCategoria() ? 'Gerando…' : 'Baixar PDF' }}
       </button>
     </div>
 
@@ -37,7 +37,7 @@
           <div class="text-right">Faturamento total</div>
         </div>
 
-        <div class="max-h-[400px] overflow-y-auto">
+        <div class="max-h-[600px] overflow-y-auto">
           @if (loadingCategoria()) {
             <div class="p-10 text-center text-gray-400">Carregando…</div>
           } @else if (dadosPorCategoria().length === 0) {
@@ -45,11 +45,11 @@
           } @else {
             @for (item of dadosPorCategoria(); track item.categoria) {
               <div class="grid grid-cols-2 items-center px-8 py-4 border-b border-gray-50 bg-white hover:bg-gray-50 transition-all">
-                <div class="flex items-center gap-3">
-                  <div class="w-2 h-2 rounded-full bg-[var(--color-button-primary)]"></div>
-                  <span class="text-[16px] font-semibold text-[var(--color-text-primary)]">{{ item.categoria }}</span>
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-2 h-2 shrink-0 rounded-full bg-[var(--color-button-primary)]"></div>
+                  <span class="text-[16px] font-semibold text-[var(--color-text-primary)] truncate">{{ item.categoria }}</span>
                 </div>
-                <div class="text-[16px] font-bold text-green-600 text-right">
+                <div class="text-[16px] font-bold text-green-600 text-right whitespace-nowrap">
                   {{ item.valorTotal | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
                 </div>
               </div>

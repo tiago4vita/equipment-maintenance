@@ -1,10 +1,14 @@
 # Stack de desenvolvimento local do equipment-maintenance.
-# Uso: na raiz do repositório → docker compose up -d
+# Uso na raiz do repositório:
+#   docker compose up -d
+#     → MySQL + Adminer (sem MailHog — evita conflito se a porta 1025 já estiver em uso)
+#   docker compose up -d --profile mail
+#     → inclui MailHog (SMTP fake para RF001 / autocadastro)
 #
 # MySQL: localhost:3306
 # Adminer (interface web para o banco): http://localhost:8081
 #   Servidor: mysql  |  Usuário: equipment  |  Senha: equipment  |  Base: equipment_maintenance
-# MailHog (SMTP fake para o RF001 — autocadastro):
+# MailHog (--profile mail):
 #   SMTP em localhost:1025 (consumido pelo backend)
 #   UI web em http://localhost:8025 (lê os e-mails enviados em dev)
 
@@ -34,6 +38,7 @@ services:
       - mysql
 
   mailhog:
+    profiles: [mail]
     image: mailhog/mailhog:latest
     container_name: equipment-mailhog
     restart: unless-stopped

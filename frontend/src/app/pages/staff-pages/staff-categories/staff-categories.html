@@ -134,4 +134,15 @@
 
     </div>
   </div>
+
+  <app-confirm-dialog
+    [isOpen]="confirmacaoExclusao() !== null"
+    title="Remover categoria"
+    [message]="confirmacaoExclusao() ? 'Confirma a remoção da categoria &quot;' + confirmacaoExclusao()!.nome + '&quot;?\nA categoria ficará inativa no sistema (soft-delete).' : ''"
+    confirmLabel="Remover"
+    cancelLabel="Cancelar"
+    variant="danger"
+    (confirmed)="confirmarExclusao()"
+    (cancelled)="cancelarExclusao()"
+  />
 </main>

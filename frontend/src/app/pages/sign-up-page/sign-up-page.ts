@@ -1,12 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { DestroyRef, Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs';
 import { ClienteService } from '../../services/cliente.service';
 import { ViaCepService } from '../../services/viacep.service';
 import { ToastService } from '../../toast.service';
+import { cpfValidator } from '../../validators/cpf.validator';
 
 type SignUpFieldId = 'fullName' | 'email' | 'cpf' | 'phone' | 'cep';
 
@@ -49,7 +50,7 @@ export class SignUpPageComponent {
   protected readonly signUpForm = this.formBuilder.nonNullable.group({
     fullName: ['', [Validators.required, Validators.maxLength(200)]],
     email: ['', [Validators.required, Validators.email, Validators.maxLength(255)]],
-    cpf: ['', [Validators.required, Validators.minLength(14), Validators.maxLength(14)]],
+    cpf: ['', [Validators.required, Validators.minLength(14), Validators.maxLength(14), cpfValidator]],
     phone: ['', [Validators.required, Validators.minLength(14)]],
     cep: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
     address: this.formBuilder.nonNullable.control({ value: '', disabled: true }, [Validators.required, Validators.maxLength(200)]),
@@ -58,12 +59,40 @@ export class SignUpPageComponent {
     complemento: this.formBuilder.nonNullable.control({ value: '', disabled: true }, [Validators.maxLength(150)])
   });
 
+  private static readonly LABEL_POR_CAMPO: Record<string, string> = {
+    fullName: 'Nome completo',
+    email: 'E-mail',
+    cpf: 'CPF',
+    phone: 'Telefone',
+    cep: 'CEP',
+    address: 'Endereço',
+    number: 'Número',
+    bairro: 'Bairro',
+    complemento: 'Complemento'
+  };
+
   private cidadeViaCep = '';
   private estadoViaCep = '';
 
   constructor() {
     this.configurarMascaras();
     this.autoFillAddressFromCep();
+  }
+
+  protected mensagemErro(fieldId: string, errors: ValidationErrors | null): string {
+    if (!errors) return '';
+    const label = SignUpPageComponent.LABEL_POR_CAMPO[fieldId] ?? 'Campo';
+    if (errors['required']) return `${label} é obrigatório.`;
+    if (errors['email']) return 'Informe um e-mail válido.';
+    if (errors['cpfInvalid']) return 'CPF inválido.';
+    if (errors['minlength']) {
+      if (fieldId === 'cpf') return 'CPF incompleto.';
+      if (fieldId === 'phone') return 'Telefone incompleto.';
+      if (fieldId === 'cep') return 'CEP incompleto.';
+      return `${label} muito curto.`;
+    }
+    if (errors['maxlength']) return `${label} excede o tamanho máximo permitido.`;
+    return `${label} inválido.`;
   }
 
   protected submit(): void {

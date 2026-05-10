@@ -6,7 +6,7 @@
       <div>
         <h1 class="text-[36px] font-bold text-[var(--color-text-primary)]">Relatório geral</h1>
         <p class="text-gray-500 mt-1">
-          Receitas por período (RF019). O PDF é gerado pelo backend.
+          Receitas por período. Selecione um intervalo de datas e baixe o relatório em PDF.
         </p>
       </div>
     </div>
@@ -53,15 +53,19 @@
 
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8">
       <span class="text-gray-500 text-sm uppercase tracking-wider font-semibold">Total de receitas no período</span>
-      <p class="text-4xl font-bold text-green-600 mt-2">
-        {{ totalReceita() | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
-      </p>
+      @if (loadingDia()) {
+        <p class="text-2xl font-semibold text-gray-400 mt-2">Carregando…</p>
+      } @else {
+        <p class="text-4xl font-bold text-green-600 mt-2">
+          {{ totalReceita() | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+        </p>
+      }
       <button
         type="button"
         (click)="baixarPdfPeriodo()"
         [disabled]="baixandoPeriodo()"
         class="mt-4 inline-flex items-center gap-2 bg-[var(--color-button-primary)] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md disabled:opacity-50">
-        {{ baixandoPeriodo() ? 'Gerando…' : 'Baixar PDF (RF019)' }}
+        {{ baixandoPeriodo() ? 'Gerando…' : 'Baixar PDF' }}
       </button>
     </div>
 
@@ -73,7 +77,7 @@
           <div class="text-right">Receita do dia</div>
         </div>
 
-        <div class="max-h-[400px] overflow-y-auto">
+        <div>
           @if (loadingDia()) {
             <div class="p-10 text-center text-gray-400">Carregando…</div>
           } @else if (dadosPorDia().length === 0) {

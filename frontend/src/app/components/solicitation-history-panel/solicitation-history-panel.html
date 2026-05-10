@@ -1,0 +1,40 @@
+<section class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+  <div class="flex items-center justify-between mb-6 border-b pb-4">
+    <h2 class="text-xl font-bold text-[var(--color-text-primary)]">Histórico da solicitação</h2>
+    <span class="text-xs uppercase tracking-wider text-gray-400">{{ itens.length }} evento(s)</span>
+  </div>
+
+  @if (itens.length === 0) {
+    <p class="text-sm text-gray-400 italic">Nenhum evento registrado ainda.</p>
+  } @else {
+    <ol class="relative border-l-2 border-gray-100 pl-6 space-y-6">
+      @for (item of itens; track item.id) {
+        <li class="relative">
+          <span
+            class="absolute -left-[33px] top-1 inline-flex h-4 w-4 rounded-full ring-4 ring-white"
+            [ngClass]="item.bgClass"
+            aria-hidden="true"
+          ></span>
+
+          <div class="flex flex-wrap items-baseline gap-3">
+            <span
+              class="inline-flex items-center rounded-full px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-white"
+              [ngClass]="item.bgClass"
+            >
+              {{ item.rotulo }}
+            </span>
+            <span class="text-sm text-gray-500">{{ item.dataFormatada }}</span>
+          </div>
+
+          <p class="mt-1 text-sm font-semibold text-[var(--color-text-primary)]">
+            {{ item.autor }}
+          </p>
+
+          @if (item.observacao) {
+            <p class="mt-1 text-sm text-gray-600 italic">"{{ item.observacao }}"</p>
+          }
+        </li>
+      }
+    </ol>
+  }
+</section>

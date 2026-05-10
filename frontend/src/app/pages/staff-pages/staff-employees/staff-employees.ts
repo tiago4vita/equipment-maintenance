@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../auth.service';
+import { ConfirmDialogComponent } from '../../../components/confirm-dialog/confirm-dialog';
 import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-navbar';
 import { FuncionarioResponse, FuncionarioService } from '../../../services/funcionario.service';
 
@@ -17,7 +18,7 @@ interface FuncionarioFormulario {
 @Component({
   selector: 'app-staff-employees',
   standalone: true,
-  imports: [CommonModule, FormsModule, StaffNavbarComponent],
+  imports: [CommonModule, FormsModule, ConfirmDialogComponent, StaffNavbarComponent],
   templateUrl: './staff-employees.html'
 })
 export class StaffEmployeesComponent implements OnInit {
@@ -33,6 +34,8 @@ export class StaffEmployeesComponent implements OnInit {
 
   protected formulario: FuncionarioFormulario = this.formularioVazio();
   protected modoEdicao = false;
+
+  protected readonly confirmacaoExclusao = signal<FuncionarioResponse | null>(null);
 
   ngOnInit(): void {
     this.funcionarioLogadoId = this.auth.getUserId() ?? 0;
@@ -118,11 +121,17 @@ export class StaffEmployeesComponent implements OnInit {
       this.errorMessage.set('Operação negada: o sistema deve ter no mínimo um funcionário.');
       return;
     }
+    this.confirmacaoExclusao.set(func);
+  }
 
-    const confirmacao = window.confirm(
-      `Confirma a remoção do funcionário "${func.nome}"? O registro ficará inativo (soft-delete).`
-    );
-    if (!confirmacao) return;
+  protected cancelarExclusao(): void {
+    this.confirmacaoExclusao.set(null);
+  }
+
+  protected confirmarExclusao(): void {
+    const func = this.confirmacaoExclusao();
+    if (!func) return;
+    this.confirmacaoExclusao.set(null);
 
     this.errorMessage.set(null);
     this.service.deletar(func.id).subscribe({

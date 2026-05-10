@@ -3,11 +3,13 @@ package br.ufpr.equipmentmaintenance.api.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.br.CPF;
 
 public class ClienteRequest {
 
     @NotBlank(message = "O CPF é obrigatório.")
     @Size(max = 14, message = "O CPF deve ter no máximo 14 caracteres.")
+    @CPF(message = "CPF inválido.")
     private String cpf;
 
     @NotBlank(message = "O nome é obrigatório.")

@@ -2,13 +2,14 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ConfirmDialogComponent } from '../../../components/confirm-dialog/confirm-dialog';
 import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-navbar';
 import { CategoriaService, CategoriaResponse } from '../../../services/categoria.service';
 
 @Component({
   selector: 'app-staff-categories',
   standalone: true,
-  imports: [CommonModule, FormsModule, StaffNavbarComponent],
+  imports: [CommonModule, FormsModule, ConfirmDialogComponent, StaffNavbarComponent],
   templateUrl: './staff-categories.html'
 })
 export class StaffCategoriesComponent implements OnInit {
@@ -25,6 +26,8 @@ export class StaffCategoriesComponent implements OnInit {
     descricao: ''
   };
   protected modoEdicao = false;
+
+  protected readonly confirmacaoExclusao = signal<CategoriaResponse | null>(null);
 
   ngOnInit(): void {
     this.carregar();
@@ -86,10 +89,17 @@ export class StaffCategoriesComponent implements OnInit {
   }
 
   protected excluirCategoria(cat: CategoriaResponse): void {
-    const confirmacao = window.confirm(
-      `Confirma a remoção da categoria "${cat.nome}"? Ela ficará inativa no sistema (soft-delete).`
-    );
-    if (!confirmacao) return;
+    this.confirmacaoExclusao.set(cat);
+  }
+
+  protected cancelarExclusao(): void {
+    this.confirmacaoExclusao.set(null);
+  }
+
+  protected confirmarExclusao(): void {
+    const cat = this.confirmacaoExclusao();
+    if (!cat) return;
+    this.confirmacaoExclusao.set(null);
 
     this.errorMessage.set(null);
     this.service.deletar(cat.id).subscribe({

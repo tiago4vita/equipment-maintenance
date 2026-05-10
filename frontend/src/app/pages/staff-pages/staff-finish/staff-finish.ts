@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SolicitationHistoryPanelComponent } from '../../../components/solicitation-history-panel/solicitation-history-panel';
 import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-navbar';
 import {
   STATUS_LABELS,
@@ -12,7 +13,7 @@ import { SolicitacaoService } from '../../../services/solicitacao.service';
 @Component({
   selector: 'app-staff-finish',
   standalone: true,
-  imports: [CommonModule, StaffNavbarComponent],
+  imports: [CommonModule, StaffNavbarComponent, SolicitationHistoryPanelComponent],
   templateUrl: './staff-finish.html'
 })
 export class StaffFinishComponent implements OnInit {

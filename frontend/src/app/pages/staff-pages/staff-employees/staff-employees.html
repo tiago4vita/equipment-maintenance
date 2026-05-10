@@ -148,4 +148,15 @@
 
     </div>
   </div>
+
+  <app-confirm-dialog
+    [isOpen]="confirmacaoExclusao() !== null"
+    title="Remover funcionário"
+    [message]="confirmacaoExclusao() ? 'Confirma a remoção do funcionário &quot;' + confirmacaoExclusao()!.nome + '&quot;?\nO registro ficará inativo (soft-delete) e ele não poderá mais acessar o sistema.' : ''"
+    confirmLabel="Remover"
+    cancelLabel="Cancelar"
+    variant="danger"
+    (confirmed)="confirmarExclusao()"
+    (cancelled)="cancelarExclusao()"
+  />
 </main>

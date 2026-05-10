@@ -19,7 +19,7 @@
     @if (loading()) {
       <p class="rounded-md bg-white px-4 py-6 text-center text-gray-500 shadow-sm">Carregando solicitação…</p>
     } @else if (solicitacao(); as s) {
-      <div class="grid grid-cols-3 gap-8">
+      <div class="grid grid-cols-3 gap-8 pb-12">
         <div class="col-span-2 space-y-6">
           <section class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
             <h2 class="text-xl font-bold mb-6 border-b pb-4 text-[var(--color-text-primary)]">
@@ -56,6 +56,8 @@
               </p>
             </div>
           </section>
+
+          <app-solicitation-history-panel [historico]="s.historico" />
         </div>
 
         <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-[var(--color-button-primary)] h-fit sticky top-[180px]">

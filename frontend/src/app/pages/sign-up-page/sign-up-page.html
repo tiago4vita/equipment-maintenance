@@ -42,21 +42,31 @@
               </label>
 
               <div class="relative flex w-full flex-[0_0_auto] flex-col items-start gap-2 self-stretch">
-                <div
-                  class="flex w-full items-center rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 transition-all focus-within:border-black focus-within:bg-white focus-within:ring-2 focus-within:ring-black/10"
-                >
-                  <input
-                    [id]="field.id"
-                    [type]="field.type"
-                    [formControlName]="field.id"
-                    [placeholder]="field.placeholder"
-                    [required]="field.required"
-                    [attr.aria-required]="field.required"
-                    [attr.maxlength]="field.maxLength ?? null"
-                    [attr.inputmode]="field.inputMode ?? null"
-                    class="relative w-full bg-transparent [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px] outline-none"
-                  />
-                </div>
+                @if (signUpForm.get(field.id); as ctrl) {
+                  <div
+                    class="flex w-full items-center rounded-lg border bg-gray-50 px-4 py-3 transition-all focus-within:bg-white focus-within:ring-2"
+                    [class.border-gray-300]="!(ctrl.touched && ctrl.invalid)"
+                    [class.focus-within:border-black]="!(ctrl.touched && ctrl.invalid)"
+                    [class.focus-within:ring-black/10]="!(ctrl.touched && ctrl.invalid)"
+                    [class.border-red-500]="ctrl.touched && ctrl.invalid"
+                    [class.focus-within:ring-red-500/20]="ctrl.touched && ctrl.invalid"
+                  >
+                    <input
+                      [id]="field.id"
+                      [type]="field.type"
+                      [formControlName]="field.id"
+                      [placeholder]="field.placeholder"
+                      [required]="field.required"
+                      [attr.aria-required]="field.required"
+                      [attr.maxlength]="field.maxLength ?? null"
+                      [attr.inputmode]="field.inputMode ?? null"
+                      class="relative w-full bg-transparent [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px] outline-none"
+                    />
+                  </div>
+                  @if (ctrl.touched && ctrl.invalid) {
+                    <p class="text-xs text-red-600 mt-1" role="alert">{{ mensagemErro(field.id, ctrl.errors) }}</p>
+                  }
+                }
               </div>
             </div>
           }
@@ -75,19 +85,26 @@
                 </div>
 
                 <div class="relative flex w-full flex-[0_0_auto] flex-col items-start gap-2 self-stretch">
-                  <div
-                    class="relative flex w-full flex-[0_0_auto] items-center gap-2.5 rounded-lg border border-solid border-[var(--color-border-subtle)] bg-gray-50 px-4 py-3"
-                  >
-                    <input
-                      id="address"
-                      type="text"
-                      formControlName="address"
-                      placeholder="Preenchido automaticamente pelo CEP"
-                      required
-                      aria-required="true"
-                      class="relative w-full bg-transparent [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px] outline-none"
-                    />
-                  </div>
+                  @if (signUpForm.get('address'); as ctrl) {
+                    <div
+                      class="relative flex w-full flex-[0_0_auto] items-center gap-2.5 rounded-lg border border-solid bg-gray-50 px-4 py-3"
+                      [class.border-[var(--color-border-subtle)]]="!(ctrl.touched && ctrl.invalid)"
+                      [class.border-red-500]="ctrl.touched && ctrl.invalid"
+                    >
+                      <input
+                        id="address"
+                        type="text"
+                        formControlName="address"
+                        placeholder="Preenchido automaticamente pelo CEP"
+                        required
+                        aria-required="true"
+                        class="relative w-full bg-transparent [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px] outline-none"
+                      />
+                    </div>
+                    @if (ctrl.touched && ctrl.invalid) {
+                      <p class="text-xs text-red-600 mt-1" role="alert">{{ mensagemErro('address', ctrl.errors) }}</p>
+                    }
+                  }
                 </div>
               </div>
 
@@ -103,20 +120,27 @@
                 </div>
 
                 <div class="relative flex w-full flex-[0_0_auto] flex-col items-start gap-2 self-stretch">
-                  <div
-                    class="relative flex w-full flex-[0_0_auto] items-center gap-2.5 rounded-lg border border-solid border-[var(--color-border-subtle)] bg-[var(--color-surface-page)] px-4 py-3"
-                  >
-                    <input
-                      id="number"
-                      type="text"
-                      formControlName="number"
-                      placeholder="Digite o número"
-                      required
-                      aria-required="true"
-                      maxlength="20"
-                      class="w-full bg-transparent text-base outline-none placeholder:text-gray-400"
-                    />
-                  </div>
+                  @if (signUpForm.get('number'); as ctrl) {
+                    <div
+                      class="relative flex w-full flex-[0_0_auto] items-center gap-2.5 rounded-lg border border-solid bg-[var(--color-surface-page)] px-4 py-3"
+                      [class.border-[var(--color-border-subtle)]]="!(ctrl.touched && ctrl.invalid)"
+                      [class.border-red-500]="ctrl.touched && ctrl.invalid"
+                    >
+                      <input
+                        id="number"
+                        type="text"
+                        formControlName="number"
+                        placeholder="Digite o número"
+                        required
+                        aria-required="true"
+                        maxlength="20"
+                        class="w-full bg-transparent text-base outline-none placeholder:text-gray-400"
+                      />
+                    </div>
+                    @if (ctrl.touched && ctrl.invalid) {
+                      <p class="text-xs text-red-600 mt-1" role="alert">{{ mensagemErro('number', ctrl.errors) }}</p>
+                    }
+                  }
                 </div>
               </div>
             </div>
@@ -136,20 +160,27 @@
                 </div>
 
                 <div class="relative flex w-full flex-[0_0_auto] flex-col items-start gap-2 self-stretch">
-                  <div
-                    class="relative flex w-full flex-[0_0_auto] items-center gap-2.5 rounded-lg border border-solid border-[var(--color-border-subtle)] bg-gray-50 px-4 py-3"
-                  >
-                    <input
-                      id="bairro"
-                      type="text"
-                      formControlName="bairro"
-                      placeholder="Preenchido automaticamente pelo CEP"
-                      required
-                      aria-required="true"
-                      maxlength="100"
-                      class="relative w-full bg-transparent [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px] outline-none"
-                    />
-                  </div>
+                  @if (signUpForm.get('bairro'); as ctrl) {
+                    <div
+                      class="relative flex w-full flex-[0_0_auto] items-center gap-2.5 rounded-lg border border-solid bg-gray-50 px-4 py-3"
+                      [class.border-[var(--color-border-subtle)]]="!(ctrl.touched && ctrl.invalid)"
+                      [class.border-red-500]="ctrl.touched && ctrl.invalid"
+                    >
+                      <input
+                        id="bairro"
+                        type="text"
+                        formControlName="bairro"
+                        placeholder="Preenchido automaticamente pelo CEP"
+                        required
+                        aria-required="true"
+                        maxlength="100"
+                        class="relative w-full bg-transparent [font-family:'Inter',sans-serif] text-lg font-normal leading-[21.6px] tracking-[-0.54px] outline-none"
+                      />
+                    </div>
+                    @if (ctrl.touched && ctrl.invalid) {
+                      <p class="text-xs text-red-600 mt-1" role="alert">{{ mensagemErro('bairro', ctrl.errors) }}</p>
+                    }
+                  }
                 </div>
               </div>
 
@@ -185,7 +216,7 @@
         <button
           type="submit"
           class="relative flex w-full flex-[0_0_auto] cursor-pointer items-center justify-center gap-2.5 rounded-lg bg-black hover:bg-black/90 disabled:bg-gray-300 text-white font-semibold py-3"
-          [disabled]="signUpForm.invalid || submitting()"
+          [disabled]="submitting()"
           aria-label="Criar conta"
         >
           <span
