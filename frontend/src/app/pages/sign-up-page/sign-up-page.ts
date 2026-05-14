@@ -123,16 +123,12 @@ export class SignUpPageComponent {
       .subscribe({
         next: (res) => {
           this.submitting.set(false);
-          const senha = res.senhaInicial?.trim();
-          if (senha) {
-            this.toast.show(
-              `Conta criada. Sua senha de acesso: ${senha}. Ela também foi enviada ao seu e-mail.`
-            );
-          } else {
-            this.toast.show(
-              'Conta criada com sucesso! Uma senha de 4 dígitos foi enviada ao seu e-mail.'
-            );
-          }
+
+          // Removemos a lógica que capturava a senha e a exibia no texto
+          this.toast.show(
+            'Conta criada com sucesso! Verifique seu e-mail para acessar sua senha.'
+          );
+
           setTimeout(() => {
             void this.router.navigateByUrl('/login');
           }, 3000);

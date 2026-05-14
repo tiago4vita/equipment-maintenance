@@ -1,16 +1,14 @@
-<div
-  *ngIf="!isPublicPage"
+<div *ngIf="!isPublicPage"
   class="print:hidden fixed right-[148px] top-[72px] z-50 flex h-[52px] w-auto items-center gap-4 [font-family:'Inter',sans-serif]"
-  role="group"
-  aria-label="Perfil do usuário"
->
-  <img
-    src="/png/PlaceholderAvatar.png"
-    alt=""
-    width="52"
-    height="52"
-    class="size-[52px] shrink-0 rounded-full object-cover"
-  />
+  role="group" aria-label="Perfil do usuário">
+  <div class="size-[52px] shrink-0 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-8 text-gray-500">
+      <path fill-rule="evenodd"
+        d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
+        clip-rule="evenodd" />
+    </svg>
+  </div>
+
   <div class="flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-0.5 leading-none">
     <p class="truncate text-[16px] font-bold tracking-[-0.48px] text-[var(--color-text-primary)]">
       Olá {{ displayName }}!
@@ -19,14 +17,13 @@
       {{ userTypeLabel }}
     </p>
   </div>
-  
-  <button
-    (click)="sair()"
+
+  <button (click)="sair()"
     class="flex items-center justify-center rounded-lg p-2 text-sm font-bold text-red-500 hover:bg-red-50 hover:text-red-600 transition-all outline-none focus-visible:ring-2 focus-visible:ring-red-500"
-    title="Sair do sistema"
-    >
+    title="Sair do sistema">
     <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
     </svg>
     Sair
   </button>
