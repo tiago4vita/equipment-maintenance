@@ -7,12 +7,11 @@
 
         <div class="flex items-center gap-3 mb-6 flex-wrap">
             <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-full px-4 py-2 shadow-sm">
-                <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">Filtrar por</span>
+                <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">Filtrar
+                    por</span>
                 <span class="w-px h-3 bg-gray-200"></span>
-                <select
-                  [(ngModel)]="filtroAtual"
-                  (change)="aplicarFiltro()"
-                  class="text-[14px] font-semibold outline-none cursor-pointer bg-transparent appearance-none pr-5">
+                <select [(ngModel)]="filtroAtual" (change)="aplicarFiltro()"
+                    class="text-[14px] font-semibold outline-none cursor-pointer bg-transparent appearance-none pr-5">
                     <option value="TODAS">Todas as solicitações</option>
                     <option value="HOJE">Hoje</option>
                     <option value="PERIODO">Por Período</option>
@@ -23,30 +22,29 @@
                 </svg>
             </div>
             @if (filtroAtual === 'PERIODO') {
-              <div class="flex gap-3 items-center">
-                  <input type="date" [(ngModel)]="dataInicio"
-                      class="text-[13px] bg-white border border-gray-200 rounded-full px-4 py-2 outline-none shadow-sm">
-                  <span class="text-gray-300 text-[13px]">até</span>
-                  <input type="date" [(ngModel)]="dataFim"
-                      class="text-[13px] bg-white border border-gray-200 rounded-full px-4 py-2 outline-none shadow-sm">
-                  <button
-                    type="button"
-                    (click)="aplicarFiltro()"
+            <div class="flex gap-3 items-center">
+                <input type="date" [(ngModel)]="dataInicio"
+                    class="text-[13px] bg-white border border-gray-200 rounded-full px-4 py-2 outline-none shadow-sm">
+                <span class="text-gray-300 text-[13px]">até</span>
+                <input type="date" [(ngModel)]="dataFim"
+                    class="text-[13px] bg-white border border-gray-200 rounded-full px-4 py-2 outline-none shadow-sm">
+                <button type="button" (click)="aplicarFiltro()"
                     class="rounded-full bg-[var(--color-text-primary)] px-4 py-2 text-[13px] font-semibold text-white hover:scale-[1.02] transition-all">
                     Aplicar
-                  </button>
-              </div>
+                </button>
+            </div>
             }
         </div>
 
         @if (errorMessage()) {
-          <p class="mb-4 w-full rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+        <p class="mb-4 w-full rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
             {{ errorMessage() }}
-          </p>
+        </p>
         }
 
         <div class="w-full rounded-2xl border border-gray-200 bg-white shadow-lg overflow-hidden">
-            <header class="flex h-[46px] w-full items-center border-b border-[var(--color-placeholder)] bg-white px-[60px]">
+            <header
+                class="flex h-[46px] w-full items-center border-b border-[var(--color-placeholder)] bg-white px-[60px]">
                 <div class="w-[350px] flex items-center gap-2.5">
                     <img src="/svg/Aa.svg" alt="" class="h-[14.29px] w-[21.75px]" />
                     <span class="text-[18px] text-[var(--color-placeholder)]">Cliente / Equipamento</span>
@@ -66,54 +64,57 @@
             </header>
 
             <div class="max-h-[500px] overflow-y-auto overflow-x-hidden">
-                @if (loading()) {
-                  <div class="p-10 text-center text-gray-500">Carregando…</div>
-                } @else if (items().length === 0) {
-                  <div class="p-10 text-center text-gray-400">Nenhuma solicitação encontrada para o filtro atual.</div>
-                } @else {
-                  @for (s of items(); track s.id) {
-                    <article class="flex h-[60px] w-full items-center px-[60px] transition-all"
-                        [ngClass]="bgClassPara(s.status)">
+                @for (s of items(); track s.id) {
+                <article
+                    class="flex h-[80px] w-full items-center px-[60px] transition-all border-b border-[#BEBEBE] last:border-b-0 hover:bg-gray-50/50" 
+                    [ngClass]="{
+            'bg-[#F0F4FF]': s.status === 'ABERTA', 
+            'bg-[#FFF9E6]': s.status === 'ORCADA' || s.status === 'APROVADA',
+            'bg-[#F2FFF2]': s.status === 'PAGA' || s.status === 'FINALIZADA',
+            'bg-[#FFE4E1]': s.status === 'REJEITADA'
+        }">
 
-                        <div class="w-[350px] shrink-0">
-                            <p class="text-[18px] font-normal leading-[1.2] text-white drop-shadow">{{ s.clienteNome }}</p>
-                            <p class="text-[14px] text-white/80">{{ descricaoCurta(s) }}</p>
-                        </div>
+                    <div class="w-[350px] shrink-0">
+                        <p class="text-[16px] font-semibold leading-tight text-gray-800">
+                            {{ s.clienteNome }}
+                        </p>
+                        <p class="text-[14px] text-gray-500 font-medium">
+                            {{ descricaoCurta(s) }}
+                        </p>
+                    </div>
 
-                        <div class="w-[300px] shrink-0 text-[16px] text-white/90">
-                            {{ s.dataCriacao || '—' }}
-                        </div>
+                    <div class="w-[300px] shrink-0 text-[15px] text-gray-600 font-medium">
+                        {{ s.dataCriacao || '—' }}
+                    </div>
 
-                        <div class="w-[200px] shrink-0">
-                            <p class="text-[18px] font-semibold text-white">
-                                {{ rotulo(s.status) }}
-                            </p>
-                        </div>
+                    <div class="w-[200px] shrink-0">
+                        <span
+                            class="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold uppercase tracking-wider bg-white/60 border border-gray-200 text-gray-700 shadow-sm">
+                            {{ rotulo(s.status) }}
+                        </span>
+                    </div>
 
-                        <div class="flex-1 flex justify-center items-center">
-                            @if (s.status === 'ABERTA') {
-                              <button type="button"
-                                  (click)="irParaOrcamento(s.id)"
-                                  class="h-[30px] w-[180px] rounded-[15px] text-[16px] font-medium transition-all hover:scale-[1.02] bg-white text-[var(--color-text-primary)]">
-                                  Efetuar Orçamento
-                              </button>
-                            } @else if (s.status === 'APROVADA' || s.status === 'REDIRECIONADA') {
-                              <button type="button"
-                                  (click)="irParaManutencao(s.id)"
-                                  class="h-[30px] w-[180px] rounded-[15px] text-[16px] font-medium transition-all hover:scale-[1.02] bg-white text-[var(--color-text-primary)]">
-                                  Efetuar Manutenção
-                              </button>
-                            } @else if (s.status === 'PAGA') {
-                              <button type="button"
-                                  (click)="finalizarSolicitacao(s.id)"
-                                  class="h-[30px] w-[180px] rounded-[15px] text-[16px] font-medium transition-all hover:scale-[1.02] bg-white text-[var(--color-text-primary)]">
-                                  Finalizar Solicitação
-                              </button>
-                            }
-                        </div>
-                    </article>
-                  }
+                    <div class="flex-1 flex justify-center items-center">
+                        @if (s.status === 'ABERTA') {
+                        <button type="button" (click)="irParaOrcamento(s.id)"
+                            class="h-[36px] w-[180px] rounded-full text-[14px] font-bold transition-all hover:brightness-95 shadow-sm bg-[#DDE4FF] text-[#4A5EAD] border border-[#C5D0FF]">
+                            Efetuar Orçamento
+                        </button>
+                        } @else if (s.status === 'APROVADA' || s.status === 'REDIRECIONADA') {
+                        <button type="button" (click)="irParaManutencao(s.id)"
+                            class="h-[36px] w-[180px] rounded-full text-[14px] font-bold transition-all hover:brightness-95 shadow-sm bg-[#FFF2CC] text-[#997300] border border-[#FFE599]">
+                            Efetuar Manutenção
+                        </button>
+                        } @else if (s.status === 'PAGA') {
+                        <button type="button" (click)="finalizarSolicitacao(s.id)"
+                            class="h-[36px] w-[180px] rounded-full text-[14px] font-bold transition-all hover:brightness-95 shadow-sm bg-[#D9FAD9] text-[#2D5A2D] border border-[#B3F0B3]">
+                            Finalizar Solicitação
+                        </button>
+                        }
+                    </div>
+                </article>
                 }
+
             </div>
         </div>
     </div>
