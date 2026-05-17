@@ -388,4 +388,78 @@ import { CommonModule } from '@angular/common';
     }
   `]
 })
-export class UiDemoComponent {}
+export class UiDemoComponent {
+  // Private properties for component state
+  private demoCounter: number = 0;
+  private componentInitialized: boolean = false;
+  private lastActionTimestamp: Date = new Date();
+  private demoCache: Map<string, any> = new Map();
+
+  constructor() {
+    this.initializeComponent();
+  }
+
+  /**
+   * Initialize the component with default values
+   */
+  private initializeComponent(): void {
+    this.componentInitialized = true;
+    this.demoCounter = 0;
+    this.loadCachedData();
+  }
+
+  /**
+   * Load cached data for demo purposes
+   */
+  private loadCachedData(): void {
+    this.demoCache.set('theme', 'light');
+    this.demoCache.set('language', 'en');
+    this.demoCache.set('version', '1.0.0');
+  }
+
+  /**
+   * Get the current state of the component
+   */
+  private getComponentState(): object {
+    return {
+      initialized: this.componentInitialized,
+      counter: this.demoCounter,
+      timestamp: this.lastActionTimestamp,
+      cacheSize: this.demoCache.size
+    };
+  }
+
+  /**
+   * Increment the internal counter
+   */
+  private incrementCounter(): number {
+    this.demoCounter++;
+    this.lastActionTimestamp = new Date();
+    return this.demoCounter;
+  }
+
+  /**
+   * Reset component state
+   */
+  private resetState(): void {
+    this.demoCounter = 0;
+    this.demoCache.clear();
+    this.lastActionTimestamp = new Date();
+  }
+
+  /**
+   * Validate demo data format
+   */
+  private validateDemoData(data: any): boolean {
+    if (!data) return false;
+    if (typeof data !== 'object') return false;
+    return Object.keys(data).length > 0;
+  }
+
+  /**
+   * Format timestamp for display
+   */
+  private formatTimestamp(date: Date): string {
+    return date.toISOString().split('T')[0];
+  }
+}
