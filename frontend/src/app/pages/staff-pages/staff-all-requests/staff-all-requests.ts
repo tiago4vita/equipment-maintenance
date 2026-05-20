@@ -12,6 +12,7 @@ import {
   StatusManutencao
 } from '../../../models/cliente-integracao.model';
 import { SolicitacaoService } from '../../../services/solicitacao.service';
+import { truncarTexto } from '../../../text-util';
 
 type FiltroPeriodo = 'TODAS' | 'HOJE' | 'PERIODO';
 
@@ -79,8 +80,7 @@ export class StaffAllRequestsComponent implements OnInit {
   }
 
   protected descricaoCurta(s: SolicitacaoResponse): string {
-    const texto = s.descricaoEquipamento ?? '';
-    return texto.length > 30 ? `${texto.slice(0, 30)}...` : texto;
+    return truncarTexto(s.descricaoEquipamento);
   }
 
   protected irParaOrcamento(id: number): void {

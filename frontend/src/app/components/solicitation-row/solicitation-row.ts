@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { truncarTexto } from '../../text-util';
 
 export type SolicitationStatus =
   | 'aberta'
@@ -108,10 +109,7 @@ export class SolicitationRowComponent {
   }
 
   protected get truncatedDevice(): string {
-    if (this.device.length <= 30) {
-      return this.device;
-    }
-    return `${this.device.slice(0, 30)}...`;
+    return truncarTexto(this.device);
   }
 
   protected get shouldShowActionButton(): boolean {

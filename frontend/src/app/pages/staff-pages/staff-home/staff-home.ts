@@ -6,6 +6,7 @@ import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-nav
 import { compareBrDateTime } from '../../../date-util';
 import { SolicitacaoResponse } from '../../../models/cliente-integracao.model';
 import { SolicitacaoService } from '../../../services/solicitacao.service';
+import { truncarTexto } from '../../../text-util';
 
 @Component({
   selector: 'app-staff-home',
@@ -49,8 +50,7 @@ export class StaffHomeComponent implements OnInit {
   }
 
   protected descricaoTruncada(s: SolicitacaoResponse): string {
-    const texto = s.descricaoEquipamento ?? '';
-    return texto.length > 30 ? `${texto.slice(0, 30)}...` : texto;
+    return truncarTexto(s.descricaoEquipamento);
   }
 
   protected irParaOrcamento(id: number): void {

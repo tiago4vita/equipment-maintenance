@@ -6,6 +6,7 @@ import { AuthService } from '../../../auth.service';
 import { ClienteNavbarComponent } from '../../../components/cliente-navbar/cliente-navbar';
 import { SolicitationFieldsHeaderComponent } from '../../../components/solicitation-fields-header/solicitation-fields-header';
 import { compareBrDateTime, formatBrDateTime } from '../../../date-util';
+import { truncarTexto } from '../../../text-util';
 import {
   SolicitationRowComponent,
   type SolicitationRowActionType,
@@ -127,6 +128,10 @@ export class MaintenancePageComponent implements OnInit {
     return [...this.solicitations()].sort((a, b) =>
       compareBrDateTime(a.dateTime, b.dateTime)
     );
+  }
+
+  protected descricaoTruncada(texto: string): string {
+    return truncarTexto(texto);
   }
 
   protected handleRowAction(
