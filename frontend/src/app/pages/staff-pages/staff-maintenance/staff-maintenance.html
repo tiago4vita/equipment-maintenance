@@ -8,7 +8,10 @@
       <button
         type="button"
         (click)="irParaRedirecionamento()"
-        class="flex items-center gap-2 bg-white border-2 border-purple-200 text-purple-700 px-6 py-2.5 rounded-xl font-bold hover:bg-purple-50 transition-all shadow-sm">
+        class="flex items-center gap-2 bg-white border-2 px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm hover:brightness-[0.98]"
+        [style.border-color]="tema('REDIRECIONADA').text"
+        [style.color]="tema('REDIRECIONADA').text"
+      >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
         </svg>
@@ -48,7 +51,11 @@
               </div>
               <div>
                 <span class="text-gray-500 block text-[11px] uppercase tracking-wider mb-0.5">Status Atual</span>
-                <strong class="text-[14px] text-yellow-600 bg-yellow-50 px-3 py-1 rounded-full uppercase inline-block mt-1">
+                <strong
+                  class="text-[14px] px-3 py-1 rounded-full uppercase inline-block mt-1"
+                  [style.background-color]="tema(s.status).bg"
+                  [style.color]="tema(s.status).text"
+                >
                   {{ statusLabels[s.status] }}
                 </strong>
               </div>

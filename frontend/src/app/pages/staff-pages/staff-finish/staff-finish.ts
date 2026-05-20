@@ -9,6 +9,7 @@ import {
   SolicitacaoResponse
 } from '../../../models/cliente-integracao.model';
 import { SolicitacaoService } from '../../../services/solicitacao.service';
+import { getApiStatusTheme } from '../../../solicitation-status-theme';
 
 @Component({
   selector: 'app-staff-finish',
@@ -22,6 +23,7 @@ export class StaffFinishComponent implements OnInit {
   private readonly solicitacoes = inject(SolicitacaoService);
 
   protected readonly statusLabels = STATUS_LABELS;
+  protected readonly tema = getApiStatusTheme;
   protected readonly dataAtual = new Date();
 
   protected readonly solicitacao = signal<SolicitacaoResponse | null>(null);

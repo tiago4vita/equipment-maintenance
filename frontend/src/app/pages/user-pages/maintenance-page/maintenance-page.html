@@ -38,7 +38,7 @@
             @for (solicitation of sortedSolicitations; track solicitation.id) {
               <app-solicitation-row
                 [status]="solicitation.status"
-                [device]="solicitation.device"
+                [device]="descricaoTruncada(solicitation.device)"
                 [dateTime]="solicitation.dateTime"
                 [category]="solicitation.category"
                 [quotedPrice]="solicitation.quotedPrice"

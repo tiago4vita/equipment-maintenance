@@ -3,6 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../auth.service';
+import { AUTH_BRAND_LOGO_ALT } from '../../constants/auth-brand.constants';
 
 @Component({
   selector: 'app-login-page',
@@ -10,6 +11,8 @@ import { AuthService } from '../../auth.service';
   templateUrl: './login-page.html'
 })
 export class LoginPageComponent {
+  protected readonly brandLogoAlt = AUTH_BRAND_LOGO_ALT;
+
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly auth = inject(AuthService);

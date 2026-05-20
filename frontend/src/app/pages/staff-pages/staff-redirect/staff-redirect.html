@@ -36,7 +36,12 @@
               </div>
               <div>
                 <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Status Atual</span>
-                <strong class="text-lg text-orange-500 uppercase">{{ statusLabels[s.status] }}</strong>
+                <strong
+                  class="text-lg uppercase"
+                  [style.color]="tema(s.status).text"
+                >
+                  {{ statusLabels[s.status] }}
+                </strong>
               </div>
               <div>
                 <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Aberta em</span>
@@ -104,7 +109,7 @@
           </div>
 
           <div class="mt-8 pt-6 border-t border-gray-100 text-[11px] text-gray-400 leading-tight">
-            <p class="mb-1">● O estado da solicitação passará para <strong class="text-orange-400">REDIRECIONADA</strong>.</p>
+            <p class="mb-1">● O estado da solicitação passará para <strong [style.color]="tema('REDIRECIONADA').text">REDIRECIONADA</strong>.</p>
             <p>● A alteração será salva no histórico com data, hora, funcionário de origem e destino.</p>
           </div>
         </div>

@@ -21,7 +21,11 @@
               <h2 class="text-xl font-bold text-[var(--color-text-primary)]">
                 Resumo da Ordem de Serviço #{{ s.id }}
               </h2>
-              <span class="bg-orange-100 text-orange-700 px-4 py-1 rounded-full text-sm font-bold uppercase">
+              <span
+                class="px-4 py-1 rounded-full text-sm font-bold uppercase"
+                [style.background-color]="tema(s.status).bg"
+                [style.color]="tema(s.status).text"
+              >
                 {{ statusLabels[s.status] }}
               </span>
             </div>

@@ -7,6 +7,7 @@ import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 
 import { ClienteService } from '../../services/cliente.service';
 import { ViaCepService } from '../../services/viacep.service';
 import { ToastService } from '../../toast.service';
+import { AUTH_BRAND_LOGO_ALT } from '../../constants/auth-brand.constants';
 import { cpfValidator } from '../../validators/cpf.validator';
 
 type SignUpFieldId = 'fullName' | 'email' | 'cpf' | 'phone' | 'cep';
@@ -29,6 +30,8 @@ interface SignUpField {
   styleUrl: './sign-up-page.css'
 })
 export class SignUpPageComponent {
+  protected readonly brandLogoAlt = AUTH_BRAND_LOGO_ALT;
+
   private readonly formBuilder = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
   private readonly viaCep = inject(ViaCepService);

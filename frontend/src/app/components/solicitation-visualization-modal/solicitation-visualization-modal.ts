@@ -3,6 +3,10 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from
 import { FormsModule } from '@angular/forms';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog';
 import type { SolicitationStatus } from '../solicitation-row/solicitation-row';
+import {
+  getUiStatusTheme,
+  type SolicitationStatusTheme
+} from '../../solicitation-status-theme';
 
 export type SolicitationModalMode = 'creation' | SolicitationStatus;
 
@@ -118,6 +122,21 @@ export class SolicitationVisualizationModalComponent implements OnChanges {
     if (this.mode === 'redirecionada') return 'Redirecionada';
     if (this.mode === 'resgatada') return 'Resgatada';
     return 'Aberta';
+  }
+
+  protected themeFor(status: SolicitationStatus): SolicitationStatusTheme {
+    return getUiStatusTheme(status);
+  }
+
+  protected get currentTheme(): SolicitationStatusTheme {
+    if (this.mode === 'creation') {
+      return getUiStatusTheme('aberta');
+    }
+    return getUiStatusTheme(this.mode);
+  }
+
+  protected get rejectedTheme(): SolicitationStatusTheme {
+    return getUiStatusTheme('rejeitada');
   }
 
   protected get canShowStatusActions(): boolean {

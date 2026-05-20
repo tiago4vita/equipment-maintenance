@@ -53,20 +53,26 @@
           <span aria-hidden="true"></span>
         } @else if (mode === 'orcada' && !isWritingRejectionReason) {
           <div class="flex flex-col items-end gap-[15px]">
-            <div class="text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#885000]">
-              Orçada em {{ price }}
+            <div
+              class="text-[18px] leading-[21.6px] tracking-[-0.54px]"
+              [style.color]="themeFor('orcada').text"
+            >
+              Orçada em <span class="font-bold">{{ price }}</span>
             </div>
             <div class="flex items-center gap-[10px]">
               <button
                 type="button"
-                class="rounded-[15px] border border-[#885000] px-[30px] py-1 text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#885000]"
+                class="rounded-[15px] border px-[30px] py-1 text-[18px] leading-[21.6px] tracking-[-0.54px]"
+                [style.border-color]="themeFor('orcada').text"
+                [style.color]="themeFor('orcada').text"
                 (click)="beginRejectFlow()"
               >
                 Rejeitar
               </button>
               <button
                 type="button"
-                class="rounded-[15px] bg-[#885000] px-[30px] py-1 text-[18px] leading-[21.6px] tracking-[-0.54px] text-white"
+                class="rounded-[15px] px-[30px] py-1 text-[18px] leading-[21.6px] tracking-[-0.54px] text-white"
+                [style.background-color]="themeFor('orcada').text"
                 (click)="requestApprove()"
               >
                 Aprovar
@@ -78,19 +84,25 @@
             <textarea
               [(ngModel)]="rejectionReason"
               placeholder="Descreva o motivo da rejeição"
-              class="h-[80px] w-full resize-none rounded-lg border border-[#9d3634] bg-[#fff5f4] p-2 text-[16px] text-[#9d3634]"
+              class="h-[80px] w-full resize-none rounded-lg border p-2 text-[16px]"
+              [style.border-color]="rejectedTheme.text"
+              [style.background-color]="rejectedTheme.bg"
+              [style.color]="rejectedTheme.text"
             ></textarea>
             <div class="flex items-center gap-2">
               <button
                 type="button"
-                class="rounded-[15px] border border-[#9d3634] px-4 py-1 text-[16px] text-[#9d3634]"
+                class="rounded-[15px] border px-4 py-1 text-[16px]"
+                [style.border-color]="rejectedTheme.text"
+                [style.color]="rejectedTheme.text"
                 (click)="cancelRejectFlow()"
               >
                 Cancelar
               </button>
               <button
                 type="button"
-                class="rounded-[15px] bg-[#9d3634] px-4 py-1 text-[16px] text-white"
+                class="rounded-[15px] px-4 py-1 text-[16px] text-white"
+                [style.background-color]="rejectedTheme.text"
                 (click)="confirmRejectFlow()"
               >
                 Confirmar Rejeição
@@ -99,12 +111,16 @@
           </div>
         } @else if (mode === 'aprovada') {
           <div class="flex flex-col items-end gap-[15px]">
-            <div class="text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#676200]">
+            <div
+              class="text-[18px] leading-[21.6px] tracking-[-0.54px]"
+              [style.color]="themeFor('aprovada').text"
+            >
               Serviço Aprovado no Valor {{ price }}
             </div>
             <button
               type="button"
-              class="rounded-[160px] bg-[#676200] px-[30px] py-1 text-[20px] leading-[24px] tracking-[-0.60px] text-white"
+              class="rounded-[160px] px-[30px] py-1 text-[20px] leading-[24px] tracking-[-0.60px] text-white"
+              [style.background-color]="themeFor('aprovada').text"
               (click)="closeModal()"
             >
               Ok
@@ -113,14 +129,23 @@
         } @else if (mode === 'rejeitada') {
           <div class="flex flex-col items-end gap-[17px]">
             <div class="flex items-start gap-[20px]">
-              <div class="text-[18px] leading-[21.6px] tracking-[-0.54px] text-[rgba(157,54,52,0.6)] line-through">
+              <div
+                class="text-[18px] leading-[21.6px] tracking-[-0.54px] line-through"
+                [style.color]="themeFor('rejeitada').subText"
+              >
                 {{ price }}
               </div>
-              <div class="text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#9d3634]">Serviço Rejeitado</div>
+              <div
+                class="text-[18px] leading-[21.6px] tracking-[-0.54px]"
+                [style.color]="themeFor('rejeitada').text"
+              >
+                Serviço Rejeitado
+              </div>
             </div>
             <button
               type="button"
-              class="rounded-[160px] bg-[#9d3634] px-[30px] py-1 text-[20px] leading-[24px] tracking-[-0.60px] text-white"
+              class="rounded-[160px] px-[30px] py-1 text-[20px] leading-[24px] tracking-[-0.60px] text-white"
+              [style.background-color]="themeFor('rejeitada').text"
               (click)="requestRescue()"
             >
               Resgatar
@@ -128,12 +153,16 @@
           </div>
         } @else if (mode === 'arrumada') {
           <div class="flex flex-col items-end gap-[15px]">
-            <div class="text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#2e5bab]">
+            <div
+              class="text-[18px] leading-[21.6px] tracking-[-0.54px]"
+              [style.color]="themeFor('arrumada').text"
+            >
               Serviço arrumado no valor de {{ price }}.
             </div>
             <button
               type="button"
-              class="rounded-[160px] bg-[#2e5bab] px-[30px] py-1 text-[20px] leading-[24px] tracking-[-0.60px] text-white"
+              class="rounded-[160px] px-[30px] py-1 text-[20px] leading-[24px] tracking-[-0.60px] text-white"
+              [style.background-color]="themeFor('arrumada').text"
               (click)="requestPay()"
             >
               Pagar Serviço
@@ -141,12 +170,16 @@
           </div>
         } @else if (mode === 'paga') {
           <div class="flex flex-col items-end gap-[15px]">
-            <div class="text-[18px] leading-[21.6px] tracking-[-0.54px] text-[#924e31]">
+            <div
+              class="text-[18px] leading-[21.6px] tracking-[-0.54px]"
+              [style.color]="themeFor('paga').text"
+            >
               Serviço pago no valor de {{ price }}.
             </div>
             <button
               type="button"
-              class="rounded-[160px] bg-[#924e31] px-[30px] py-1 text-[20px] leading-[24px] tracking-[-0.60px] text-white"
+              class="rounded-[160px] px-[30px] py-1 text-[20px] leading-[24px] tracking-[-0.60px] text-white"
+              [style.background-color]="themeFor('paga').text"
               (click)="closeModal()"
             >
               Ok
@@ -154,19 +187,28 @@
           </div>
         } @else if (mode === 'resgatada') {
           <div class="flex flex-col items-end gap-[15px]">
-            <div class="text-[18px] leading-[21.6px] tracking-[-0.54px] text-[var(--color-row-rescued-text)]">
+            <div
+              class="text-[18px] leading-[21.6px] tracking-[-0.54px]"
+              [style.color]="themeFor('resgatada').text"
+            >
               Serviço resgatado e aprovado no valor de {{ price }}.
             </div>
             <button
               type="button"
-              class="rounded-[160px] bg-[var(--color-row-rescued-text)] px-[30px] py-1 text-[20px] leading-[24px] tracking-[-0.60px] text-white"
+              class="rounded-[160px] px-[30px] py-1 text-[20px] leading-[24px] tracking-[-0.60px] text-white"
+              [style.background-color]="themeFor('resgatada').text"
               (click)="closeModal()"
             >
               Ok
             </button>
           </div>
         } @else {
-          <div class="w-fit text-[20px] leading-[24px] tracking-[-0.60px] text-[#2c2c2c]">{{ statusLabel }}</div>
+          <div
+            class="w-fit text-[20px] leading-[24px] tracking-[-0.60px]"
+            [style.color]="currentTheme.text"
+          >
+            {{ statusLabel }}
+          </div>
         }
       </div>
 

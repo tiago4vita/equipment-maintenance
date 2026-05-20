@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { getUiStatusTheme } from '../../solicitation-status-theme';
+import { truncarTexto } from '../../text-util';
 
 export type SolicitationStatus =
   | 'aberta'
@@ -21,70 +23,19 @@ interface SolicitationVariant {
   hasQuotedActions: boolean;
 }
 
-const SOLICITATION_VARIANTS: Record<SolicitationStatus, SolicitationVariant> = {
-  aberta: {
-    rowBackground: 'var(--color-row-open-bg)',
-    statusTextColor: 'var(--color-row-open-text)',
-    statusLabel: 'Aberta',
-    actionLabel: null,
-    hasQuotedActions: false
-  },
-  aprovada: {
-    rowBackground: 'var(--color-row-approved-bg)',
-    statusTextColor: 'var(--color-row-approved-text)',
-    statusLabel: 'Aprovada',
-    actionLabel: null,
-    hasQuotedActions: false
-  },
-  arrumada: {
-    rowBackground: 'var(--color-row-fixed-bg)',
-    statusTextColor: 'var(--color-row-fixed-text)',
-    statusLabel: 'Arrumada',
-    actionLabel: 'Pagar Serviço',
-    hasQuotedActions: false
-  },
-  finalizada: {
-    rowBackground: 'var(--color-row-finished-bg)',
-    statusTextColor: 'var(--color-row-finished-text)',
-    statusLabel: 'Finalizada',
-    actionLabel: null,
-    hasQuotedActions: false
-  },
-  orcada: {
-    rowBackground: 'var(--color-row-quoted-bg)',
-    statusTextColor: 'var(--color-row-quoted-text)',
-    statusLabel: 'Orçada',
-    actionLabel: null,
-    hasQuotedActions: true
-  },
-  paga: {
-    rowBackground: 'var(--color-row-paid-bg)',
-    statusTextColor: 'var(--color-row-paid-text)',
-    statusLabel: 'Paga',
-    actionLabel: null,
-    hasQuotedActions: false
-  },
-  redirecionada: {
-    rowBackground: 'var(--color-row-redirected-bg)',
-    statusTextColor: 'var(--color-row-redirected-text)',
-    statusLabel: 'Redirecionada',
-    actionLabel: null,
-    hasQuotedActions: false
-  },
-  resgatada: {
-    rowBackground: 'var(--color-row-rescued-bg)',
-    statusTextColor: 'var(--color-row-rescued-text)',
-    statusLabel: 'Resgatada',
-    actionLabel: null,
-    hasQuotedActions: false
-  },
-  rejeitada: {
-    rowBackground: 'var(--color-row-rejected-bg)',
-    statusTextColor: 'var(--color-row-rejected-text)',
-    statusLabel: 'Rejeitada',
-    actionLabel: 'Resgatar Serviço',
-    hasQuotedActions: false
-  }
+const STATUS_META: Record<
+  SolicitationStatus,
+  Pick<SolicitationVariant, 'statusLabel' | 'actionLabel' | 'hasQuotedActions'>
+> = {
+  aberta: { statusLabel: 'Aberta', actionLabel: null, hasQuotedActions: false },
+  aprovada: { statusLabel: 'Aprovada', actionLabel: null, hasQuotedActions: false },
+  arrumada: { statusLabel: 'Arrumada', actionLabel: 'Pagar Serviço', hasQuotedActions: false },
+  finalizada: { statusLabel: 'Finalizada', actionLabel: null, hasQuotedActions: false },
+  orcada: { statusLabel: 'Orçada', actionLabel: null, hasQuotedActions: true },
+  paga: { statusLabel: 'Paga', actionLabel: null, hasQuotedActions: false },
+  redirecionada: { statusLabel: 'Redirecionada', actionLabel: null, hasQuotedActions: false },
+  resgatada: { statusLabel: 'Resgatada', actionLabel: null, hasQuotedActions: false },
+  rejeitada: { statusLabel: 'Rejeitada', actionLabel: 'Resgatar Serviço', hasQuotedActions: false }
 };
 
 @Component({
@@ -104,14 +55,17 @@ export class SolicitationRowComponent {
   }>();
 
   protected get variant(): SolicitationVariant {
-    return SOLICITATION_VARIANTS[this.status];
+    const theme = getUiStatusTheme(this.status);
+    const meta = STATUS_META[this.status];
+    return {
+      rowBackground: theme.bg,
+      statusTextColor: theme.text,
+      ...meta
+    };
   }
 
   protected get truncatedDevice(): string {
-    if (this.device.length <= 30) {
-      return this.device;
-    }
-    return `${this.device.slice(0, 30)}...`;
+    return truncarTexto(this.device);
   }
 
   protected get shouldShowActionButton(): boolean {
