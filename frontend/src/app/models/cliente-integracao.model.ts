@@ -103,16 +103,3 @@ export const STATUS_LABELS: Record<StatusManutencao, string> = {
   FINALIZADA: 'Finalizada'
 };
 
-/**
- * Classe Tailwind de fundo para cada status — segue solicitation-states.mdc (RF013).
- */
-export const STATUS_BG_CLASSES: Record<StatusManutencao, string> = {
-  ABERTA: 'bg-gray-400',
-  ORCADA: 'bg-yellow-800',
-  REJEITADA: 'bg-red-500',
-  APROVADA: 'bg-yellow-400',
-  REDIRECIONADA: 'bg-purple-500',
-  ARRUMADA: 'bg-blue-500',
-  PAGA: 'bg-orange-500',
-  FINALIZADA: 'bg-green-500'
-};

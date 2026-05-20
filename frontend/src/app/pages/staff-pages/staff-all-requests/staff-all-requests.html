@@ -66,14 +66,8 @@
             <div class="max-h-[500px] overflow-y-auto overflow-x-hidden">
                 @for (s of items(); track s.id) {
                 <article
-                    class="flex h-[80px] w-full items-center px-[60px] transition-all border-b border-[#BEBEBE] last:border-b-0 hover:bg-gray-50/50" 
-                    [ngClass]="{
-            'bg-[#F0F4FF]': s.status === 'ABERTA', 
-            'bg-[#FFF9E6]': s.status === 'ORCADA' || s.status === 'APROVADA',
-            'bg-[#F2FFF2]': s.status === 'PAGA' || s.status === 'FINALIZADA',
-            'bg-[#FFE4E1]': s.status === 'REJEITADA',
-            'bg-[#ffd0ff]': s.status === 'REDIRECIONADA'
-        }">
+                    class="flex h-[80px] w-full items-center px-[60px] transition-all border-b border-[#BEBEBE] last:border-b-0 hover:brightness-[0.98]"
+                    [style.background-color]="tema(s.status).bg">
 
                     <div class="w-[350px] shrink-0">
                         <p class="text-[16px] font-semibold leading-tight text-gray-800">
@@ -90,7 +84,11 @@
 
                     <div class="w-[200px] shrink-0">
                         <span
-                            class="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold uppercase tracking-wider bg-white/60 border border-gray-200 text-gray-700 shadow-sm">
+                            class="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold uppercase tracking-wider shadow-sm"
+                            [style.background-color]="tema(s.status).bg"
+                            [style.color]="tema(s.status).text"
+                            [style.border]="'1px solid ' + tema(s.status).text"
+                        >
                             {{ rotulo(s.status) }}
                         </span>
                     </div>
@@ -98,17 +96,26 @@
                     <div class="flex-1 flex justify-center items-center">
                         @if (s.status === 'ABERTA') {
                         <button type="button" (click)="irParaOrcamento(s.id)"
-                            class="h-[36px] w-[180px] rounded-full text-[14px] font-bold transition-all hover:brightness-95 shadow-sm bg-[#DDE4FF] text-[#4A5EAD] border border-[#C5D0FF]">
+                            class="h-[36px] w-[180px] rounded-full text-[14px] font-bold transition-all hover:brightness-95 shadow-sm border"
+                            [style.background-color]="tema('ABERTA').bg"
+                            [style.color]="tema('ABERTA').text"
+                            [style.border-color]="tema('ABERTA').text">
                             Efetuar Orçamento
                         </button>
                         } @else if (s.status === 'APROVADA' || s.status === 'REDIRECIONADA') {
                         <button type="button" (click)="irParaManutencao(s.id)"
-                            class="h-[36px] w-[180px] rounded-full text-[14px] font-bold transition-all hover:brightness-95 shadow-sm bg-[#FFF2CC] text-[#997300] border border-[#FFE599]">
+                            class="h-[36px] w-[180px] rounded-full text-[14px] font-bold transition-all hover:brightness-95 shadow-sm border"
+                            [style.background-color]="tema(s.status).bg"
+                            [style.color]="tema(s.status).text"
+                            [style.border-color]="tema(s.status).text">
                             Efetuar Manutenção
                         </button>
                         } @else if (s.status === 'PAGA') {
                         <button type="button" (click)="finalizarSolicitacao(s.id)"
-                            class="h-[36px] w-[180px] rounded-full text-[14px] font-bold transition-all hover:brightness-95 shadow-sm bg-[#D9FAD9] text-[#2D5A2D] border border-[#B3F0B3]">
+                            class="h-[36px] w-[180px] rounded-full text-[14px] font-bold transition-all hover:brightness-95 shadow-sm border"
+                            [style.background-color]="tema('FINALIZADA').bg"
+                            [style.color]="tema('FINALIZADA').text"
+                            [style.border-color]="tema('FINALIZADA').text">
                             Finalizar Solicitação
                         </button>
                         }

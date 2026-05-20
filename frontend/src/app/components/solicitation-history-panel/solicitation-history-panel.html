@@ -12,14 +12,15 @@
         <li class="relative">
           <span
             class="absolute -left-[33px] top-1 inline-flex h-4 w-4 rounded-full ring-4 ring-white"
-            [ngClass]="item.bgClass"
+            [style.background-color]="item.theme.bg"
             aria-hidden="true"
           ></span>
 
           <div class="flex flex-wrap items-baseline gap-3">
             <span
-              class="inline-flex items-center rounded-full px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-white"
-              [ngClass]="item.bgClass"
+              class="inline-flex items-center rounded-full px-3 py-0.5 text-xs font-bold uppercase tracking-wider"
+              [style.background-color]="item.theme.bg"
+              [style.color]="item.theme.text"
             >
               {{ item.rotulo }}
             </span>

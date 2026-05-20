@@ -12,6 +12,7 @@ import {
 } from '../../../models/cliente-integracao.model';
 import { FuncionarioResponse, FuncionarioService } from '../../../services/funcionario.service';
 import { SolicitacaoService } from '../../../services/solicitacao.service';
+import { getApiStatusTheme } from '../../../solicitation-status-theme';
 
 @Component({
   selector: 'app-staff-redirect',
@@ -27,6 +28,7 @@ export class StaffRedirectComponent implements OnInit {
   private readonly auth = inject(AuthService);
 
   protected readonly statusLabels = STATUS_LABELS;
+  protected readonly tema = getApiStatusTheme;
 
   protected readonly solicitacao = signal<SolicitacaoResponse | null>(null);
   protected readonly funcionariosDisponiveis = signal<FuncionarioResponse[]>([]);

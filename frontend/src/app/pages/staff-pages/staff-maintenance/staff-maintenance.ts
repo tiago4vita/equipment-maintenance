@@ -10,6 +10,7 @@ import {
   SolicitacaoResponse
 } from '../../../models/cliente-integracao.model';
 import { SolicitacaoService } from '../../../services/solicitacao.service';
+import { getApiStatusTheme } from '../../../solicitation-status-theme';
 
 @Component({
   selector: 'app-staff-maintenance',
@@ -23,6 +24,7 @@ export class StaffMaintenanceComponent implements OnInit {
   private readonly solicitacoes = inject(SolicitacaoService);
 
   protected readonly statusLabels = STATUS_LABELS;
+  protected readonly tema = getApiStatusTheme;
 
   protected solicitacaoId = 0;
   protected readonly solicitacao = signal<SolicitacaoResponse | null>(null);

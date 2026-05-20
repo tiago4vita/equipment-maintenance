@@ -7,11 +7,11 @@ import { StaffNavbarComponent } from '../../../components/staff-navbar/staff-nav
 import { compareBrDateTime } from '../../../date-util';
 import {
   SolicitacaoResponse,
-  STATUS_BG_CLASSES,
   STATUS_LABELS,
   StatusManutencao
 } from '../../../models/cliente-integracao.model';
 import { SolicitacaoService } from '../../../services/solicitacao.service';
+import { getApiStatusTheme } from '../../../solicitation-status-theme';
 import { truncarTexto } from '../../../text-util';
 
 type FiltroPeriodo = 'TODAS' | 'HOJE' | 'PERIODO';
@@ -71,8 +71,8 @@ export class StaffAllRequestsComponent implements OnInit {
     this.carregar();
   }
 
-  protected bgClassPara(status: StatusManutencao): string {
-    return STATUS_BG_CLASSES[status] ?? 'bg-gray-400';
+  protected tema(status: StatusManutencao) {
+    return getApiStatusTheme(status);
   }
 
   protected rotulo(status: StatusManutencao): string {

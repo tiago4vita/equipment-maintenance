@@ -28,6 +28,7 @@ import {
 } from '../../../models/cliente-integracao.model';
 import { CategoriaService, type CategoriaResponse } from '../../../services/categoria.service';
 import { SolicitacaoService } from '../../../services/solicitacao.service';
+import { getUiStatusTheme } from '../../../solicitation-status-theme';
 
 interface SolicitationItem {
   id: number;
@@ -287,28 +288,28 @@ export class MaintenancePageComponent implements OnInit {
     date: string,
     author: string
   ): SolicitationTimelineItem {
-    const base = { iconPath: '/svg/Clock.svg', date, author };
-    switch (status) {
-      case 'orcada':
-        return { ...base, label: 'Orçada', bg: '#f2d0b2', textColor: '#885000', subTextColor: '#885000b2' };
-      case 'rejeitada':
-        return { ...base, label: 'Rejeitada', bg: '#ffc3bc', textColor: '#9d3634', subTextColor: '#9d363499' };
-      case 'aprovada':
-        return { ...base, label: 'Aprovada', bg: '#fcfbb0', textColor: '#676200', subTextColor: '#66600099' };
-      case 'arrumada':
-        return { ...base, label: 'Arrumada', bg: '#cce4ff', textColor: '#2e5bab', subTextColor: '#2e5bab99' };
-      case 'paga':
-        return { ...base, label: 'Paga', bg: '#ffcdb3', textColor: '#924e31', subTextColor: '#924e3199' };
-      case 'finalizada':
-        return { ...base, label: 'Finalizada', bg: '#c6e8c4', textColor: '#1f7122', subTextColor: '#1f712299' };
-      case 'redirecionada':
-        return { ...base, label: 'Redirecionada', bg: '#e5d6ff', textColor: '#6849a1', subTextColor: '#6849a199' };
-      case 'resgatada':
-        return { ...base, label: 'Resgatada', bg: '#ef89c6', textColor: '#bc237f', subTextColor: 'rgba(188,35,127,0.6)' };
-      case 'aberta':
-      default:
-        return { ...base, label: 'Aberta', bg: '#e4e4e4', textColor: '#2c2c2c', subTextColor: '#2c2c2c99' };
-    }
+    const theme = getUiStatusTheme(status);
+    const labels: Record<SolicitationStatus, string> = {
+      aberta: 'Aberta',
+      orcada: 'Orçada',
+      aprovada: 'Aprovada',
+      rejeitada: 'Rejeitada',
+      arrumada: 'Arrumada',
+      paga: 'Paga',
+      finalizada: 'Finalizada',
+      redirecionada: 'Redirecionada',
+      resgatada: 'Resgatada'
+    };
+
+    return {
+      iconPath: '/svg/Clock.svg',
+      date,
+      author,
+      label: labels[status],
+      bg: theme.bg,
+      textColor: theme.text,
+      subTextColor: theme.subText
+    };
   }
 
   private formatPrice(valor: number | null): string {
