@@ -1,103 +1,77 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-ui-demo',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   template: `
-    <div class="demo-container">
-      <h1>Design System Demo</h1>
-      <p class="subtitle">Component showcase and styling reference</p>
+    <div class="demo-wrapper">
+      <h1>{{ title }}</h1>
+      <p>{{ description }}</p>
+      <button (click)="onButtonClick()">{{ buttonLabel }}</button>
+      <div class="content-area">
+        <p *ngFor="let item of items">{{ item }}</p>
+      </div>
+      <input [(ngModel)]="userInput" placeholder="Digite algo">
+      <div class="result">{{ userInput }}</div>
+      <ul>
+        <li *ngFor="let number of numbers">{{ number }}</li>
+      </ul>
+      <div [ngStyle]="{'color': textColor}">Texto colorido</div>
+      <span [ngClass]="{'active': isActive}">Status indicador</span>
+    </div>
+  `,
+  styles: [`
+    .demo-wrapper { padding: 20px; font-family: Arial; }
+    h1 { color: #333; margin-bottom: 10px; }
+    button { padding: 8px 16px; background: #007bff; color: white; border: none; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    .content-area { margin: 15px 0; border: 1px solid #ddd; padding: 10px; }
+    input { width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #ccc; }
+    .result { margin: 10px 0; font-weight: bold; }
+    ul { list-style: none; padding: 0; }
+    li { padding: 5px; background: #f0f0f0; margin: 5px 0; }
+    .active { color: green; font-weight: bold; }
+  `]
+})
+export class UiDemoComponent implements OnInit {
+  title: string = 'Componente Demo Independente';
+  description: string = 'Este é um componente autossuficiente sem dependências externas';
+  buttonLabel: string = 'Clique aqui';
+  userInput: string = '';
+  textColor: string = '#ff6b6b';
+  isActive: boolean = true;
+  items: string[] = [
+    'Item de demonstração 1',
+    'Item de demonstração 2',
+    'Item de demonstração 3',
+    'Item de demonstração 4'
+  ];
+  numbers: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  clickCount: number = 0;
 
-      <section class="demo-section">
-        <h2>Cards & Layout</h2>
-        <div class="cards-grid">
-          <div class="card">
-            <div class="card-header">Card Title</div>
-            <div class="card-body">
-              <p>This is a sample card with content demonstration.</p>
-            </div>
-          </div>
-          <div class="card card-accent">
-            <div class="card-header">Accent Card</div>
-            <div class="card-body">
-              <p>Alternative styling for emphasis.</p>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-header">Another Card</div>
-            <div class="card-body">
-              <p>Multiple cards in a grid layout.</p>
-            </div>
-          </div>
-        </div>
-      </section>
+  ngOnInit(): void {
+    console.log('Componente inicializado');
+    this.initializeData();
+  }
 
-      <section class="demo-section">
-        <h2>Typography</h2>
-        <p class="text-large">Large text sample</p>
-        <p class="text-normal">Normal text for regular content</p>
-        <p class="text-small">Small text for secondary information</p>
-      </section>
+  onButtonClick(): void {
+    this.clickCount++;
+    this.buttonLabel = `Clicado ${this.clickCount} vezes`;
+    this.textColor = this.getRandomColor();
+    this.isActive = !this.isActive;
+  }
 
-      <section class="demo-section">
-        <h2>Buttons & Interactive</h2>
-        <div class="button-group">
-          <button class="btn btn-primary">Primary</button>
-          <button class="btn btn-secondary">Secondary</button>
-          <button class="btn btn-outline">Outline</button>
-        </div>
-      </section>
+  initializeData(): void {
+    console.log('Dados inicializados');
+  }
 
-      <section class="demo-section">
-        <h2>Color Palette</h2>
-        <div class="color-grid">
-          <div class="color-box color-primary"></div>
-          <div class="color-box color-secondary"></div>
-          <div class="color-box color-success"></div>
-          <div class="color-box color-warning"></div>
-        </div>
-      </section>
-
-      <section class="demo-section">
-        <h2>Form Elements</h2>
-        <div class="form-group">
-          <label>Text Input</label>
-          <input type="text" placeholder="Enter text" class="form-control">
-        </div>
-        <div class="form-group">
-          <label>Select Dropdown</label>
-          <select class="form-control">
-            <option>Option 1</option>
-            <option>Option 2</option>
-            <option>Option 3</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Checkbox</label>
-          <input type="checkbox" class="form-checkbox">
-          <span>Enable feature</span>
-        </div>
-      </section>
-
-      <section class="demo-section">
-        <h2>Badges & Status</h2>
-        <div class="badge-group">
-          <span class="badge badge-primary">Active</span>
-          <span class="badge badge-success">Completed</span>
-          <span class="badge badge-warning">Pending</span>
-          <span class="badge badge-danger">Error</span>
-          <span class="badge badge-info">Info</span>
-        </div>
-      </section>
-
-      <section class="demo-section">
-        <h2>Alerts & Messages</h2>
-        <div class="alert alert-success">
-          <strong>Success!</strong> Operation completed successfully.
-        </div>
-        <div class="alert alert-warning">
+  private getRandomColor(): string {
+    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
           <strong>Warning:</strong> Please review before proceeding.
         </div>
         <div class="alert alert-danger">
