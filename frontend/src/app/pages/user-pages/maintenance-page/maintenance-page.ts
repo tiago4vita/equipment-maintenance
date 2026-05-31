@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import { finalize, forkJoin } from 'rxjs';
 import { AuthService } from '../../../auth.service';
 import { ClienteNavbarComponent } from '../../../components/cliente-navbar/cliente-navbar';
 import { SolicitationFieldsHeaderComponent } from '../../../components/solicitation-fields-header/solicitation-fields-header';
@@ -62,6 +62,7 @@ export class MaintenancePageComponent implements OnInit {
   protected readonly solicitations = signal<SolicitationItem[]>([]);
   protected readonly categoriasOptions = signal<ModalCategoriaOption[]>([]);
   protected readonly loading = signal(false);
+  protected readonly creatingSolicitation = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
   protected isVisualizationModalOpen = false;
@@ -179,6 +180,10 @@ export class MaintenancePageComponent implements OnInit {
   }
 
   protected handleCreation(payload: CreateSolicitationPayload): void {
+    if (this.creatingSolicitation()) {
+      return;
+    }
+
     const clienteId = this.auth.getUserId();
     if (clienteId == null) {
       this.errorMessage.set('Sessão expirada. Faça login novamente.');
@@ -186,6 +191,7 @@ export class MaintenancePageComponent implements OnInit {
     }
 
     this.errorMessage.set(null);
+    this.creatingSolicitation.set(true);
     this.solicitacoes
       .criar({
         clienteId,
@@ -193,6 +199,7 @@ export class MaintenancePageComponent implements OnInit {
         descricaoEquipamento: payload.descricaoEquipamento,
         descricaoProblema: payload.descricaoProblema
       })
+      .pipe(finalize(() => this.creatingSolicitation.set(false)))
       .subscribe({
         next: (res) => {
           this.solicitations.update((list) => [...list, this.mapResponseToItem(res)]);

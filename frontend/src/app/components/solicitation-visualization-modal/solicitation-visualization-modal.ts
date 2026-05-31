@@ -51,6 +51,7 @@ export class SolicitationVisualizationModalComponent implements OnChanges {
   @Input() price = '';
   @Input() timelineItems: SolicitationTimelineItem[] = [];
   @Input() categorias: ModalCategoriaOption[] = [];
+  @Input() creating = false;
 
   @Output() readonly closed = new EventEmitter<void>();
   @Output() readonly statusChangeRequested = new EventEmitter<{
@@ -190,6 +191,10 @@ export class SolicitationVisualizationModalComponent implements OnChanges {
   }
 
   protected confirmCreation(): void {
+    if (this.creating) {
+      return;
+    }
+
     this.attemptedSubmit = true;
 
     if (this.deviceVazio || this.categoriaVazia || this.descricaoVazia) {
@@ -208,6 +213,9 @@ export class SolicitationVisualizationModalComponent implements OnChanges {
   }
 
   protected closeModal(): void {
+    if (this.creating) {
+      return;
+    }
     this.closed.emit();
   }
 }

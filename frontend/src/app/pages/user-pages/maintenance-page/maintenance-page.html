@@ -64,6 +64,7 @@
     [timelineItems]="selectedSolicitation?.history ?? []"
     [categorias]="categoriasOptions()"
     [startWithRejectFlow]="startWithRejectFlow"
+    [creating]="creatingSolicitation()"
     (statusChangeRequested)="handleStatusChange($event)"
     (createRequested)="handleCreation($event)"
     (closed)="closeVisualizationModal()"
