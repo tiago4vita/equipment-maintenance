@@ -212,3 +212,38 @@ O resultado final atinge e supera os objetivos propostos para o mapeamento de so
 Este projeto representa um marco importante na nossa trajetória acadêmica e profissional.
 Encerramos esta etapa com a certeza de termos desenvolvido um software de grande valor.
 Documentação oficial encerrada com sucesso e repositório devidamente atualizado.
+
+---
+
+## Notas adicionais de desenvolvimento
+
+- Revisão geral da documentação inicial do projeto.
+- Ajuste das instruções de execução do backend.
+- Ajuste das instruções de execução do frontend.
+- Organização dos comandos principais do ambiente local.
+- Complemento das informações sobre Docker Compose.
+- Inclusão de observações sobre banco de dados MySQL.
+- Atualização das orientações para uso do Adminer.
+- Complemento das informações sobre MailHog.
+- Revisão das rotas principais da API REST.
+- Ajuste da explicação sobre integração frontend e backend.
+- Melhoria na descrição do proxy local do Angular.
+- Complemento das instruções de autenticação com JWT.
+- Organização das informações sobre perfis de acesso.
+- Revisão das telas acessadas por clientes.
+- Revisão das telas acessadas por funcionários.
+- Complemento das informações sobre solicitação de manutenção.
+- Documentação do fluxo de orçamento de serviço.
+- Documentação do fluxo de aprovação de serviço.
+- Ajuste da descrição dos status da solicitação.
+- Complemento sobre histórico de alterações da solicitação.
+- Revisão das mensagens de erro mais comuns.
+- Inclusão de observações para reset do volume Docker.
+- Padronização textual das seções do README.
+- Melhoria da legibilidade das instruções técnicas.
+- Organização das referências utilizadas no projeto.
+- Complemento das informações para primeira execução.
+- Registro de ajustes realizados durante o desenvolvimento.
+- Atualização simples para controle de versionamento.
+- Revisão final antes da entrega do projeto.
+- Documentação atualizada para facilitar manutenção futura.
