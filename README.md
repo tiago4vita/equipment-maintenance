@@ -1,8 +1,9 @@
-<img width="1126" height="335" alt="image" src="https://github.com/user-attachments/assets/454d69fe-92b5-444f-8ce2-b5e36aa80b43" />
+<img width="859" height="333" alt="image" src="https://github.com/user-attachments/assets/6f52898c-cd6d-4184-944c-e78bee423a51" />
+
 TECNOLOGIA EM ANÁLISE E DESEVOLVIMENTO DE SISTEMAS UFPR
 DISCIPLINA DE DESENVOLVIMENTO WEB II 
 
-# PROJETO EQUIPMENT MAINTENANCE (MANUTENÇÃO DE EQUIPAMENTOS)
+# PROJETO TADS SYSTEM - MANUTENÇÃO DE EQUIPAMENTOS
 GUIA DE PRIMEIRA EXECUÇÃO
 
 ## Equipe
