@@ -177,4 +177,7 @@ mvn package
 * Melhoria na organização das seções do documento.
 * Atualização simples para controle de versionamento.
 * Registro adicional de manutenção da documentação.
-
+* Mapeamento dos status e transições essenciais para o controle de serviços.
+* Documentação do fluxo exato de geração de orçamentos automáticos.
+* Definição dos diferentes perfis de acessos (ex: Cliente vs. Funcionário) e as suas restrições.
+* Definição de diretrizes para padronização de branches e mensagens de commit no GIT. 
