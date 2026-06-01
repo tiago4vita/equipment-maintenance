@@ -1,4 +1,9 @@
-# Equipment Maintenance - Guia de Primeira Execução
+<img width="1126" height="335" alt="image" src="https://github.com/user-attachments/assets/454d69fe-92b5-444f-8ce2-b5e36aa80b43" />
+TECNOLOGIA EM ANÁLISE E DESEVOLVIMENTO DE SISTEMAS UFPR
+DISCIPLINA DE DESENVOLVIMENTO WEB II 
+
+# PROJETO EQUIPMENT MAINTENANCE (MANUTENÇÃO DE EQUIPAMENTOS)
+GUIA DE PRIMEIRA EXECUÇÃO
 
 ## Equipe
 Larissa Ribeiro Borges GRR20204495
@@ -149,3 +154,27 @@ mvn package
 - Angular CLI: https://angular.dev/tools/cli
 - Tailwind CSS: https://tailwindcss.com/docs
 - Spring Boot: https://spring.io/projects/spring-boot
+
+## Notas de Desenvolvimento
+
+* Ajuste geral de documentação do projeto.
+* Revisão das instruções de primeira execução.
+* Organização das etapas de configuração local.
+* Complemento das orientações para frontend e backend.
+* Melhoria na descrição da integração entre os serviços.
+* Atualização das observações sobre ambiente de desenvolvimento.
+* Inclusão de lembretes para execução local da aplicação.
+* Revisão dos comandos úteis do projeto.
+* Ajuste textual para facilitar a leitura do README.
+* Complemento das informações sobre dependências necessárias.
+* Padronização das instruções de instalação.
+* Melhoria nas mensagens de solução de problemas.
+* Atualização das observações sobre Docker Compose.
+* Complemento das informações sobre banco de dados local.
+* Revisão da estrutura principal do projeto.
+* Ajuste na explicação sobre proxy do frontend.
+* Complemento das orientações sobre API REST.
+* Melhoria na organização das seções do documento.
+* Atualização simples para controle de versionamento.
+* Registro adicional de manutenção da documentação.
+
