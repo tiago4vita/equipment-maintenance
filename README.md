@@ -180,4 +180,35 @@ mvn package
 * Mapeamento dos status e transições essenciais para o controle de serviços.
 * Documentação do fluxo exato de geração de orçamentos automáticos.
 * Definição dos diferentes perfis de acessos (ex: Cliente vs. Funcionário) e as suas restrições.
-* Definição de diretrizes para padronização de branches e mensagens de commit no GIT. 
+* Definição de diretrizes para padronização de branches e mensagens de commit no GIT.
+
+---
+
+## Considerações Finais e Conclusão do Projeto
+
+Este repositório consolida todo o esforço e a dedicação da nossa equipe durante o semestre.
+A construção desta aplicação full stack representou um grande desafio técnico e de negócios.
+Durante o ciclo de desenvolvimento, mantivemos o foco em entregar uma solução de alto nível.
+O processo foi iniciado com uma etapa fundamental de survey e mapeamento de mercado.
+Realizamos um benchmark aprofundado de aplicações e sistemas de apoio às vendas.
+Nosso foco sempre foi entender a realidade e as necessidades dos pequenos comerciantes.
+Analisamos detalhadamente as funcionalidades que geram mais impacto nesse setor comercial.
+Essa base de pesquisa guiou as nossas decisões de interface e de usabilidade no frontend.
+A escolha do Angular com Tailwind CSS garantiu uma experiência visual limpa e responsiva.
+No backend, a implementação com Spring Boot forneceu a robustez necessária para o sistema.
+Criamos uma API REST segura, eficiente e preparada para o controle de manutenções.
+Implementamos requisitos de segurança rígidos utilizando JWT para autenticação das rotas.
+Os perfis de acesso foram bem definidos, separando adequadamente clientes e funcionários.
+Garantimos que a separação de escopos ofereça uma navegação segura em toda a plataforma.
+O uso de contêineres Docker e Docker Compose facilitou a padronização do ambiente local.
+Com isso, a configuração inicial do banco de dados MySQL tornou-se rápida para todos.
+Toda a documentação técnica foi elaborada para facilitar futuras consultas e manutenções.
+As instruções de execução foram revisadas para que qualquer pessoa consiga rodar o projeto.
+Realizamos verificações e testes constantes para manter a estabilidade do código entregue.
+As decisões de arquitetura de software refletem nosso alinhamento ao longo do trabalho.
+Foi essencial estabelecer diretrizes claras para os commits e para o controle de versão.
+Agradecemos a todos os membros da equipe pela colaboração contínua nesta construção.
+O resultado final atinge e supera os objetivos propostos para o mapeamento de soluções.
+Este projeto representa um marco importante na nossa trajetória acadêmica e profissional.
+Encerramos esta etapa com a certeza de termos desenvolvido um software de grande valor.
+Documentação oficial encerrada com sucesso e repositório devidamente atualizado.
